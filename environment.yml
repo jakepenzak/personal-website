@@ -1,0 +1,13 @@
+name: personal_website
+channels:
+  - conda-forge
+  - defaults
+  - pip
+dependencies:
+  - python
+  - git
+  - pip
+  - ipykernel
+  - jupyterlab
+  - pip:
+    - reflex==0.3.1
