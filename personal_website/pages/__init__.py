@@ -1,3 +1,3 @@
 from .dashboard import dashboard
-from .index import index
+from .home import home
 from .settings import settings

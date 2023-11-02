@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from personal_website import styles
 from personal_website.components.sidebar import sidebar
+# from personal_website.components.navbar import navbar
 from typing import Callable
 
 import reflex as rx
@@ -109,6 +110,7 @@ def template(
         def templated_page():
             return rx.hstack(
                 sidebar(),
+                # navbar(),
                 rx.box(
                     rx.box(
                         page_content(),

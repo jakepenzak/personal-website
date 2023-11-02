@@ -11,3 +11,4 @@ dependencies:
   - jupyterlab
   - pip:
     - reflex==0.3.1
+    - black==23.10.0

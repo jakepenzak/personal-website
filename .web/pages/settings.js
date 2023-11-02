@@ -68,7 +68,7 @@ export default function Component() {
   <Box sx={{"display": ["none", "none", "block"], "minWidth": "20em", "height": "100%", "position": "sticky", "top": "0px", "borderRight": "1px solid #F4F3F6"}}>
   <VStack sx={{"height": "100dvh"}}>
   <HStack sx={{"width": "100%", "borderBottom": "1px solid #F4F3F6", "padding": "1em"}}>
-  <Image src={`/icon.svg`} sx={{"height": "2em"}}/>
+  <Image src={`/icon.png`} sx={{"height": "6em"}}/>
   <Spacer/>
   <Link as={NextLink} href={`https://github.com/reflex-dev/reflex`}>
   <Center sx={{"boxShadow": "0px 0px 0px 1px rgba(84, 82, 95, 0.14)", "bg": "transparent", "borderRadius": "0.375rem", "_hover": {"bg": "#F5EFFE"}}}>

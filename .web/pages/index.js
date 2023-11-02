@@ -76,7 +76,7 @@ export default function Component() {
   <Box sx={{"display": ["none", "none", "block"], "minWidth": "20em", "height": "100%", "position": "sticky", "top": "0px", "borderRight": "1px solid #F4F3F6"}}>
   <VStack sx={{"height": "100dvh"}}>
   <HStack sx={{"width": "100%", "borderBottom": "1px solid #F4F3F6", "padding": "1em"}}>
-  <Image src={`/icon.svg`} sx={{"height": "2em"}}/>
+  <Image src={`/icon.png`} sx={{"height": "6em"}}/>
   <Spacer/>
   <Link as={NextLink} href={`https://github.com/reflex-dev/reflex`}>
   <Center sx={{"boxShadow": "0px 0px 0px 1px rgba(84, 82, 95, 0.14)", "bg": "transparent", "borderRadius": "0.375rem", "_hover": {"bg": "#F5EFFE"}}}>
@@ -128,82 +128,30 @@ export default function Component() {
 </Box>
   <Box sx={{"paddingTop": "5em", "paddingX": ["auto", "2em"]}}>
   <Box sx={{"width": "100%", "alignItems": "flex-start", "boxShadow": "0px 0px 0px 1px rgba(84, 82, 95, 0.14)", "borderRadius": "0.375rem", "padding": "1em", "marginBottom": "2em"}}>
-  <ReactMarkdown components={{"h1": ({children, ...props}) => <Heading as={`h1`} size={`2xl`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h2": ({children, ...props}) => <Heading as={`h2`} size={`xl`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h3": ({children, ...props}) => <Heading as={`h3`} size={`lg`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h4": ({children, ...props}) => <Heading as={`h4`} size={`md`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h5": ({children, ...props}) => <Heading as={`h5`} size={`sm`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h6": ({children, ...props}) => <Heading as={`h6`} size={`xs`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "p": ({children, ...props}) => <Text sx={{"marginY": "1em"}} {...props}>   {children} </Text>, "ul": ({children, ...props}) => <UnorderedList sx={{"marginY": "1em"}} {...props}>   {children} </UnorderedList>, "ol": ({children, ...props}) => <OrderedList sx={{"marginY": "1em"}} {...props}>   {children} </OrderedList>, "li": ({children, ...props}) => <ListItem sx={{"marginY": "0.5em"}} {...props}>   {children} </ListItem>, "a": ({children, ...props}) => <Link as={``} sx={{"fontWeight": "bold", "color": "#03030B", "textDecoration": "underline", "textDecorationColor": "#AD9BF8", "_hover": {"color": "#AD9BF8", "textDecoration": "underline", "textDecorationColor": "#03030B"}}} {...props}>   {children} </Link>, "code": ({inline, className, children, ...props}) => {     const match = (className || '').match(/language-(?<lang>.*)/);     const language = match ? match[1] : '';     return inline ? (         <Code sx={{"color": "#1F1944", "bg": "#EAE4FD"}} {...props}>   {children} </Code>     ) : (         <Prism customStyle={{"marginY": "1em"}} language={language} style={light} sx={{"marginY": "1em"}} children={String(children)} {...props}/>     );       }, "codeblock": ({children, ...props}) => <Prism customStyle={{"marginY": "1em"}} style={light} sx={{"marginY": "1em"}} {...props}/>}} rehypePlugins={[rehypeKatex, rehypeRaw]} remarkPlugins={[remarkMath, remarkGfm]}>
-  {`# Welcome to Reflex!
+  <VStack>
+  <Heading sx={{"color": ["purple", "green", "purple", "green", "purple"]}}>
+  {`
+    Jacob Pieniazek
+    `}
+</Heading>
+  <ReactMarkdown components={{"h1": ({children, ...props}) => <Heading as={`h1`} size={`2xl`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h2": ({children, ...props}) => <Heading as={`h2`} size={`xl`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h3": ({children, ...props}) => <Heading as={`h3`} size={`lg`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h4": ({children, ...props}) => <Heading as={`h4`} size={`md`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h5": ({children, ...props}) => <Heading as={`h5`} size={`sm`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "h6": ({children, ...props}) => <Heading as={`h6`} size={`xs`} sx={{"marginY": "0.5em"}} {...props}>   {children} </Heading>, "p": ({children, ...props}) => <Text sx={{"marginY": "1em"}} {...props}>   {children} </Text>, "ul": ({children, ...props}) => <UnorderedList sx={{"marginY": "1em"}} {...props}>   {children} </UnorderedList>, "ol": ({children, ...props}) => <OrderedList sx={{"marginY": "1em"}} {...props}>   {children} </OrderedList>, "li": ({children, ...props}) => <ListItem sx={{"marginY": "0.5em"}} {...props}>   {children} </ListItem>, "a": ({children, ...props}) => <Link as={``} sx={{"fontWeight": "bold", "color": "#03030B", "textDecoration": "underline", "textDecorationColor": "#AD9BF8", "_hover": {"color": "#AD9BF8", "textDecoration": "underline", "textDecorationColor": "#03030B"}}} {...props}>   {children} </Link>, "code": ({inline, className, children, ...props}) => {     const match = (className || '').match(/language-(?<lang>.*)/);     const language = match ? match[1] : '';     return inline ? (         <Code sx={{"color": "#1F1944", "bg": "#EAE4FD"}} {...props}>   {children} </Code>     ) : (         <Prism customStyle={{"marginY": "1em"}} language={language} style={light} sx={{"marginY": "1em"}} {...props} children={String(children)}/>     );       }, "codeblock": ({children, ...props}) => <Prism customStyle={{"marginY": "1em"}} style={light} sx={{"marginY": "1em"}} {...props}/>}} rehypePlugins={[rehypeKatex, rehypeRaw]} remarkPlugins={[remarkMath, remarkGfm]}>
+  {`#### Welcome! 
 
-This is the base Reflex template - installed when you run \`reflex init\`.
-
-If you want to use a different template, pass the \`--template\` flag to \`reflex init\`.
-For example, if you want a more basic starting point, you can run:
-
-\`\`\`bash
-reflex init --template blank
-\`\`\`
-
-## About this Template
-
-This template has the following directory structure:
-
-\`\`\`bash
-├── README.md
-├── assets
-├── rxconfig.py
-└── {your_app}
-    ├── __init__.py
-    ├── components
-    │   ├── __init__.py
-    │   └── sidebar.py
-    ├── pages
-    │   ├── __init__.py
-    │   ├── dashboard.py
-    │   ├── index.py
-    │   └── settings.py
-    ├── state.py
-    ├── styles.py
-    ├── templates
-    │   ├── __init__.py
-    │   └── template.py
-    └── {your_app}.py
-\`\`\`
-
-See the [Project Structure docs](https://reflex.dev/docs/getting-started/project-structure/) for more information on general Reflex project structure.
-
-### Adding Pages
-
-In this template, the pages in your app are defined in \`{your_app}/pages/\`.
-Each page is a function that returns a Reflex component.
-For example, to edit this page you can modify \`{your_app}/pages/index.py\`.
-See the [pages docs](https://reflex.dev/docs/components/pages/) for more information on pages.
-
-In this template, instead of using \`rx.add_page\` or the \`@rx.page\` decorator,
-we use the \`@template\` decorator from \`{your_app}/templates/template.py\`.
-
-To add a new page:
-
-1. Add a new file in \`{your_app}/pages/\`. We recommend using one file per page, but you can also group pages in a single file.
-2. Add a new function with the \`@template\` decorator, which takes the same arguments as \`@rx.page\`.
-3. Import the page in your \`{your_app}/pages/__init__.py\` file and it will automatically be added to the app.
+I am a passionate data scientist, persistent learner, and, most importantly, a devoted friend, son, brother, and boyfriend.
 
 
-### Adding Components
+As a professional data scientist working for a retail data science company in Cincinnati, OH, I have developed a robust experiential skillset working on a vast array of applied data science work. 
 
-In order to keep your code organized, we recommend putting components that are
-used across multiple pages in the \`{your_app}/components/\` directory.
 
-In this template, we have a sidebar component in \`{your_app}/components/sidebar.py\`.
+My deep passion for data science was fostered and stimulated through my Master's studies in Economics from Miami University in Oxford, OH and, prior to graduate school, my studies in Mathematics and Economics at the University of Dayton. 
 
-### Adding State
 
-In this template, we define the base state of the app in \`{your_app}/state.py\`.
-The base state is useful for general app state that is used across multiple pages.
+My fields of expertise concentrate heavily in applied econometrics, mathematical optimization, statistical/machine learning, and bridging the conceptual gap between causal inference and predictive modeling. 
 
-In this template, the base state handles the toggle for the sidebar.
 
-As your app grows, we recommend using [substates](https://reflex.dev/docs/state/substates/)
-to organize your state. You can either define substates in their own files, or if the state is
-specific to a page, you can define it in the page file itself.
-`}
+I write on Medium for [Towards Data Science](https://medium.com/@jakepenzak).`}
 </ReactMarkdown>
+</VStack>
 </Box>
 </Box>
   <Spacer/>
