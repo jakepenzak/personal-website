@@ -1,6 +1,3 @@
 import reflex as rx
 
-config = rx.Config(
-    app_name="personal_website",
-    username='jakep'
-)
+config = rx.Config(app_name="personal_website", username="jakep")

@@ -1,0 +1,27 @@
+@font-face {
+    font-family: CaskaydiaCove;
+    src: url("caskaydia/CASKAYDIACOVENERDFONT-REGULAR.TTF") format("opentype");
+}
+
+@font-face {
+    font-family: CaskaydiaCove;
+    font-weight: bold;
+    src: url("caskaydia/CASKAYDIACOVENERDFONT-BOLD.TTF") format("opentype");
+}
+
+@font-face {
+    font-family: CaskaydiaCoveLight;
+    font-weight: light;
+    src: url("caskaydia/CASKAYDIACOVENERDFONT-LIGHT.TTF") format("opentype");
+}
+
+@font-face {
+    font-family: Hack;
+    src: url("hack/HACKNERDFONTPROPO-REGULAR.TTF") format("opentype");
+}
+
+@font-face {
+    font-family: HackBold;
+    font-weight: Bold;
+    src: url("hack/HACKNERDFONTPROPO-BOLD.TTF") format("opentype");
+}
