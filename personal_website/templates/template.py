@@ -61,26 +61,17 @@ def template(
             on_load=on_load,
         )
         def templated_page():
-
             from personal_website.components.navbar import navbar
-            
+            from personal_website.components.footer import footer
+
             return rx.box(
                 navbar(),
                 page_content(),
-            )
+                footer()
                 # align_items="flex-start",
                 # transition="left 0.5s, width 0.5s",
                 # position="relative"
-            #     ),
-            #     rx.box(
-            #         rx.box(
-            #             page_content(),
-            #             **styles.template_content_style,
-            #         ),
-            #         **styles.template_page_style,
-            #     ),
-                
-            # )
+            )
 
         return templated_page
 

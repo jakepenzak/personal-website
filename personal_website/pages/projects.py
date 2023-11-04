@@ -5,7 +5,7 @@ from personal_website.templates import template
 import reflex as rx
 
 
-@template(route="/projects", title="Personal Projects")
+@template(route="/projects", title="Projects")
 def projects() -> rx.Component:
     """The projects page.
 

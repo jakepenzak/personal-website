@@ -24,5 +24,5 @@ def spline_component():
             height="30em",
         ),
         width="100%",
-        # display=["none", "none", "none", "none", "flex", "flex"],
+        display=["none", "none", "none", "none", "flex", "flex"],
     )

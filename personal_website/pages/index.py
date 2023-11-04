@@ -16,23 +16,25 @@ def container(*children, **kwargs):
 
 
 ## Header
-header = container(
-    rx.hstack(
-        rx.center(
-            rx.heading(
-                """
-                Jacob \n
-                Pieniazek
-                """,
-                font_size="6em",
-                font_family="HackBold",
-                color=["#522181"],
-            )
+def header():
+    """The header section of the home page."""
+    return container(
+        rx.hstack(
+            rx.center(
+                rx.heading(
+                    """
+                    Jacob \n
+                    Pieniazek
+                    """,
+                    font_size="6em",
+                    font_family="HackBold",
+                    color=["#522181"],
+                )
+            ),
+            spline_component(),
         ),
-        spline_component(),
-    ),
-    **styles.header_container_style,
-)
+        **styles.header_container_style,
+    )
 
 
 ## Introduction
@@ -52,23 +54,29 @@ def intro():
     with open("assets/intro.md", encoding="utf-8") as intro:
         content = intro.read()
 
-    markdown_content = rx.vstack(
-        rx.markdown(content, component_map=styles.markdown_style)
+    markdown_content = rx.box(
+        rx.vstack(
+            rx.markdown(content, component_map=styles.markdown_style),
+        ),
+        width="100%",
+        padding_x="12em",
     )
 
     intro = rx.box(
         container(**styles.intro_container_style),
         rx.hstack(
-            rx.image(src="/self.jpg", height="35em", width="30em"),
+            rx.image(src="/self.jpg", height="35em", width="30em", padding_left="5em"),
             rx.vstack(welcome, markdown_content),
+            padding_x="5em",
+            padding_bottom="5em",
         ),
-        width="100%"
+        width="100%",
     )
 
     return intro
 
 
-@template(route="/", title="Index")
+@template(route="/", title="Home")
 def index() -> rx.Component:
     """The home page.
 
@@ -76,4 +84,4 @@ def index() -> rx.Component:
         The UI for the home page.
     """
 
-    return rx.box(header, intro(), width="100%",  **styles.index_page_style)
+    return rx.box(header(), intro(), width="100%", **styles.index_page_style)

@@ -1,12 +1,10 @@
 from personal_website import styles
-from personal_website.state import State
+from personal_website.base_state import State
 from personal_website.components.logo import navbar_logo
 import reflex as rx
 
 
-
 logo = navbar_logo(**styles.navbar_logo_style)
-
 
 
 def navbar(sidebar: rx.Component = None) -> rx.Component:
@@ -17,76 +15,83 @@ def navbar(sidebar: rx.Component = None) -> rx.Component:
     """
 
     # Create the navbar component.
-    return rx.box(
-            rx.hstack(
-                logo,
-                rx.spacer(),
-                rx.link(
-                    "Articles",
-                    href="/articles",
-                    **styles.navbar_button_style
+    return rx.vstack(
+        rx.box(
+        rx.hstack(
+            logo,
+            rx.spacer(),
+            rx.link("Articles", href="/articles", display=["none", "none", "none", "none", "flex", "flex"], **styles.navbar_button_style),
+            rx.link(
+                "Professional Resume", href="/resume", display=["none", "none", "none", "none", "flex", "flex"], **styles.navbar_button_style
+            ),
+            rx.link("Research", href="/research", display=["none", "none", "none", "none", "flex", "flex"], **styles.navbar_button_style, ),
+            rx.menu(
+                rx.menu_button(
+                    rx.hstack(
+                        rx.text("Projects", **styles.navbar_menu_button_style),
+                        rx.icon(
+                            tag="chevron_down",
+                            **styles.navbar_menu_chevron_style
+                        ),
+                    ),
+                    display=["none", "none", "none", "none", "flex", "flex"],
+                    width="8em",
+                    border="none",
+                     _hover={"text_decoration": "underline"}
                 ),
-                rx.link(
-                    "Professional Resume",
-                    href="/resume",
-                    **styles.navbar_button_style
-                ),
-                rx.link(
-                    "Research",
-                    href="/research",
-                    **styles.navbar_button_style
-                ),
-                rx.link(
-                    "Projects",
-                    href="/projects",
-                    **styles.navbar_button_style
+                rx.menu_list(
+                    rx.link(
+                        rx.menu_item("About", **styles.navbar_dropdown_style),
+                        href="/projects",
+                    ),
+                    rx.menu_divider(),
+                    rx.link(
+                        rx.menu_item("Forthcoming", **styles.navbar_dropdown_style),
+                        href="/projects",
+                    ),
                 ),
             ),
-            **styles.navbar_style
-        )
+            menu_button(),
+        ),
+        **styles.navbar_style
+    ),
+    position="sticky",
+    top="0",
+    z_index="999",
+    )
 
 
-## UNUSED
+## For mobile & when screen is small
+pages = ['Articles', 'Resume', 'Research', 'Projects']
+def menu_button() -> rx.Component:
+    """The menu button on the top right of the page.
 
-# def menu_button() -> rx.Component:
-#     """The menu button on the top right of the page.
+    Returns:
+        The menu button component.
+    """
+    from reflex.page import get_decorated_pages
 
-#     Returns:
-#         The menu button component.
-#     """
-#     from reflex.page import get_decorated_pages
-
-#     return rx.box(
-#         rx.menu(
-#             rx.menu_button(
-#                 rx.icon(
-#                     tag="hamburger",
-#                     size="4em",
-#                     color=styles.text_color,
-#                 ),
-#             ),
-#             rx.menu_list(
-#                 *[
-#                     rx.menu_item(
-#                         rx.link(
-#                             page["title"],
-#                             href=page["route"],
-#                             width="100%",
-#                         )
-#                     )
-#                     for page in get_decorated_pages()
-#                 ],
-#                 rx.menu_divider(),
-#                 rx.menu_item(
-#                     rx.link("About", href="https://github.com/reflex-dev", width="100%")
-#                 ),
-#                 rx.menu_item(
-#                     rx.link("Contact", href="mailto:founders@=reflex.dev", width="100%")
-#                 ),
-#             ),
-#         ),
-#         position="fixed",
-#         right="1.5em",
-#         top="1.5em",
-#         z_index="500",
-#     )
+    return rx.box(
+        rx.menu(
+            rx.menu_button(
+                rx.icon(
+                    tag="hamburger",
+                    size="4em",
+                    color=styles.text_color,
+                ),
+            ),
+            rx.menu_list(
+                *[
+                    rx.menu_item(
+                        rx.link(
+                            page,
+                            href=f"/{page.lower()}",
+                            width="100%",
+                        )
+                    )
+                    for page in pages
+                ],
+            ),
+        ),
+        display=["flex", "flex", "flex", "none", "none", "none"],
+    )

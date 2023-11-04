@@ -5,18 +5,6 @@ import reflex as rx
 from personal_website import styles
 
 
-def logo(**style_props):
-    """Create a Reflex logo component.
-
-    Args:
-        style_props: The style properties to apply to the component.
-    """
-    return rx.image(
-        src=styles.LOGO_URL,
-        **style_props,
-    )
-
-
 def navbar_logo(**style_props):
     """Create a Reflex logo component.
 
@@ -29,4 +17,16 @@ def navbar_logo(**style_props):
             **style_props,
         ),
         href="/",
+    )
+
+
+def inverted_logo(**style_props):
+    """Create a Reflex logo component.
+
+    Args:
+        style_props: The style properties to apply to the component.
+    """
+    return rx.image(
+        src=styles.INVERTED_LOGO_URL,
+        **style_props,
     )
