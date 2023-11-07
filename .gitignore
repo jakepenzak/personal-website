@@ -2,8 +2,8 @@
 
 *.py[cod]
 
-.web
+.ignore/
+
+.web/
 
 __pycache__/
-
-.ignore/

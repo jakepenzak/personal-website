@@ -1,5 +1,5 @@
 """The resume page."""
-from personal_website.styles import resume_page
+from personal_website.styles import RESUME_PAGE
 from personal_website.templates import template
 from personal_website.components.spline import spline_component_404
 
@@ -29,7 +29,7 @@ def heading():
         padding_bottom="0.5em",
     )
 
-    header = rx.box(container(**resume_page["header_container_style"]), heading)
+    header = rx.box(container(**RESUME_PAGE["header_container_style"]), heading)
 
     return header
 
@@ -50,9 +50,11 @@ def body():
             )
         ),
         href="/documents/resume.pdf",
+        _as="resume_pieniazek.pdf",
         is_external=True,
         padding_top="0.5em",
         padding_bottom="2em",
+        padding_x="2em",
     )
 
     return resume

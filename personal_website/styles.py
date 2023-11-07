@@ -2,9 +2,6 @@
 
 import reflex as rx
 
-FOOTER_LOGO = "/icon-inverted.png"
-NAVBAR_LOGO = "/icon.png"
-
 border_radius = "0.375rem"
 box_shadow = "0px 0px 0px 1px rgba(84, 82, 95, 0.14)"
 border = "1px solid #F4F3F6"
@@ -66,7 +63,11 @@ markdown_style = {
     ),
 }
 
+# COMMON STYLES
+
 # NAVIGATION BAR
+NAVBAR_LOGO = "/icon.png"
+
 navbar_style = {
     "bg": "rgba(255,255,255, 0.9)",
     "backdrop_filter": "blur(10px)",
@@ -98,6 +99,9 @@ navbar_dropdown_style = {
 }
 
 # FOOTER
+
+FOOTER_LOGO = "/icon-inverted.png"
+
 footer_logo_style = {
     "height": "4em",
 }
@@ -120,6 +124,7 @@ footer_item_style = {
     "_hover": {"color": "#8451EC"},
 }
 
+
 #  INDEX PAGE
 header_container_style = {
     "padding_top": "2em",
@@ -128,11 +133,13 @@ header_container_style = {
 }
 
 intro_container_style = {
-    "height": "12em",
+    # "height": "12em",
     "width": "100%",
     "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",  #
     "opacity": "0.4;",
     "transform": "matrix(1, 0, 0, -1, 0, 0);",
+    "padding_x": "3em",
+    "padding_y": "3em",
 }
 
 index_page_style = {
@@ -145,8 +152,8 @@ index_page_style = {
 
 
 # ARTICLES PAGE
-articles_page = {
-    "intro_container_style": {
+ARTICLES_PAGE = {
+    "header_container_style": {
         "padding_top": "1em",
         "padding_bottom": "1em",
         "width": "100%",
@@ -172,29 +179,45 @@ articles_page = {
     "markdown_style_block": {
         "p": lambda text: rx.text(text, color="#522181", font_family="HackBold")
     },
-    # index_page_style: {
-    #     "padding_top": "2.5em",
-    #     "padding_bottom": "3.5em",
-    #     "padding_x": [["auto", "2em"]],
-    #     "position":"relative",
-    #     "min_height":"80vh",
-    # }
+    "spline_container_style": {
+        "padding_bottom": "5em",
+        "padding_x": "3em",
+        "width": "100%",
+    },
 }
 
 # RESUME PAGE
-
-resume_page = {
+RESUME_PAGE = {
     "header_container_style": {
         "padding_top": "1em",
         "padding_bottom": "1em",
         "width": "100%",
     },
     "body_container_style": {"padding_x": "3em", "width": "100%"},
-    # index_page_style: {
-    #     "padding_top": "2.5em",
-    #     "padding_bottom": "3.5em",
-    #     "padding_x": [["auto", "2em"]],
-    #     "position":"relative",
-    #     "min_height":"80vh",
-    # }
+}
+
+# RESEARCH PAGE
+RESEARCH_PAGE = {
+    "header_container_style": {
+        "padding_top": "1em",
+        "padding_bottom": "1em",
+        "width": "100%",
+    },
+    "body_container_style": {
+        "width": "100%",
+        "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",  #
+        "opacity": "0.4;",
+        "transform": "matrix(1, 0, 0, -1, 0, 0);",
+        "padding_x": "2em",
+        "padding_y": "2em",
+    },
+}
+
+# PROJECTS PAGE
+PROJECTS_PAGE = {
+    "header_container_style": {
+        "padding_top": "1em",
+        "padding_bottom": "1em",
+        "width": "100%",
+    }
 }

@@ -1,6 +1,6 @@
 """The articles page."""
 
-from personal_website.styles import articles_page
+from personal_website.styles import ARTICLES_PAGE
 from personal_website.templates import template
 from personal_website.components.spline import spline_component_404
 
@@ -15,8 +15,8 @@ def container(*children, **kwargs):
     )
 
 
-## Articles Introduction
-def intro():
+## Articles Header
+def header():
     """The introduction section of the articles page."""
 
     heading = rx.heading(
@@ -35,14 +35,14 @@ def intro():
 
     markdown_content = rx.box(
         rx.vstack(
-            rx.markdown(content, component_map=articles_page["markdown_style_intro"]),
+            rx.markdown(content, component_map=ARTICLES_PAGE["markdown_style_intro"]),
         ),
         width="100%",
         padding_x="12em",
     )
 
     intro = rx.box(
-        container(**articles_page["intro_container_style"]),
+        container(**ARTICLES_PAGE["header_container_style"]),
         rx.vstack(heading, markdown_content),
     )
 
@@ -58,10 +58,16 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/fwl.png", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/fwl.png",
+                        height="100%",
+                        width="100%",
+                        max_width="25em",
+                        max_height="25em",
+                    ),
                     rx.markdown(
                         open("assets/text/articles/fwl.md", encoding="utf-8").read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Understanding Linear Regression 
@@ -80,12 +86,18 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/logistic.png", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/logistic.png",
+                        height="100%",
+                        width="100%",
+                        max_width="35em",
+                        max_height="35em",
+                    ),
                     rx.markdown(
                         open(
                             "assets/text/articles/logistic.md", encoding="utf-8"
                         ).read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Acquire a robust understanding of logit model 
@@ -104,10 +116,16 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/nm1.gif", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/nm1.gif",
+                        height="100%",
+                        width="100%",
+                        max_width="25em",
+                        max_height="25em",
+                    ),
                     rx.markdown(
                         open("assets/text/articles/nm1.md", encoding="utf-8").read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Learn how to solve and utilize Newton's Method
@@ -126,10 +144,16 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/nm2.jpeg", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/nm2.jpeg",
+                        height="100%",
+                        width="100%",
+                        max_width="25em",
+                        max_height="25em",
+                    ),
                     rx.markdown(
                         open("assets/text/articles/nm2.md", encoding="utf-8").read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Learn how to extend Newton's Method to 
@@ -148,10 +172,16 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/nm3.jpeg", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/nm3.jpeg",
+                        height="100%",
+                        width="100%",
+                        max_width="25em",
+                        max_height="25em",
+                    ),
                     rx.markdown(
                         open("assets/text/articles/nm3.md", encoding="utf-8").read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Learn how to apply optimization & econometric techniques to 
@@ -170,10 +200,16 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/tsne.png", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/tsne.png",
+                        height="100%",
+                        width="100%",
+                        max_width="25em",
+                        max_height="25em",
+                    ),
                     rx.markdown(
                         open("assets/text/articles/tsne.md", encoding="utf-8").read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Acquire a deep understanding of the inner workings of t-SNE
@@ -192,10 +228,16 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/dml1.png", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/dml1.png",
+                        height="100%",
+                        width="100%",
+                        max_width="25em",
+                        max_height="25em",
+                    ),
                     rx.markdown(
                         open("assets/text/articles/dml1.md", encoding="utf-8").read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Learn how to utilize DML in causal inference tasks </center>"""
@@ -213,10 +255,16 @@ def body():
         rx.box(
             rx.center(
                 rx.vstack(
-                    rx.image(src="/articles/dml2.png", height="25em", width="25em"),
+                    rx.image(
+                        src="/articles/dml2.png",
+                        height="100%",
+                        width="100%",
+                        max_width="25em",
+                        max_height="25em",
+                    ),
                     rx.markdown(
                         open("assets/text/articles/dml2.md", encoding="utf-8").read(),
-                        component_map=articles_page["markdown_style_block"],
+                        component_map=ARTICLES_PAGE["markdown_style_block"],
                     ),
                     rx.markdown(
                         """<center> Learn how to utilize DML for estimating individual
@@ -232,7 +280,7 @@ def body():
     )
 
     intro = rx.box(
-        container(**articles_page["body_container_style"]),
+        container(**ARTICLES_PAGE["body_container_style"]),
         rx.hstack(
             dml2,
             dml1,
@@ -280,11 +328,13 @@ def articles() -> rx.Component:
         The UI for the articles page.
     """
     return rx.vstack(
-        intro(),
+        header(),
         rx.divider(width="80vh"),
         body(),
-        rx.box(rx.center(spline_component_404()), padding_bottom="5em"),
+        rx.center(spline_component_404()),
         position="relative",
         min_height="80vh",
         width="100%",
+        max_width="100%",
+        overflow_x="hidden",
     )

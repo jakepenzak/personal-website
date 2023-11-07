@@ -29,6 +29,8 @@ def _404():
         position="relative",
         min_height="80vh",
         width="100%",
+        max_width="100%",
+        overflow_x="hidden",
     )
 
 
