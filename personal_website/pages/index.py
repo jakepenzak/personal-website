@@ -2,7 +2,7 @@
 
 from personal_website import styles
 from personal_website.templates import template
-from personal_website.components.spline import spline_component
+from personal_website.components.spline import spline_component_index_page
 
 import reflex as rx
 
@@ -31,7 +31,7 @@ def header():
                     color=["#522181"],
                 )
             ),
-            spline_component(),
+            spline_component_index_page(),
         ),
         **styles.header_container_style,
     )
@@ -41,7 +41,6 @@ def header():
 def intro():
     """The introduction section of the home page."""
 
-    ## Body
     welcome = rx.heading(
         """
         Welcome!
@@ -51,7 +50,7 @@ def intro():
         text_align="center",
     )
 
-    with open("assets/intro.md", encoding="utf-8") as intro:
+    with open("assets/text/index_intro.md", encoding="utf-8") as intro:
         content = intro.read()
 
     markdown_content = rx.box(
@@ -67,8 +66,7 @@ def intro():
         rx.hstack(
             rx.image(src="/self.jpg", height="35em", width="30em", padding_left="5em"),
             rx.vstack(welcome, markdown_content),
-            padding_x="5em",
-            padding_bottom="5em",
+            padding_x="5em"
         ),
         width="100%",
     )

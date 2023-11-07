@@ -1,6 +1,6 @@
 import reflex as rx
 from personal_website import constants, styles
-from personal_website.components.logo import inverted_logo
+from personal_website.components.logo import footer_logo
 from personal_website.pages.index import index
 from personal_website import styles
 
@@ -33,7 +33,7 @@ def footer():
                     style=styles.footer_item_style,
                 ),
             ),
-            inverted_logo(**styles.footer_logo_style),
+            footer_logo(**styles.footer_logo_style),
             justify="space-between",
             color="#94a3b8",
             align_items="top",

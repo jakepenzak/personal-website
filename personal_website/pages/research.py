@@ -1,6 +1,7 @@
 """The research page."""
 
 from personal_website.templates import template
+from personal_website.components.spline import spline_component_404
 
 import reflex as rx
 
@@ -19,4 +20,8 @@ def research() -> rx.Component:
             "You can edit this page in ",
             rx.code("{your_app}/pages/research.py"),
         ),
+        rx.center(spline_component_404()),
+        position="relative", 
+        min_height="80vh",
+        width="100%"
     )

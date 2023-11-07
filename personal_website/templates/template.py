@@ -68,9 +68,6 @@ def template(
                 navbar(),
                 page_content(),
                 footer()
-                # align_items="flex-start",
-                # transition="left 0.5s, width 0.5s",
-                # position="relative"
             )
 
         return templated_page

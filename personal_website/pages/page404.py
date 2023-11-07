@@ -5,7 +5,7 @@ from personal_website import styles
 from personal_website.base_state import State
 from personal_website.components.footer import footer
 from personal_website.components.navbar import navbar
-
+from personal_website.components.spline import spline_component_404
 
 class State404(State):
     @rx.var
@@ -18,13 +18,15 @@ def _404():
         rx.vstack(
             rx.heading(rx.constants.Page404.TITLE),
             rx.text(
-                "Oups, the page at ",
+                "Oops, the page at ",
                 rx.code(State404.origin_url),
                 " doesn't exist.",
             ),
-            rx.spacer(),
+            rx.spacer(height="2em"),
+            spline_component_404(),
         ),
-        height="80vh",
+        position="relative", 
+        min_height="80vh",
         width="100%",
     )
 
@@ -34,6 +36,7 @@ def index():
     return rx.box(
         navbar(),
         _404(),
+        rx.spacer(),
         footer(),
-        width="100%",
+        width="100%"
     )

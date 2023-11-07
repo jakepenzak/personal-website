@@ -2,7 +2,7 @@
 
 import reflex as rx
 
-INVERTED_LOGO_URL = "/icon-inverted.png"
+FOOTER_LOGO = "/icon-inverted.png"
 NAVBAR_LOGO = "/icon.png"
 
 border_radius = "0.375rem"
@@ -48,24 +48,23 @@ base_style = {
     "font_family": "Hack",
 }
 
-markdown_style = {
-    "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
-    "a": lambda text, **props: rx.link(
-        text,
-        **props,
-        # font_weight="bold",
-        # font_family="HackBold",
-        color="#03030B",
-        text_decoration="underline",
-        # text_decoration_color="#522181",
-        _hover={
-            "color": "#522181",
-            "text_decoration": "underline",
-            "text_decoration_color": "#522181",
-        },
-    ),
-}
-
+markdown_style={
+        "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
+        "a": lambda text, **props: rx.link(
+            text,
+            **props,
+            # font_weight="bold",
+            # font_family="HackBold",
+            color="#03030B",
+            text_decoration="underline",
+            # text_decoration_color="#522181",
+            _hover={
+                "color": "#522181",
+                "text_decoration": "underline",
+                "text_decoration_color": "#522181",
+            },
+        ),
+    }
 
 # NAVIGATION BAR
 navbar_style = {
@@ -75,6 +74,7 @@ navbar_style = {
     "padding_y": "1em",
     "border_bottom": "2px solid #F4F3F6",
     "width": "100%",
+    "min_height":"10vh",
 }
 
 navbar_logo_style = {
@@ -112,7 +112,10 @@ footer_style = {
     "padding_top": "1em",
     "padding_bottom": "1em",
     "padding_x": "3em",
-    "bg":"#110F1F"
+    "bg":"#110F1F",
+    "postion":"absolute",
+    "bottom":"0",
+    "min_height":"10vh",
 }
 
 footer_item_style = {
@@ -139,4 +142,79 @@ index_page_style = {
     "padding_top": "2.5em",
     "padding_bottom": "3.5em",
     "padding_x": [["auto", "2em"]],
+    "position":"relative", 
+    "min_height":"80vh",
 }
+
+
+# ARTICLES PAGE
+articles_page = {
+    "intro_container_style" : 
+    {
+    "padding_top": "1em",
+    "padding_bottom": "1em",
+    "width": "100%"
+    },
+
+    "markdown_style_intro":
+    {
+        "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
+        "a": lambda text, **props: rx.link(
+            text,
+            **props,
+            # font_weight="bold",
+            # font_family="HackBold",
+            color="#03030B",
+            text_decoration="underline",
+            # text_decoration_color="#522181",
+            _hover={
+                "color": "#522181",
+                "text_decoration": "underline",
+                "text_decoration_color": "#522181",
+            },
+        ),
+    },
+
+    "body_container_style":{
+    "padding_top": "3em",   
+    "padding_x":"3em",
+    "width":"100%"
+    },
+
+    "markdown_style_block":
+    {
+        "p": lambda text: rx.text(text, color="#522181", font_family="HackBold")
+    },
+    # index_page_style: {
+    #     "padding_top": "2.5em",
+    #     "padding_bottom": "3.5em",
+    #     "padding_x": [["auto", "2em"]],
+    #     "position":"relative", 
+    #     "min_height":"80vh",
+    # }
+} 
+
+# RESUME PAGE
+
+resume_page = {
+    "header_container_style" : 
+    {
+    "padding_top": "1em",
+    "padding_bottom": "1em",
+    "width": "100%"
+    },
+
+    "body_container_style":{
+    "padding_x":"3em",
+    "width":"100%"
+    },
+
+    # index_page_style: {
+    #     "padding_top": "2.5em",
+    #     "padding_bottom": "3.5em",
+    #     "padding_x": [["auto", "2em"]],
+    #     "position":"relative", 
+    #     "min_height":"80vh",
+    # }
+
+} 

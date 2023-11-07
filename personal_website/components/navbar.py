@@ -93,5 +93,5 @@ def menu_button() -> rx.Component:
                 ],
             ),
         ),
-        display=["flex", "flex", "flex", "none", "none", "none"],
+        display=["flex", "flex", "flex", "flex", "none", "none"],
     )
