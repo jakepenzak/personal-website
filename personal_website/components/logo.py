@@ -26,8 +26,10 @@ def footer_logo(**style_props):
     Args:
         style_props: The style properties to apply to the component.
     """
-    return rx.link(rx.image(
-        src=styles.FOOTER_LOGO,
-        **style_props,
-    ), href="/",
+    return rx.link(
+        rx.image(
+            src=styles.FOOTER_LOGO,
+            **style_props,
+        ),
+        href="/",
     )

@@ -13,6 +13,7 @@ def container(*children, **kwargs):
         **kwargs,
     )
 
+
 ## Resume Page Heading
 def heading():
     """The heading section of the resume page."""
@@ -25,28 +26,37 @@ def heading():
         font_family="HackBold",
         text_align="center",
         color=["#522181"],
-        padding_bottom="0.5em"
+        padding_bottom="0.5em",
     )
 
-    header = rx.box(
-        container(**resume_page['header_container_style']),
-            heading
-            )
-    
+    header = rx.box(container(**resume_page["header_container_style"]), heading)
+
     return header
+
 
 ## Resume Body
 def body():
     """The body section of the resume page."""
 
-    # Resume 
-    # resume = rx.link(
-    resume=rx.image(src="/documents/resume.png") 
+    # Resume
+    resume = rx.link(
+        rx.center(
+            rx.image(
+                src="/documents/resume.png",
+                width="100%",
+                height="100%",
+                border_radius="15px 50px",
+                border="3px solid #555",
+            )
+        ),
+        href="/documents/resume.pdf",
+        is_external=True,
+        padding_top="0.5em",
+        padding_bottom="2em",
+    )
 
-                    # href="/assets/documents/Resume-JacobPieniazek.pdf"
-                    # )
-    
     return resume
+
 
 @template(route="/resume", title="Professional Resume")
 def resume() -> rx.Component:
@@ -59,8 +69,7 @@ def resume() -> rx.Component:
         heading(),
         rx.divider(width="80vh"),
         body(),
-        rx.box(rx.center(spline_component_404()), padding_bottom="5em"),
-        position="relative", 
+        position="relative",
         min_height="80vh",
-        width="100%"
+        width="100%",
     )

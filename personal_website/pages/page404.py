@@ -7,6 +7,7 @@ from personal_website.components.footer import footer
 from personal_website.components.navbar import navbar
 from personal_website.components.spline import spline_component_404
 
+
 class State404(State):
     @rx.var
     def origin_url(self) -> str:
@@ -25,7 +26,7 @@ def _404():
             rx.spacer(height="2em"),
             spline_component_404(),
         ),
-        position="relative", 
+        position="relative",
         min_height="80vh",
         width="100%",
     )
@@ -33,10 +34,4 @@ def _404():
 
 def index():
     # Wrap the component in the template.
-    return rx.box(
-        navbar(),
-        _404(),
-        rx.spacer(),
-        footer(),
-        width="100%"
-    )
+    return rx.box(navbar(), _404(), rx.spacer(), footer(), width="100%")

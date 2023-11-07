@@ -64,11 +64,7 @@ def template(
             from personal_website.components.navbar import navbar
             from personal_website.components.footer import footer
 
-            return rx.box(
-                navbar(),
-                page_content(),
-                footer()
-            )
+            return rx.box(navbar(), page_content(), footer())
 
         return templated_page
 

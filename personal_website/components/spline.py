@@ -13,7 +13,10 @@ class Spline_Index(rx.Component):
 
     lib_dependencies: list[str] = ["@splinetool/runtime"]
 
+
 spline_index = Spline_Index.create
+
+
 def spline_component_index_page():
     return rx.center(
         rx.center(
@@ -24,6 +27,7 @@ def spline_component_index_page():
         width="100%",
         display=["none", "none", "none", "none", "flex", "flex"],
     )
+
 
 # 404 Page
 class Spline_404(rx.Component):
@@ -36,7 +40,10 @@ class Spline_404(rx.Component):
 
     lib_dependencies: list[str] = ["@splinetool/runtime"]
 
+
 spline_404 = Spline_404.create
+
+
 def spline_component_404():
     return rx.center(
         rx.center(

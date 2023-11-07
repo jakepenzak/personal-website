@@ -1,6 +1,7 @@
 import reflex as rx
 from reflex.vars import Var
 
+
 # 404 Page
 class Spline(rx.Component):
     """Spline component."""
@@ -11,6 +12,7 @@ class Spline(rx.Component):
     is_default = True
 
     lib_dependencies: list[str] = ["@splinetool/runtime"]
+
 
 def spline_component_404():
     return rx.center(

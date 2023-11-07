@@ -17,52 +17,66 @@ def navbar(sidebar: rx.Component = None) -> rx.Component:
     # Create the navbar component.
     return rx.vstack(
         rx.box(
-        rx.hstack(
-            logo,
-            rx.spacer(),
-            rx.link("Articles", href="/articles", display=["none", "none", "none", "none", "flex", "flex"], **styles.navbar_button_style),
-            rx.link(
-                "Professional Resume", href="/resume", display=["none", "none", "none", "none", "flex", "flex"], **styles.navbar_button_style
-            ),
-            rx.link("Research", href="/research", display=["none", "none", "none", "none", "flex", "flex"], **styles.navbar_button_style, ),
-            rx.menu(
-                rx.menu_button(
-                    rx.hstack(
-                        rx.text("Projects", **styles.navbar_menu_button_style),
-                        rx.icon(
-                            tag="chevron_down",
-                            **styles.navbar_menu_chevron_style
+            rx.hstack(
+                logo,
+                rx.spacer(),
+                rx.link(
+                    "Articles",
+                    href="/articles",
+                    display=["none", "none", "none", "none", "flex", "flex"],
+                    **styles.navbar_button_style,
+                ),
+                rx.link(
+                    "Professional Resume",
+                    href="/resume",
+                    display=["none", "none", "none", "none", "flex", "flex"],
+                    **styles.navbar_button_style,
+                ),
+                rx.link(
+                    "Research",
+                    href="/research",
+                    display=["none", "none", "none", "none", "flex", "flex"],
+                    **styles.navbar_button_style,
+                ),
+                rx.menu(
+                    rx.menu_button(
+                        rx.hstack(
+                            rx.text("Projects", **styles.navbar_menu_button_style),
+                            rx.icon(
+                                tag="chevron_down", **styles.navbar_menu_chevron_style
+                            ),
+                        ),
+                        display=["none", "none", "none", "none", "flex", "flex"],
+                        width="8em",
+                        border="none",
+                        _hover={"text_decoration": "underline"},
+                    ),
+                    rx.menu_list(
+                        rx.link(
+                            rx.menu_item("About", **styles.navbar_dropdown_style),
+                            href="/projects",
+                        ),
+                        rx.menu_divider(),
+                        rx.link(
+                            rx.menu_item("Forthcoming", **styles.navbar_dropdown_style),
+                            href="/projects",
                         ),
                     ),
-                    display=["none", "none", "none", "none", "flex", "flex"],
-                    width="8em",
-                    border="none",
-                     _hover={"text_decoration": "underline"}
                 ),
-                rx.menu_list(
-                    rx.link(
-                        rx.menu_item("About", **styles.navbar_dropdown_style),
-                        href="/projects",
-                    ),
-                    rx.menu_divider(),
-                    rx.link(
-                        rx.menu_item("Forthcoming", **styles.navbar_dropdown_style),
-                        href="/projects",
-                    ),
-                ),
+                menu_button(),
             ),
-            menu_button(),
+            **styles.navbar_style,
         ),
-        **styles.navbar_style
-    ),
-    position="sticky",
-    top="0",
-    z_index="999",
+        position="sticky",
+        top="0",
+        z_index="999",
     )
 
 
 ## For mobile & when screen is small
-pages = ['Articles', 'Resume', 'Research', 'Projects']
+pages = ["Articles", "Resume", "Research", "Projects"]
+
+
 def menu_button() -> rx.Component:
     """The menu button on the top right of the page.
 

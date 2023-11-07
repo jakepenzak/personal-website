@@ -66,7 +66,7 @@ def intro():
         rx.hstack(
             rx.image(src="/self.jpg", height="35em", width="30em", padding_left="5em"),
             rx.vstack(welcome, markdown_content),
-            padding_x="5em"
+            padding_x="5em",
         ),
         width="100%",
     )

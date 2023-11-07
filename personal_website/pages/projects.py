@@ -21,7 +21,7 @@ def projects() -> rx.Component:
             rx.code("{your_app}/pages/projects.py"),
         ),
         rx.center(spline_component_404()),
-        position="relative", 
+        position="relative",
         min_height="80vh",
-        width="100%"
+        width="100%",
     )
