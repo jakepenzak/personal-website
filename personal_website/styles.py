@@ -13,14 +13,13 @@ hover_accent_bg = {"_hover": {"bg": accent_color}}
 content_width_vw = "90vw"
 sidebar_width = "20em"
 
-template_page_style = {"padding_top": "5em", "padding_x": ["auto", "2em"]}
 
 template_content_style = {
     "width": "100%",
     "align_items": "flex-start",
     "box_shadow": box_shadow,
     "border_radius": border_radius,
-    "padding": "1em",
+    "padding": "3em",
     "margin_bottom": "2em",
 }
 
@@ -43,6 +42,7 @@ base_style = {
         **overlapping_button_style,
     },
     rx.MenuItem: hover_accent_bg,
+    "font_family": "Hack",
 }
 
 markdown_style = {
@@ -50,14 +50,174 @@ markdown_style = {
     "a": lambda text, **props: rx.link(
         text,
         **props,
-        font_weight="bold",
+        # font_weight="bold",
+        # font_family="HackBold",
         color="#03030B",
         text_decoration="underline",
-        text_decoration_color="#AD9BF8",
+        # text_decoration_color="#522181",
         _hover={
-            "color": "#AD9BF8",
+            "color": "#522181",
             "text_decoration": "underline",
-            "text_decoration_color": "#03030B",
+            "text_decoration_color": "#522181",
         },
     ),
+}
+
+# COMMON STYLES
+
+# NAVIGATION BAR
+NAVBAR_LOGO = "/icon.png"
+
+navbar_style = {
+    "bg": "rgba(255,255,255, 0.9)",
+    "backdrop_filter": "blur(10px)",
+    "padding_x": "1.5em",
+    "padding_y": "1em",
+    "border_bottom": "2px solid #F4F3F6",
+    "width": "100%",
+    "min_height": "10vh",
+}
+
+navbar_logo_style = {
+    "height": "4em",
+}
+
+navbar_button_style = {"color": text_color, "font_size": "1.1em", "padding_x": "0.75em"}
+navbar_menu_button_style = {
+    "color": text_color,
+    "font_size": "1.1em",
+    "padding_left": "0.75em",
+    "_hover": {
+        "text_decoration": "underline",
+        "text_decoration_color": "#522181",
+    },
+}
+navbar_menu_chevron_style = {"color": text_color, "font_size": "1.1em"}
+
+navbar_dropdown_style = {
+    "_hover": {"color": "#522181", "bg": "#DFDBFA"},
+}
+
+# FOOTER
+
+FOOTER_LOGO = "/icon-inverted.png"
+
+footer_logo_style = {
+    "height": "4em",
+}
+
+footer_style = {
+    "box_shadow": "medium-lg",
+    "border_top": "0.1em solid #F4F3F6",
+    "vertical_align": "bottom",
+    "padding_top": "1em",
+    "padding_bottom": "1em",
+    "padding_x": "3em",
+    "bg": "#110F1F",
+    "postion": "absolute",
+    "bottom": "0",
+    "min_height": "10vh",
+}
+
+footer_item_style = {
+    "font_weight": "500",
+    "_hover": {"color": "#8451EC"},
+}
+
+
+#  INDEX PAGE
+header_container_style = {
+    "padding_top": "2em",
+    "padding_bottom": "6em",
+    "width": "100%",
+}
+
+intro_container_style = {
+    # "height": "12em",
+    "width": "100%",
+    "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",  #
+    "opacity": "0.4;",
+    "transform": "matrix(1, 0, 0, -1, 0, 0);",
+    "padding_x": "3em",
+    "padding_y": "3em",
+}
+
+index_page_style = {
+    "padding_top": "2.5em",
+    "padding_bottom": "3.5em",
+    "padding_x": [["auto", "2em"]],
+    "position": "relative",
+    "min_height": "80vh",
+}
+
+
+# ARTICLES PAGE
+ARTICLES_PAGE = {
+    "header_container_style": {
+        "padding_top": "1em",
+        "padding_bottom": "1em",
+        "width": "100%",
+    },
+    "markdown_style_intro": {
+        "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
+        "a": lambda text, **props: rx.link(
+            text,
+            **props,
+            # font_weight="bold",
+            # font_family="HackBold",
+            color="#03030B",
+            text_decoration="underline",
+            # text_decoration_color="#522181",
+            _hover={
+                "color": "#522181",
+                "text_decoration": "underline",
+                "text_decoration_color": "#522181",
+            },
+        ),
+    },
+    "body_container_style": {"padding_top": "3em", "padding_x": "3em", "width": "100%"},
+    "markdown_style_block": {
+        "p": lambda text: rx.text(text, color="#522181", font_family="HackBold")
+    },
+    "spline_container_style": {
+        "padding_bottom": "5em",
+        "padding_x": "3em",
+        "width": "100%",
+    },
+}
+
+# RESUME PAGE
+RESUME_PAGE = {
+    "header_container_style": {
+        "padding_top": "1em",
+        "padding_bottom": "1em",
+        "width": "100%",
+    },
+    "body_container_style": {"padding_x": "3em", "width": "100%"},
+}
+
+# RESEARCH PAGE
+RESEARCH_PAGE = {
+    "header_container_style": {
+        "padding_top": "1em",
+        "padding_bottom": "1em",
+        "width": "100%",
+    },
+    "body_container_style": {
+        "width": "100%",
+        "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",  #
+        "opacity": "0.4;",
+        "transform": "matrix(1, 0, 0, -1, 0, 0);",
+        "padding_x": "2em",
+        "padding_y": "2em",
+    },
+}
+
+# PROJECTS PAGE
+PROJECTS_PAGE = {
+    "header_container_style": {
+        "padding_top": "1em",
+        "padding_bottom": "1em",
+        "width": "100%",
+    }
 }

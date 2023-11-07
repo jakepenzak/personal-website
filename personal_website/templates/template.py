@@ -3,63 +3,16 @@
 from __future__ import annotations
 
 from personal_website import styles
-from personal_website.components.sidebar import sidebar
-# from personal_website.components.navbar import navbar
 from typing import Callable
-
 import reflex as rx
 
 # Meta tags for the app.
 default_meta = [
     {
         "name": "viewport",
-        "content": "width=device-width, shrink-to-fit=no, initial-scale=1",
+        "content": "width=device-width, shrink-to-fit=yes, initial-scale=1",
     },
 ]
-
-
-def menu_button() -> rx.Component:
-    """The menu button on the top right of the page.
-
-    Returns:
-        The menu button component.
-    """
-    from reflex.page import get_decorated_pages
-
-    return rx.box(
-        rx.menu(
-            rx.menu_button(
-                rx.icon(
-                    tag="hamburger",
-                    size="4em",
-                    color=styles.text_color,
-                ),
-            ),
-            rx.menu_list(
-                *[
-                    rx.menu_item(
-                        rx.link(
-                            page["title"],
-                            href=page["route"],
-                            width="100%",
-                        )
-                    )
-                    for page in get_decorated_pages()
-                ],
-                rx.menu_divider(),
-                rx.menu_item(
-                    rx.link("About", href="https://github.com/reflex-dev", width="100%")
-                ),
-                rx.menu_item(
-                    rx.link("Contact", href="mailto:founders@=reflex.dev", width="100%")
-                ),
-            ),
-        ),
-        position="fixed",
-        right="1.5em",
-        top="1.5em",
-        z_index="500",
-    )
 
 
 def template(
@@ -108,22 +61,10 @@ def template(
             on_load=on_load,
         )
         def templated_page():
-            return rx.hstack(
-                sidebar(),
-                # navbar(),
-                rx.box(
-                    rx.box(
-                        page_content(),
-                        **styles.template_content_style,
-                    ),
-                    **styles.template_page_style,
-                ),
-                rx.spacer(),
-                menu_button(),
-                align_items="flex-start",
-                transition="left 0.5s, width 0.5s",
-                position="relative",
-            )
+            from personal_website.components.navbar import navbar
+            from personal_website.components.footer import footer
+
+            return rx.box(navbar(), page_content(), footer())
 
         return templated_page
 
