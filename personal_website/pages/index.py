@@ -41,7 +41,7 @@ def header():
                     Jacob \n
                     Pieniazek
                     """,
-                font_size="2.75em",
+                font_size="4em",
                 font_family="HackBold",
                 color=["#522181"],
                 text_align="center",
@@ -93,10 +93,22 @@ def intro():
                 display=["none", "none", "none", "flex", "flex", "none"],
             ),
             rx.vstack(
+                rx.image(src="/self.jpg", height="50%", width="50%"),
+                rx.vstack(welcome, markdown_content),
+                padding_x="3em",
+                display=["none", "none", "flex", "none", "none", "none"],
+            ),
+            rx.vstack(
+                rx.image(src="/self.jpg", height="75%", width="75%"),
+                rx.vstack(welcome, markdown_content),
+                padding_x="3em",
+                display=["none", "flex", "none", "none", "none", "none"],
+            ),
+            rx.vstack(
                 rx.image(src="/self.jpg", height="flex", width="flex"),
                 rx.vstack(welcome, markdown_content),
                 padding_x="3em",
-                display=["flex", "flex", "flex", "none", "none", "none"],
+                display=["flex", "none", "none", "none", "none", "none"],
             ),
         ),
     )
@@ -112,4 +124,4 @@ def index() -> rx.Component:
         The UI for the home page.
     """
 
-    return rx.box(header(), intro(), width="100%", **styles.index_page_style)
+    return rx.box(header(), intro(), width="100%", max_width="100%", overflow_x="hidden", **styles.index_page_style)

@@ -112,7 +112,7 @@ footer_style = {
     "vertical_align": "bottom",
     "padding_top": "1em",
     "padding_bottom": "1em",
-    "padding_x": "3em",
+    "padding_x": "1.5em",
     "bg": "#110F1F",
     "postion": "absolute",
     "bottom": "0",
