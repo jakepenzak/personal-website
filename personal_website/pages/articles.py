@@ -310,7 +310,7 @@ def body():
             tsne,
             display=["none", "none", "none", "none", "flex", "flex"],
             padding_bottom="5em",
-            padding_x="5em"
+            padding_x="5em",
         ),
         rx.hstack(
             nm3,
@@ -318,7 +318,7 @@ def body():
             nm1,
             display=["none", "none", "none", "none", "flex", "flex"],
             padding_bottom="5em",
-            padding_x="5em"
+            padding_x="5em",
         ),
         rx.center(
             rx.hstack(
@@ -326,7 +326,7 @@ def body():
                 fwl,
                 display=["none", "none", "none", "none", "flex", "flex"],
                 padding_bottom="5em",
-                padding_x="5em"
+                padding_x="5em",
             )
         ),
         rx.vstack(
@@ -339,7 +339,7 @@ def body():
             logistic,
             fwl,
             display=["flex", "flex", "flex", "flex", "none", "none"],
-            padding_x="1em"
+            padding_x="1em",
         ),
     )
 

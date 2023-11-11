@@ -124,4 +124,11 @@ def index() -> rx.Component:
         The UI for the home page.
     """
 
-    return rx.box(header(), intro(), width="100%", max_width="100%", overflow_x="hidden", **styles.index_page_style)
+    return rx.box(
+        header(),
+        intro(),
+        width="100%",
+        max_width="100%",
+        overflow_x="hidden",
+        **styles.index_page_style,
+    )
