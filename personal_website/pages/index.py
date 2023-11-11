@@ -41,7 +41,7 @@ def header():
                     Jacob \n
                     Pieniazek
                     """,
-                font_size="6em",
+                font_size="2.75em",
                 font_family="HackBold",
                 color=["#522181"],
                 text_align="center",
@@ -93,9 +93,9 @@ def intro():
                 display=["none", "none", "none", "flex", "flex", "none"],
             ),
             rx.vstack(
-                rx.image(src="/self.jpg", height="75%", width="75%"),
+                rx.image(src="/self.jpg", height="flex", width="flex"),
                 rx.vstack(welcome, markdown_content),
-                padding_x="5em",
+                padding_x="3em",
                 display=["flex", "flex", "flex", "none", "none", "none"],
             ),
         ),
