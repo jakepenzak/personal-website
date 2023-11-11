@@ -38,8 +38,7 @@ def header():
     )
 
     header = rx.box(
-        container(**PROJECTS_PAGE["header_container_style"]),
-        heading, heading_mobile
+        container(**PROJECTS_PAGE["header_container_style"]), heading, heading_mobile
     )
 
     return header
@@ -57,13 +56,18 @@ def projects() -> rx.Component:
         rx.divider(width="80vh"),
         rx.text(
             "Under construction...",
-            font_size="3em",
+            font_size="flex",
             padding_y="2em",
             font_family="Hack",
             text_align="center",
+            width="100%",
         ),
-        rx.desktop_only(rx.box(rx.center(spline_component_404()), padding_bottom="5em")),
+        rx.desktop_only(
+            rx.box(rx.center(spline_component_404()), padding_bottom="5em")
+        ),
         position="relative",
         min_height="80vh",
         width="100%",
+        max_width="100%",
+        overflow_x="hidden",
     )
