@@ -28,9 +28,22 @@ def heading():
         text_align="center",
         color=["#522181"],
         padding_bottom="0.5em",
+        display=["none", "none", "flex", "flex", "flex", "flex"],
     )
 
-    header = rx.box(container(**RESEARCH_PAGE["header_container_style"]), heading)
+    heading_mobile = rx.heading(
+        """
+        Research
+        """,
+        font_size="2.75em",
+        font_family="HackBold",
+        text_align="center",
+        color=["#522181"],
+        padding_bottom="0.5em",
+        display=["flex", "flex", "none", "none", "none", "none"],
+    )
+
+    header = rx.box(container(**RESEARCH_PAGE["header_container_style"]), heading, heading_mobile)
 
     return header
 
@@ -74,9 +87,9 @@ def research() -> rx.Component:
         heading(),
         rx.divider(width="80vh"),
         body(),
-        rx.box(
+        rx.desktop_only(rx.box(
             rx.center(spline_component_404()), padding_bottom="5em", padding_top="5em"
-        ),
+        )),
         position="relative",
         min_height="80vh",
         width="100%",

@@ -27,9 +27,22 @@ def heading():
         text_align="center",
         color=["#522181"],
         padding_bottom="0.5em",
+        display=["none", "none", "flex", "flex", "flex", "flex"],
     )
 
-    header = rx.box(container(**RESUME_PAGE["header_container_style"]), heading)
+    heading_mobile = rx.heading(
+        """
+        Professional Resume
+        """,
+        font_size="2.75em",
+        font_family="HackBold",
+        text_align="center",
+        color=["#522181"],
+        padding_bottom="0.5em",
+        display=["flex", "flex", "none", "none", "none", "none"],
+    )
+
+    header = rx.box(container(**RESUME_PAGE["header_container_style"]), heading, heading_mobile)
 
     return header
 

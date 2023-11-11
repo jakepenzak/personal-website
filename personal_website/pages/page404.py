@@ -24,7 +24,7 @@ def _404():
                 " doesn't exist.",
             ),
             rx.spacer(height="2em"),
-            spline_component_404(),
+            rx.desktop_only(spline_component_404()),
         ),
         position="relative",
         min_height="80vh",

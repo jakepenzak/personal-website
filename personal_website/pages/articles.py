@@ -28,6 +28,19 @@ def header():
         text_align="center",
         color=["#522181"],
         padding_bottom="0.5em",
+        display=["none", "none", "flex", "flex", "flex", "flex"],
+    )
+
+    heading_mobile = rx.heading(
+        """
+        Articles
+        """,
+        font_size="2.75em",
+        font_family="HackBold",
+        text_align="center",
+        color=["#522181"],
+        padding_bottom="0.5em",
+        display=["flex", "flex", "none", "none", "none", "none"],
     )
 
     with open("assets/text/articles_intro.md", encoding="utf-8") as intro:
@@ -43,7 +56,7 @@ def header():
 
     intro = rx.box(
         container(**ARTICLES_PAGE["header_container_style"]),
-        rx.vstack(heading, markdown_content),
+        rx.vstack(heading, heading_mobile, markdown_content),
     )
 
     return intro
@@ -331,7 +344,7 @@ def articles() -> rx.Component:
         header(),
         rx.divider(width="80vh"),
         body(),
-        rx.center(spline_component_404()),
+        rx.desktop_only(rx.center(spline_component_404())),
         position="relative",
         min_height="80vh",
         width="100%",
