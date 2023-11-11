@@ -43,7 +43,9 @@ def heading():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    header = rx.box(container(**RESEARCH_PAGE["header_container_style"]), heading, heading_mobile)
+    header = rx.box(
+        container(**RESEARCH_PAGE["header_container_style"]), heading, heading_mobile
+    )
 
     return header
 
@@ -87,9 +89,13 @@ def research() -> rx.Component:
         heading(),
         rx.divider(width="80vh"),
         body(),
-        rx.desktop_only(rx.box(
-            rx.center(spline_component_404()), padding_bottom="5em", padding_top="5em"
-        )),
+        rx.desktop_only(
+            rx.box(
+                rx.center(spline_component_404()),
+                padding_bottom="5em",
+                padding_top="5em",
+            )
+        ),
         position="relative",
         min_height="80vh",
         width="100%",

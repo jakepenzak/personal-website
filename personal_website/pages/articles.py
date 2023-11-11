@@ -52,11 +52,21 @@ def header():
         ),
         width="100%",
         padding_x="12em",
+        display=["none", "none", "flex", "flex", "flex", "flex"],
+    )
+
+    markdown_content_mobile = rx.box(
+        rx.vstack(
+            rx.markdown(content, component_map=ARTICLES_PAGE["markdown_style_intro"]),
+        ),
+        width="100%",
+        padding_x="6em",
+        display=["flex", "flex", "none", "none", "none", "none"],
     )
 
     intro = rx.box(
         container(**ARTICLES_PAGE["header_container_style"]),
-        rx.vstack(heading, heading_mobile, markdown_content),
+        rx.vstack(heading, heading_mobile, markdown_content, markdown_content_mobile),
     )
 
     return intro
@@ -300,6 +310,7 @@ def body():
             tsne,
             display=["none", "none", "none", "none", "flex", "flex"],
             padding_bottom="5em",
+            padding_x="5em",
         ),
         rx.hstack(
             nm3,
@@ -307,6 +318,7 @@ def body():
             nm1,
             display=["none", "none", "none", "none", "flex", "flex"],
             padding_bottom="5em",
+            padding_x="5em",
         ),
         rx.center(
             rx.hstack(
@@ -314,6 +326,7 @@ def body():
                 fwl,
                 display=["none", "none", "none", "none", "flex", "flex"],
                 padding_bottom="5em",
+                padding_x="5em",
             )
         ),
         rx.vstack(
@@ -326,8 +339,8 @@ def body():
             logistic,
             fwl,
             display=["flex", "flex", "flex", "flex", "none", "none"],
+            padding_x="1em",
         ),
-        padding_x="5em",
     )
 
     return intro

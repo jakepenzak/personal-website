@@ -42,7 +42,9 @@ def heading():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    header = rx.box(container(**RESUME_PAGE["header_container_style"]), heading, heading_mobile)
+    header = rx.box(
+        container(**RESUME_PAGE["header_container_style"]), heading, heading_mobile
+    )
 
     return header
 
@@ -87,4 +89,6 @@ def resume() -> rx.Component:
         position="relative",
         min_height="80vh",
         width="100%",
+        max_width="100%",
+        overflow_x="hidden",
     )
