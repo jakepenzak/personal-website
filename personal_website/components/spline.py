@@ -35,7 +35,7 @@ class Spline_404(rx.Component):
 
     library = "@splinetool/react-spline"
     tag = "Spline"
-    scene: Var[str] = "https://prod.spline.design/1aLRYs1ebANWox51/scene.splinecode"
+    scene: Var[str] = "https://prod.spline.design/1zeYtIIZLXd6fI8D/scene.splinecode"
     is_default = True
     lib_dependencies: list[str] = ["@splinetool/runtime"]
 
