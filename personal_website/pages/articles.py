@@ -184,7 +184,7 @@ def body():
                     ),
                 )
             ),
-            padding_x="3em",
+            # padding_x="3em", MIDDLE COLUMN
             padding_bottom="3em",
         ),
         href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-2-constrained-optimization-theory-dc18613c5770",
@@ -267,7 +267,7 @@ def body():
                     ),
                 )
             ),
-            padding_x="3em",
+            # padding_x="3em", MIDDLE COLUMN
             padding_bottom="3em",
         ),
         href="https://towardsdatascience.com/double-machine-learning-simplified-part-1-basic-causal-inference-applications-3f7afc9852ee",
@@ -310,7 +310,7 @@ def body():
             tsne,
             display=["none", "none", "none", "none", "flex", "flex"],
             padding_bottom="5em",
-            padding_x="5em",
+            padding_x="5em", 
         ),
         rx.hstack(
             nm3,
@@ -325,8 +325,8 @@ def body():
                 logistic,
                 fwl,
                 display=["none", "none", "none", "none", "flex", "flex"],
-                padding_bottom="5em",
-                padding_x="5em",
+                # padding_bottom="5em",
+                padding_x="10em",
             )
         ),
         rx.vstack(

@@ -4,7 +4,7 @@
 
 <br/>
 
-**My posts seek to explore real-world and theoretical applications utilizing econometric and statistical/machine learning techniques. Furthermore, my posts occasionally delve into the theoretical underpinnings of certain via theory and simulation. *Most importantly*, I write help others and myself learn!**
+**My posts seek to explore real-world and theoretical applications utilizing econometric and statistical/machine learning techniques. Furthermore, my posts occasionally delve into the theoretical underpinnings of certain methodologies via theory and simulation. *Most importantly*, I write help others and myself learn!**
 
 <br/>
 
