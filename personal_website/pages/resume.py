@@ -57,16 +57,15 @@ def body():
     resume = rx.link(
         rx.center(
             rx.image(
-                src="/documents/resume.png",
-                width="100%",
-                height="100%",
+                src="/documents/resume.jpg",
                 border_radius="15px 50px",
                 border="3px solid #555",
             )
         ),
         href="/documents/resume.pdf",
-        _as="resume_pieniazek.pdf",
         is_external=True,
+        width="40%",
+        height="40%",
         padding_top="0.5em",
         padding_bottom="2em",
         padding_x="2em",
