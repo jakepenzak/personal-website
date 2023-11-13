@@ -310,7 +310,7 @@ def body():
             tsne,
             display=["none", "none", "none", "none", "flex", "flex"],
             padding_bottom="5em",
-            padding_x="5em", 
+            padding_x="5em",
         ),
         rx.hstack(
             nm3,
@@ -357,7 +357,7 @@ def articles() -> rx.Component:
         header(),
         rx.divider(width="80vh"),
         body(),
-        rx.desktop_only(rx.center(spline_component_404())),
+        rx.center(rx.image(src="/website_bar.png", width="100%")),
         position="relative",
         min_height="80vh",
         width="100%",

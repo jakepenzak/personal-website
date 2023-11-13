@@ -64,11 +64,10 @@ def body():
         ),
         href="/documents/resume.pdf",
         is_external=True,
-        width="40%",
-        height="40%",
         padding_top="0.5em",
         padding_bottom="2em",
         padding_x="2em",
+        max_width="80vh",
     )
 
     return resume
