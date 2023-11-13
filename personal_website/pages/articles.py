@@ -331,10 +331,10 @@ def body():
         ),
         rx.vstack(
             dml2,
-            dml1,
+            rx.box(dml1,padding_x="3em"),
             tsne,
             nm3,
-            nm2,
+            rx.box(nm2,padding_x="3em"),
             nm1,
             logistic,
             fwl,
