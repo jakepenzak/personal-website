@@ -62,8 +62,9 @@ def projects() -> rx.Component:
             text_align="center",
             width="100%",
         ),
-        rx.desktop_only(
-            rx.box(rx.center(spline_component_404()), padding_bottom="5em")
+        rx.box(
+            rx.center(rx.image(src="/website_bar.png", width="100%")),
+            padding_bottom="5em",
         ),
         position="relative",
         min_height="80vh",

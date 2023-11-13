@@ -1,9 +1,6 @@
 *.db
-
 *.py[cod]
-
 .ignore/
-
+.web
 .web/
-
 __pycache__/
