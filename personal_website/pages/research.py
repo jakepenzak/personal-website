@@ -91,8 +91,7 @@ def research() -> rx.Component:
         body(),
         rx.box(
             rx.center(rx.image(src="/website_bar.png", width="100%")),
-            padding_bottom="5em",
-            padding_top="5em",
+            padding_top="5em"
         ),
         position="relative",
         min_height="80vh",
