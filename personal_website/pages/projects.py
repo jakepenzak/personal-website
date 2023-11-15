@@ -62,10 +62,7 @@ def projects() -> rx.Component:
             text_align="center",
             width="100%",
         ),
-        rx.box(
-            rx.center(rx.image(src="/website_bar.png", width="100%")),
-            padding_bottom="5em",
-        ),
+        rx.center(rx.image(src="/website_bar.png", width="100%")),
         position="relative",
         min_height="80vh",
         width="100%",

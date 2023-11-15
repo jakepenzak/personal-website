@@ -1,0 +1,30 @@
+{$DOMAIN} {
+
+encode gzip
+
+@backend_routes path /_event/* /_upload /ping
+handle @backend_routes {
+        reverse_proxy app:8000
+}
+
+root * /srv
+route {
+        try_files {path} {path}/ /404.html
+        file_server
+}
+}
+
+# Redirect www to non-www
+www.{$DOMAIN} {
+    redir https://{$DOMAIN}{uri}
+}
+
+# Redirect old website
+jacobpieniazek.com {
+    redir https://{$DOMAIN}{uri}
+}
+
+# Redirect old website
+www.jacobpieniazek.com {
+    redir https://{$DOMAIN}{uri}
+}

@@ -4,11 +4,7 @@ channels:
   - defaults
   - pip
 dependencies:
-  - python
-  - git
+  - python==3.11
   - pip
-  - ipykernel
-  - jupyterlab
   - pip:
-    - reflex==0.3.1
-    - black==23.10.0
+    - -r requirements.txt
