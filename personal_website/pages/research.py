@@ -90,8 +90,7 @@ def research() -> rx.Component:
         rx.divider(width="80vh"),
         body(),
         rx.box(
-            rx.center(rx.image(src="/website_bar.png", width="100%")),
-            padding_top="5em"
+            rx.center(rx.image(src="/website_bar.png", width="100%")), padding_top="5em"
         ),
         position="relative",
         min_height="80vh",
