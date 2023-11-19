@@ -1,10 +1,9 @@
 """The research page."""
+import reflex as rx
 
 from personal_website.styles import RESEARCH_PAGE
 from personal_website.templates import template
-from personal_website.components.spline import spline_component_404
-
-import reflex as rx
+from personal_website.utilities.markdown import read_markdown
 
 
 def container(*children, **kwargs):
@@ -44,7 +43,7 @@ def heading():
     )
 
     header = rx.box(
-        container(**RESEARCH_PAGE["header_container_style"]), heading, heading_mobile
+        container(**RESEARCH_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
     )
 
     return header
@@ -55,22 +54,16 @@ def body():
     """The body section of the articles page."""
 
     p1 = rx.link(
-        rx.markdown(
-            "[1] High, But Not Happy? The Impact of Cannabis Consumption on Mental Health [2022 - Master's Thesis]",
-            text_align="left",
-        ),
-        href="/documents/thesis.pdf",
+        read_markdown("assets/research/thesis.md"),
+        href="/research/thesis.pdf",
         _as="thesis_pieniazek.pdf",
         is_external=True,
     )
 
-    p2 = rx.markdown(
-        "[2] Particule Happiness: How Air Pollution is Effecting Our Mental Health [2021 - Undergraduate Thesis]",
-        text_align="left",
-    )
+    p2 = read_markdown("assets/research/capstone.md")
 
     body = rx.box(
-        container(**RESEARCH_PAGE["body_container_style"]),
+        container(**RESEARCH_PAGE["BODY_CONTAINER_STYLE"]),
         rx.vstack(p1, p2, spacing="3em", text_align="left"),
         padding_x="2em",
     )
@@ -90,7 +83,8 @@ def research() -> rx.Component:
         rx.divider(width="80vh"),
         body(),
         rx.box(
-            rx.center(rx.image(src="/website_bar.png", width="100%")), padding_top="5em"
+            rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
+            padding_top="5em",
         ),
         position="relative",
         min_height="80vh",

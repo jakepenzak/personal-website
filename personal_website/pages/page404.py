@@ -1,11 +1,9 @@
 import reflex as rx
 
 from personal_website import styles
-
 from personal_website.base_state import State
 from personal_website.components.footer import footer
 from personal_website.components.navbar import navbar
-from personal_website.components.spline import spline_component_404
 
 
 class State404(State):
@@ -24,7 +22,7 @@ def _404():
                 " doesn't exist.",
             ),
             rx.spacer(height="4em"),
-            rx.image(src="/website_bar.png", width="100%"),
+            rx.image(src="/shared/website_bar.png", width="100%"),
         ),
         position="relative",
         min_height="80vh",
