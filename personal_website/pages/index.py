@@ -1,10 +1,11 @@
 """The home page of the app."""
 
-from personal_website import styles
-from personal_website.templates import template
-from personal_website.components.spline import spline_component_index_page
-
 import reflex as rx
+
+from personal_website.components.spline import spline_component_index_page
+from personal_website.styles import INDEX_PAGE
+from personal_website.templates import template
+from personal_website.utilities.markdown import read_markdown
 
 
 def container(*children, **kwargs):
@@ -48,7 +49,7 @@ def header():
             ),
             display=["flex", "flex", "flex", "none", "none", "none"],
         ),
-        **styles.header_container_style,
+        **INDEX_PAGE["HEADER_CONTAINER_STYLE"],
     )
 
     return heading
@@ -68,45 +69,45 @@ def intro():
         padding_top="1em",
     )
 
-    with open("assets/text/index_intro.md", encoding="utf-8") as intro:
-        content = intro.read()
-
-    markdown_content = rx.box(
+    body = rx.box(
         rx.vstack(
-            rx.markdown(content, component_map=styles.markdown_style),
+            read_markdown(
+                "assets/index/index_intro.md",
+                component_map=INDEX_PAGE["MARKDOWN_STYLE"],
+            ),
         ),
     )
 
     intro = rx.box(
-        container(**styles.intro_container_style),
+        container(**INDEX_PAGE["INTRO_CONTAINER_STYLE"]),
         rx.center(
             rx.hstack(
-                rx.image(src="/self.jpg", height="35em", width="35em"),
-                rx.vstack(welcome, markdown_content, padding_left="12em"),
+                rx.image(src="/index/self.jpg", height="35em", width="35em"),
+                rx.vstack(welcome, body, padding_left="12em"),
                 padding_x="5em",
                 display=["none", "none", "none", "none", "none", "flex"],
             ),
             rx.hstack(
-                rx.image(src="/self.jpg", height="35em", width="35em"),
-                rx.vstack(welcome, markdown_content, padding_left="6em"),
+                rx.image(src="/index/self.jpg", height="35em", width="35em"),
+                rx.vstack(welcome, body, padding_left="6em"),
                 padding_x="5em",
                 display=["none", "none", "none", "flex", "flex", "none"],
             ),
             rx.vstack(
-                rx.image(src="/self.jpg", height="50%", width="50%"),
-                rx.vstack(welcome, markdown_content),
+                rx.image(src="/index/self.jpg", height="50%", width="50%"),
+                rx.vstack(welcome, body),
                 padding_x="3em",
                 display=["none", "none", "flex", "none", "none", "none"],
             ),
             rx.vstack(
-                rx.image(src="/self.jpg", height="75%", width="75%"),
-                rx.vstack(welcome, markdown_content),
+                rx.image(src="/index/self.jpg", height="75%", width="75%"),
+                rx.vstack(welcome, body),
                 padding_x="3em",
                 display=["none", "flex", "none", "none", "none", "none"],
             ),
             rx.vstack(
-                rx.image(src="/self.jpg", height="flex", width="flex"),
-                rx.vstack(welcome, markdown_content),
+                rx.image(src="/index/self.jpg", height="flex", width="flex"),
+                rx.vstack(welcome, body),
                 padding_x="3em",
                 display=["flex", "none", "none", "none", "none", "none"],
             ),
@@ -114,6 +115,14 @@ def intro():
     )
 
     return intro
+
+
+# def skills():
+#     skills = rx.box(
+#         container(**INDEX_PAGE["INTRO_CONTAINER_STYLE"])
+#     )
+
+#     return skills
 
 
 @template(route="/", title="Home")
@@ -127,8 +136,9 @@ def index() -> rx.Component:
     return rx.box(
         header(),
         intro(),
+        # skills(),
         width="100%",
         max_width="100%",
         overflow_x="hidden",
-        **styles.index_page_style,
+        **INDEX_PAGE["INDEX_PAGE_STYLE"],
     )

@@ -1,9 +1,8 @@
 """The resume page."""
+import reflex as rx
+
 from personal_website.styles import RESUME_PAGE
 from personal_website.templates import template
-from personal_website.components.spline import spline_component_404
-
-import reflex as rx
 
 
 def container(*children, **kwargs):
@@ -43,7 +42,7 @@ def heading():
     )
 
     header = rx.box(
-        container(**RESUME_PAGE["header_container_style"]), heading, heading_mobile
+        container(**RESUME_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
     )
 
     return header
@@ -57,12 +56,12 @@ def body():
     resume = rx.link(
         rx.center(
             rx.image(
-                src="/documents/resume.jpg",
+                src="/resume/resume.jpg",
                 border_radius="15px 50px",
                 border="3px solid #555",
             )
         ),
-        href="/documents/resume.pdf",
+        href="/resume/resume.pdf",
         is_external=True,
         padding_top="0.5em",
         padding_bottom="2em",

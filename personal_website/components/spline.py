@@ -27,27 +27,3 @@ def spline_component_index_page():
         width="100%",
         display=["none", "none", "none", "none", "flex", "flex"],
     )
-
-
-# WAVEFORM SPLINE (ORIGINALLY FOR 404 PAGE ONLY)
-class Spline_404(rx.Component):
-    """Spline component."""
-
-    library = "@splinetool/react-spline"
-    tag = "Spline"
-    scene: Var[str] = "https://prod.spline.design/1zeYtIIZLXd6fI8D/scene.splinecode"
-    is_default = True
-    lib_dependencies: list[str] = ["@splinetool/runtime"]
-
-
-spline_404 = Spline_404.create
-
-
-def spline_component_404():
-    return rx.box(
-        spline_404(),
-        display="flex",
-        min_width="100%",
-        max_width="100%",
-        overflow_x="hidden",
-    )

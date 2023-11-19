@@ -1,10 +1,9 @@
 """The projects page."""
 
+import reflex as rx
+
 from personal_website.styles import PROJECTS_PAGE
 from personal_website.templates import template
-from personal_website.components.spline import spline_component_404
-
-import reflex as rx
 
 
 def container(*children, **kwargs):
@@ -38,7 +37,7 @@ def header():
     )
 
     header = rx.box(
-        container(**PROJECTS_PAGE["header_container_style"]), heading, heading_mobile
+        container(**PROJECTS_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
     )
 
     return header
@@ -62,7 +61,7 @@ def projects() -> rx.Component:
             text_align="center",
             width="100%",
         ),
-        rx.center(rx.image(src="/website_bar.png", width="100%")),
+        rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
         position="relative",
         min_height="80vh",
         width="100%",

@@ -14,7 +14,7 @@ This website was created utilizing via [reflex](https://reflex.dev/), a python f
 
 ## Development Instructions
 1. Clone the repository using `git clone`
-2. Create environment via `conda env create -f environment.yml`
+2. Create environment via `conda env create -f env/environment.yml`
 3. Initialize Reflex with `reflex init`
 4. Run the development server using `reflex run`
 

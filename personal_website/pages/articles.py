@@ -1,10 +1,11 @@
 """The articles page."""
 
+import reflex as rx
+
+from assets.shared import links
 from personal_website.styles import ARTICLES_PAGE
 from personal_website.templates import template
-from personal_website.components.spline import spline_component_404
-
-import reflex as rx
+from personal_website.utilities.markdown import read_markdown
 
 
 def container(*children, **kwargs):
@@ -43,12 +44,12 @@ def header():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    with open("assets/text/articles_intro.md", encoding="utf-8") as intro:
-        content = intro.read()
-
     markdown_content = rx.box(
         rx.vstack(
-            rx.markdown(content, component_map=ARTICLES_PAGE["markdown_style_intro"]),
+            read_markdown(
+                "assets/articles/intro.md",
+                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
+            ),
         ),
         width="100%",
         padding_x="12em",
@@ -57,7 +58,10 @@ def header():
 
     markdown_content_mobile = rx.box(
         rx.vstack(
-            rx.markdown(content, component_map=ARTICLES_PAGE["markdown_style_intro"]),
+            read_markdown(
+                "assets/articles/intro.md",
+                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
+            ),
         ),
         width="100%",
         padding_x="6em",
@@ -65,7 +69,7 @@ def header():
     )
 
     intro = rx.box(
-        container(**ARTICLES_PAGE["header_container_style"]),
+        container(**ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
         rx.vstack(heading, heading_mobile, markdown_content, markdown_content_mobile),
     )
 
@@ -82,26 +86,23 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/fwl.png",
+                        src="/articles/fwl/cover.png",
                         height="100%",
                         width="100%",
                         max_width="25em",
                         max_height="25em",
                     ),
-                    rx.markdown(
-                        open("assets/text/articles/fwl.md", encoding="utf-8").read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/fwl/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Understanding Linear Regression 
-                                 Mechanics via the Frisch-Waugh-Lovell Theorem </center>"""
-                    ),
+                    read_markdown("assets/articles/fwl/description.md"),
                 )
             ),
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href="https://towardsdatascience.com/controlling-for-x-9cb51652f7ad",
+        href=links.FWL_URL,
         is_external=True,
     )
 
@@ -110,28 +111,23 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/logistic.png",
+                        src="/articles/logistic/cover.png",
                         height="100%",
                         width="100%",
                         max_width="35em",
                         max_height="35em",
                     ),
-                    rx.markdown(
-                        open(
-                            "assets/text/articles/logistic.md", encoding="utf-8"
-                        ).read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/logistic/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Acquire a robust understanding of logit model 
-                                parameters beyond the canonical odds ratio interpretation </center>"""
-                    ),
+                    read_markdown("assets/articles/logistic/description.md"),
                 )
             ),
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href="https://towardsdatascience.com/predictive-parameters-in-a-logistic-regression-making-sense-of-it-all-476bde9825f3",
+        href=links.LOGISTIC_URL,
         is_external=True,
     )
 
@@ -140,26 +136,23 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/nm1.gif",
+                        src="/articles/nm1/cover.gif",
                         height="100%",
                         width="100%",
                         max_width="25em",
                         max_height="25em",
                     ),
-                    rx.markdown(
-                        open("assets/text/articles/nm1.md", encoding="utf-8").read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/nm1/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Learn how to solve and utilize Newton's Method
-                                    to solve multi-dimensional optimization problems </center>"""
-                    ),
+                    read_markdown("assets/articles/nm1/description.md"),
                 )
             ),
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-1-basic-optimization-theory-ff7c5f966565",
+        href=links.NM1_URL,
         is_external=True,
     )
 
@@ -168,26 +161,23 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/nm2.jpeg",
+                        src="/articles/nm2/cover.jpeg",
                         height="100%",
                         width="100%",
                         max_width="25em",
                         max_height="25em",
                     ),
-                    rx.markdown(
-                        open("assets/text/articles/nm2.md", encoding="utf-8").read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/nm2/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Learn how to extend Newton's Method to 
-                                    solve constrained optimization problems </center>"""
-                    ),
+                    read_markdown("assets/articles/nm2/description.md"),
                 )
             ),
             # padding_x="3em", MIDDLE COLUMN
             padding_bottom="3em",
         ),
-        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-2-constrained-optimization-theory-dc18613c5770",
+        href=links.NM2_URL,
         is_external=True,
     )
 
@@ -196,26 +186,23 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/nm3.jpeg",
+                        src="/articles/nm3/cover.jpeg",
                         height="100%",
                         width="100%",
                         max_width="25em",
                         max_height="25em",
                     ),
-                    rx.markdown(
-                        open("assets/text/articles/nm3.md", encoding="utf-8").read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/nm3/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Learn how to apply optimization & econometric techniques to 
-                                    solve an applied profit maximization problem </center>"""
-                    ),
+                    read_markdown("assets/articles/nm3/description.md"),
                 )
             ),
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-3-applied-profit-maximization-23a8c16167cd",
+        href=links.NM3_URL,
         is_external=True,
     )
 
@@ -224,26 +211,23 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/tsne.png",
+                        src="/articles/tsne/cover.png",
                         height="100%",
                         width="100%",
                         max_width="25em",
                         max_height="25em",
                     ),
-                    rx.markdown(
-                        open("assets/text/articles/tsne.md", encoding="utf-8").read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/tsne/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Acquire a deep understanding of the inner workings of t-SNE
-                                    via implementation from scratch in python </center>"""
-                    ),
+                    read_markdown("assets/articles/tsne/description.md"),
                 )
             ),
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href="https://towardsdatascience.com/t-sne-from-scratch-ft-numpy-172ee2a61df7",
+        href=links.TSNE_URL,
         is_external=True,
     )
 
@@ -252,25 +236,23 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/dml1.png",
+                        src="/articles/dml1/cover.png",
                         height="100%",
                         width="100%",
                         max_width="25em",
                         max_height="25em",
                     ),
-                    rx.markdown(
-                        open("assets/text/articles/dml1.md", encoding="utf-8").read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/dml1/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Learn how to utilize DML in causal inference tasks </center>"""
-                    ),
+                    read_markdown("assets/articles/dml1/description.md"),
                 )
             ),
             # padding_x="3em", MIDDLE COLUMN
             padding_bottom="3em",
         ),
-        href="https://towardsdatascience.com/double-machine-learning-simplified-part-1-basic-causal-inference-applications-3f7afc9852ee",
+        href=links.DML1_URL,
         is_external=True,
     )
 
@@ -279,31 +261,28 @@ def body():
             rx.center(
                 rx.vstack(
                     rx.image(
-                        src="/articles/dml2.png",
+                        src="/articles/dml2/cover.png",
                         height="100%",
                         width="100%",
                         max_width="25em",
                         max_height="25em",
                     ),
-                    rx.markdown(
-                        open("assets/text/articles/dml2.md", encoding="utf-8").read(),
-                        component_map=ARTICLES_PAGE["markdown_style_block"],
+                    read_markdown(
+                        "assets/articles/dml2/title.md",
+                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
                     ),
-                    rx.markdown(
-                        """<center> Learn how to utilize DML for estimating individual
-                                level treatment effects to enable data-driven targeting </center>"""
-                    ),
+                    read_markdown("assets/articles/dml2/description.md"),
                 )
             ),
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href="https://medium.com/towards-data-science/double-machine-learning-simplified-part-2-extensions-the-cate-99926151cac",
+        href=links.DML2_URL,
         is_external=True,
     )
 
     intro = rx.box(
-        container(**ARTICLES_PAGE["body_container_style"]),
+        container(**ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
         rx.hstack(
             dml2,
             dml1,
@@ -357,7 +336,7 @@ def articles() -> rx.Component:
         header(),
         rx.divider(width="80vh"),
         body(),
-        rx.center(rx.image(src="/website_bar.png", width="100%")),
+        rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
         position="relative",
         min_height="80vh",
         width="100%",
