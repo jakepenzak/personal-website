@@ -1,6 +1,6 @@
 # Welcome to the code base for my [Personal Website](http://jacob-pieniazek.com)!
 
-This website was created utilizing via [reflex](https://reflex.dev/), a python framework for web apps and websites, and hosted on a personal cloud-based linux server via [Digital Ocean](https://www.digitalocean.com/). 
+This website was created via [reflex](https://reflex.dev/), a python framework for web apps and websites, and hosted on a personal cloud-based linux server via [Digital Ocean](https://www.digitalocean.com/). 
 
 ## Technology Stack Utilized
 * [**Reflex**](https://reflex.dev/)
