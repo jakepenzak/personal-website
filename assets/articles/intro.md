@@ -4,10 +4,10 @@
 
 <br/>
 
-**My posts seek to explore real-world and theoretical applications utilizing econometric and statistical/machine learning techniques. Furthermore, my posts occasionally delve into the theoretical underpinnings of certain methodologies via theory and simulation. *Most importantly*, I write help others and myself learn!**
+**My articles explore real-world and theoretical applications of econometric, mathematical, and statistical/machine learning techniques. *Most importantly*, I write help others *and* myself learn complex topics at a deeper level!**
 
 <br/>
 
-*I hope to make complex topics just a little bit more accessible to all.*
+*As a believer and beneficiary of knowledge sharing, I hope my articles make complex topics just a bit more accessible to all.*
 
 </center>

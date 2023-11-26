@@ -8,7 +8,7 @@ As a professional data scientist working for a retail data science company in Ci
 
 <br/>
 
-My deep passion for data science was fostered and stimulated through my Master's studies in Economics from Miami University in Oxford, OH and, prior to graduate school, my studies in Mathematics and Economics at the University of Dayton.
+My deep passion for data science was fostered and stimulated through my Master's studies in Economics at Miami University in Oxford, OH and, prior to graduate school, my studies in Mathematics and Economics at the University of Dayton.
 
 <br/>
 
