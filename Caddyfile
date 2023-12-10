@@ -28,3 +28,20 @@ jacobpieniazek.com {
 www.jacobpieniazek.com {
     redir https://{$DOMAIN}{uri}
 }
+
+# Family Redirects
+www.jacob-pieniazek.com/family {
+    redir https://1drv.ms/f/s!AsfOxtBa4-znmLsH1ar1D817AZbr0w?e=lmfYh6
+}
+
+jacob-pieniazek.com/family {
+    redir https://1drv.ms/f/s!AsfOxtBa4-znmLsH1ar1D817AZbr0w?e=lmfYh6
+}
+
+www.jacob-pieniazek.com/csiszar {
+    redir https://1drv.ms/f/s!AsfOxtBa4-znmLsEZR-ediI1galFmA
+}
+
+jacob-pieniazek.com/csiszar {
+    redir https://1drv.ms/f/s!AsfOxtBa4-znmLsEZR-ediI1galFmA
+}
