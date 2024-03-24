@@ -1,6 +1,5 @@
 name: personal_website
 channels:
-  - conda-forge
   - defaults
   - pip
 dependencies:

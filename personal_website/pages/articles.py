@@ -10,7 +10,7 @@ from personal_website.utilities.markdown import read_markdown
 
 def container(*children, **kwargs):
     kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.container(
+    return rx.chakra.container(
         *children,
         **kwargs,
     )
@@ -20,7 +20,7 @@ def container(*children, **kwargs):
 def header():
     """The introduction section of the articles page."""
 
-    heading = rx.heading(
+    heading = rx.chakra.heading(
         """
         Articles
         """,
@@ -32,7 +32,7 @@ def header():
         display=["none", "none", "flex", "flex", "flex", "flex"],
     )
 
-    heading_mobile = rx.heading(
+    heading_mobile = rx.chakra.heading(
         """
         Articles
         """,
@@ -44,8 +44,8 @@ def header():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    markdown_content = rx.box(
-        rx.vstack(
+    markdown_content = rx.chakra.box(
+        rx.chakra.vstack(
             read_markdown(
                 "assets/articles/intro.md",
                 component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
@@ -56,8 +56,8 @@ def header():
         display=["none", "none", "flex", "flex", "flex", "flex"],
     )
 
-    markdown_content_mobile = rx.box(
-        rx.vstack(
+    markdown_content_mobile = rx.chakra.box(
+        rx.chakra.vstack(
             read_markdown(
                 "assets/articles/intro.md",
                 component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
@@ -68,9 +68,11 @@ def header():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    intro = rx.box(
+    intro = rx.chakra.box(
         container(**ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
-        rx.vstack(heading, heading_mobile, markdown_content, markdown_content_mobile),
+        rx.chakra.vstack(
+            heading, heading_mobile, markdown_content, markdown_content_mobile
+        ),
     )
 
     return intro
@@ -81,11 +83,11 @@ def body():
     """The body section of the articles page."""
 
     # Blocks
-    fwl = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    fwl = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/fwl/cover.png",
                         height="100%",
                         width="100%",
@@ -106,11 +108,11 @@ def body():
         is_external=True,
     )
 
-    logistic = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    logistic = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/logistic/cover.png",
                         height="100%",
                         width="100%",
@@ -131,11 +133,11 @@ def body():
         is_external=True,
     )
 
-    nm1 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    nm1 = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/nm1/cover.gif",
                         height="100%",
                         width="100%",
@@ -156,11 +158,11 @@ def body():
         is_external=True,
     )
 
-    nm2 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    nm2 = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/nm2/cover.jpeg",
                         height="100%",
                         width="100%",
@@ -181,11 +183,11 @@ def body():
         is_external=True,
     )
 
-    nm3 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    nm3 = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/nm3/cover.jpeg",
                         height="100%",
                         width="100%",
@@ -206,11 +208,11 @@ def body():
         is_external=True,
     )
 
-    tsne = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    tsne = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/tsne/cover.png",
                         height="100%",
                         width="100%",
@@ -231,11 +233,11 @@ def body():
         is_external=True,
     )
 
-    dml1 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    dml1 = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/dml1/cover.png",
                         height="100%",
                         width="100%",
@@ -256,11 +258,11 @@ def body():
         is_external=True,
     )
 
-    dml2 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
+    dml2 = rx.chakra.link(
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.vstack(
+                    rx.chakra.image(
                         src="/articles/dml2/cover.png",
                         height="100%",
                         width="100%",
@@ -281,9 +283,9 @@ def body():
         is_external=True,
     )
 
-    intro = rx.box(
+    intro = rx.chakra.box(
         container(**ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
-        rx.hstack(
+        rx.chakra.hstack(
             dml2,
             dml1,
             tsne,
@@ -291,7 +293,7 @@ def body():
             padding_bottom="5em",
             padding_x="5em",
         ),
-        rx.hstack(
+        rx.chakra.hstack(
             nm3,
             nm2,
             nm1,
@@ -299,8 +301,8 @@ def body():
             padding_bottom="5em",
             padding_x="5em",
         ),
-        rx.center(
-            rx.hstack(
+        rx.chakra.center(
+            rx.chakra.hstack(
                 logistic,
                 fwl,
                 display=["none", "none", "none", "none", "flex", "flex"],
@@ -308,12 +310,12 @@ def body():
                 padding_x="10em",
             )
         ),
-        rx.vstack(
+        rx.chakra.vstack(
             dml2,
-            rx.box(dml1, padding_x="3em"),
+            rx.chakra.box(dml1, padding_x="3em"),
             tsne,
             nm3,
-            rx.box(nm2, padding_x="3em"),
+            rx.chakra.box(nm2, padding_x="3em"),
             nm1,
             logistic,
             fwl,
@@ -332,11 +334,11 @@ def articles() -> rx.Component:
     Returns:
         The UI for the articles page.
     """
-    return rx.vstack(
+    return rx.chakra.vstack(
         header(),
-        rx.divider(width="80vh"),
+        rx.chakra.divider(width="80vh"),
         body(),
-        rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
+        rx.chakra.center(rx.chakra.image(src="/shared/website_bar.png", width="100%")),
         position="relative",
         min_height="80vh",
         width="100%",

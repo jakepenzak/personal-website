@@ -8,7 +8,7 @@ from personal_website.templates import template
 
 def container(*children, **kwargs):
     kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.container(
+    return rx.chakra.container(
         *children,
         **kwargs,
     )
@@ -16,7 +16,7 @@ def container(*children, **kwargs):
 
 ## Projects Page Heading
 def header():
-    heading = rx.heading(
+    heading = rx.chakra.heading(
         "Projects",
         font_size="4em",
         font_family="HackBold",
@@ -26,7 +26,7 @@ def header():
         display=["none", "none", "flex", "flex", "flex", "flex"],
     )
 
-    heading_mobile = rx.heading(
+    heading_mobile = rx.chakra.heading(
         "Projects",
         font_size="2.75em",
         font_family="HackBold",
@@ -36,7 +36,7 @@ def header():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    header = rx.box(
+    header = rx.chakra.box(
         container(**PROJECTS_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
     )
 
@@ -50,10 +50,10 @@ def projects() -> rx.Component:
     Returns:
         The UI for the projects page.
     """
-    return rx.vstack(
+    return rx.chakra.vstack(
         header(),
-        rx.divider(width="80vh"),
-        rx.text(
+        rx.chakra.divider(width="80vh"),
+        rx.chakra.text(
             "Under construction...",
             font_size="flex",
             padding_y="2em",
@@ -61,7 +61,7 @@ def projects() -> rx.Component:
             text_align="center",
             width="100%",
         ),
-        rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
+        rx.chakra.center(rx.chakra.image(src="/shared/website_bar.png", width="100%")),
         position="relative",
         min_height="80vh",
         width="100%",

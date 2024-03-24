@@ -1,7 +1,7 @@
 *.db
 *.py[cod]
+.DS_Store
 .ignore/
 .web
 .web/
 __pycache__/
-.DS_Store

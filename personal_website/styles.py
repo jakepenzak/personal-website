@@ -6,14 +6,14 @@ import reflex as rx
 text_color = "black"
 
 BASE_STYLE = {
-    rx.MenuButton: {
+    rx.chakra.MenuButton: {
         "width": "3em",
         "height": "3em",
         "background_color": "white",
         "border": "1px solid #F4F3F6",
         "border_radius": "0.375rem",
     },
-    rx.MenuItem: {"_hover": {"color": "#522181", "bg": "#F5EFFE"}},
+    rx.chakra.MenuItem: {"_hover": {"color": "#522181", "bg": "#F5EFFE"}},
     "font_family": "Hack",
 }
 
@@ -98,7 +98,7 @@ INDEX_PAGE = {
         "min_height": "80vh",
     },
     "MARKDOWN_STYLE": {
-        "a": lambda text, **props: rx.link(
+        "a": lambda text, **props: rx.chakra.link(
             text,
             **props,
             text_decoration="underline",
@@ -119,8 +119,8 @@ ARTICLES_PAGE = {
         "width": "100%",
     },
     "MARKDOWN_STYLE_INTRO": {
-        "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
-        "a": lambda text, **props: rx.link(
+        "code": lambda text: rx.chakra.code(text, color="#1F1944", bg="#EAE4FD"),
+        "a": lambda text, **props: rx.chakra.link(
             text,
             **props,
             # font_weight="bold",
@@ -137,7 +137,7 @@ ARTICLES_PAGE = {
     },
     "BODY_CONTAINER_STYLE": {"padding_top": "3em", "padding_x": "3em", "width": "100%"},
     "MARKDOWN_STYLE_BLOCK": {
-        "p": lambda text: rx.text(text, color="#522181", font_family="HackBold")
+        "p": lambda text: rx.chakra.text(text, color="#522181", font_family="HackBold")
     },
     "SPLINE_CONTAINER_STYLE": {
         "padding_bottom": "5em",
@@ -186,8 +186,8 @@ PROJECTS_PAGE = {
 ## UNUSED
 
 # MARKDOWN = {
-#     "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
-#     "a": lambda text, **props: rx.link(
+#     "code": lambda text: rx.chakra.code(text, color="#1F1944", bg="#EAE4FD"),
+#     "a": lambda text, **props: rx.chakra.link(
 #         text,
 #         **props,
 #         # font_weight="bold",

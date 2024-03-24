@@ -18,8 +18,8 @@ spline_index = Spline_Index.create
 
 
 def spline_component_index_page():
-    return rx.center(
-        rx.center(
+    return rx.chakra.center(
+        rx.chakra.center(
             spline_index(),
             width="20em",
             height="30em",

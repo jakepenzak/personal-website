@@ -10,7 +10,7 @@ from personal_website.utilities.markdown import read_markdown
 
 def container(*children, **kwargs):
     kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.container(
+    return rx.chakra.container(
         *children,
         **kwargs,
     )
@@ -21,9 +21,9 @@ def header():
     """The header section of the home page."""
 
     heading = container(
-        rx.hstack(
-            rx.center(
-                rx.heading(
+        rx.chakra.hstack(
+            rx.chakra.center(
+                rx.chakra.heading(
                     """
                     Jacob \n
                     Pieniazek
@@ -36,8 +36,8 @@ def header():
             spline_component_index_page(),
             display=["none", "none", "none", "flex", "flex", "flex"],
         ),
-        rx.center(
-            rx.heading(
+        rx.chakra.center(
+            rx.chakra.heading(
                 """
                     Jacob \n
                     Pieniazek
@@ -59,7 +59,7 @@ def header():
 def intro():
     """The introduction section of the home page."""
 
-    welcome = rx.heading(
+    welcome = rx.chakra.heading(
         """
         Welcome!
         """,
@@ -69,8 +69,8 @@ def intro():
         padding_top="1em",
     )
 
-    body = rx.box(
-        rx.vstack(
+    body = rx.chakra.box(
+        rx.chakra.vstack(
             read_markdown(
                 "assets/index/index_intro.md",
                 component_map=INDEX_PAGE["MARKDOWN_STYLE"],
@@ -78,36 +78,36 @@ def intro():
         ),
     )
 
-    intro = rx.box(
+    intro = rx.chakra.box(
         container(**INDEX_PAGE["INTRO_CONTAINER_STYLE"]),
-        rx.center(
-            rx.hstack(
-                rx.image(src="/index/self.jpg", height="35em", width="35em"),
-                rx.vstack(welcome, body, padding_left="12em"),
+        rx.chakra.center(
+            rx.chakra.hstack(
+                rx.chakra.image(src="/index/self.jpg", height="35em", width="35em"),
+                rx.chakra.vstack(welcome, body, padding_left="12em"),
                 padding_x="5em",
                 display=["none", "none", "none", "none", "none", "flex"],
             ),
-            rx.hstack(
-                rx.image(src="/index/self.jpg", height="35em", width="35em"),
-                rx.vstack(welcome, body, padding_left="6em"),
+            rx.chakra.hstack(
+                rx.chakra.image(src="/index/self.jpg", height="35em", width="35em"),
+                rx.chakra.vstack(welcome, body, padding_left="6em"),
                 padding_x="5em",
                 display=["none", "none", "none", "flex", "flex", "none"],
             ),
-            rx.vstack(
-                rx.image(src="/index/self.jpg", height="50%", width="50%"),
-                rx.vstack(welcome, body),
+            rx.chakra.vstack(
+                rx.chakra.image(src="/index/self.jpg", height="50%", width="50%"),
+                rx.chakra.vstack(welcome, body),
                 padding_x="3em",
                 display=["none", "none", "flex", "none", "none", "none"],
             ),
-            rx.vstack(
-                rx.image(src="/index/self.jpg", height="75%", width="75%"),
-                rx.vstack(welcome, body),
+            rx.chakra.vstack(
+                rx.chakra.image(src="/index/self.jpg", height="75%", width="75%"),
+                rx.chakra.vstack(welcome, body),
                 padding_x="3em",
                 display=["none", "flex", "none", "none", "none", "none"],
             ),
-            rx.vstack(
-                rx.image(src="/index/self.jpg", height="flex", width="flex"),
-                rx.vstack(welcome, body),
+            rx.chakra.vstack(
+                rx.chakra.image(src="/index/self.jpg", height="flex", width="flex"),
+                rx.chakra.vstack(welcome, body),
                 padding_x="3em",
                 display=["flex", "none", "none", "none", "none", "none"],
             ),
@@ -118,7 +118,7 @@ def intro():
 
 
 # def skills():
-#     skills = rx.box(
+#     skills = rx.chakra.box(
 #         container(**INDEX_PAGE["INTRO_CONTAINER_STYLE"])
 #     )
 
@@ -133,7 +133,7 @@ def index() -> rx.Component:
         The UI for the home page.
     """
 
-    return rx.box(
+    return rx.chakra.box(
         header(),
         intro(),
         # skills(),

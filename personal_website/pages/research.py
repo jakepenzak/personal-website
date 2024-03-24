@@ -8,7 +8,7 @@ from personal_website.utilities.markdown import read_markdown
 
 def container(*children, **kwargs):
     kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.container(
+    return rx.chakra.container(
         *children,
         **kwargs,
     )
@@ -18,7 +18,7 @@ def container(*children, **kwargs):
 def heading():
     """The heading section of the resume page."""
 
-    heading = rx.heading(
+    heading = rx.chakra.heading(
         """
         Research
         """,
@@ -30,7 +30,7 @@ def heading():
         display=["none", "none", "flex", "flex", "flex", "flex"],
     )
 
-    heading_mobile = rx.heading(
+    heading_mobile = rx.chakra.heading(
         """
         Research
         """,
@@ -42,7 +42,7 @@ def heading():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    header = rx.box(
+    header = rx.chakra.box(
         container(**RESEARCH_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
     )
 
@@ -53,7 +53,7 @@ def heading():
 def body():
     """The body section of the articles page."""
 
-    p1 = rx.link(
+    p1 = rx.chakra.link(
         read_markdown("assets/research/thesis.md"),
         href="/research/thesis.pdf",
         _as="thesis_pieniazek.pdf",
@@ -62,9 +62,9 @@ def body():
 
     p2 = read_markdown("assets/research/capstone.md")
 
-    body = rx.box(
+    body = rx.chakra.box(
         container(**RESEARCH_PAGE["BODY_CONTAINER_STYLE"]),
-        rx.vstack(p1, p2, spacing="3em", text_align="left"),
+        rx.chakra.vstack(p1, p2, spacing="3em", text_align="left"),
         padding_x="2em",
     )
 
@@ -78,12 +78,14 @@ def research() -> rx.Component:
     Returns:
         The UI for the research page.
     """
-    return rx.vstack(
+    return rx.chakra.vstack(
         heading(),
-        rx.divider(width="80vh"),
+        rx.chakra.divider(width="80vh"),
         body(),
-        rx.box(
-            rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.image(src="/shared/website_bar.png", width="100%")
+            ),
             padding_top="5em",
         ),
         position="relative",

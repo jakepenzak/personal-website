@@ -1,7 +1,6 @@
-"""The base application state."""
-""" CURRENTLY UNUSED """
-
 import reflex as rx
+
+##NOTE: Currently not in use, but can be used for future development on backend
 
 
 class State(rx.State):

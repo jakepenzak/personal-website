@@ -1,7 +1,6 @@
 import reflex as rx
 
 from assets.shared import links
-from personal_website.pages.index import index
 from personal_website.styles import FOOTER
 
 FOOTER_LOGO = "/shared/icon-inverted.png"
@@ -17,8 +16,8 @@ def footer_logo(**style_props):
     Args:
         style_props: The style properties to apply to the component.
     """
-    return rx.link(
-        rx.image(
+    return rx.chakra.link(
+        rx.chakra.image(
             src=FOOTER_LOGO,
             **style_props,
         ),
@@ -27,29 +26,29 @@ def footer_logo(**style_props):
 
 
 def footer():
-    return rx.box(
-        rx.hstack(
-            rx.hstack(
-                rx.link(
-                    rx.image(src=LINKEDIN_LOGO, height="3em"),
+    return rx.chakra.box(
+        rx.chakra.hstack(
+            rx.chakra.hstack(
+                rx.chakra.link(
+                    rx.chakra.image(src=LINKEDIN_LOGO, height="3em"),
                     href=links.LINKEDIN_URL,
                     style=FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
-                rx.link(
-                    rx.image(src=MEDIUM_LOGO, height="3em"),
+                rx.chakra.link(
+                    rx.chakra.image(src=MEDIUM_LOGO, height="3em"),
                     href=links.MEDIUM_URL,
                     style=FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
-                rx.link(
-                    rx.image(src=GITHUB_LOGO, height="3em"),
+                rx.chakra.link(
+                    rx.chakra.image(src=GITHUB_LOGO, height="3em"),
                     href=links.GITHUB_URL,
                     style=FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
-                rx.link(
-                    rx.image(src=EMAIL_LOGO, height="3em"),
+                rx.chakra.link(
+                    rx.chakra.image(src=EMAIL_LOGO, height="3em"),
                     href=links.CONTACT_URL,
                     style=FOOTER["FOOTER_ITEM_STYLE"],
                 ),
