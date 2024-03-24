@@ -90,6 +90,14 @@ INDEX_PAGE = {
         "padding_x": "3em",
         "padding_y": "3em",
     },
+    "SKILLS_CONTAINER_STYLE": {
+        # "height": "12em",
+        "width": "100%",
+        "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",
+        "opacity": "0.4;",
+        "padding_x": "3em",
+        "padding_y": "3em",
+    },
     "INDEX_PAGE_STYLE": {
         "padding_top": "2.5em",
         "padding_bottom": "3.5em",

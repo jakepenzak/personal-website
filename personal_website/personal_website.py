@@ -8,5 +8,9 @@ from personal_website import styles
 from personal_website.pages import *  # noqa: F403
 
 # Create the app and compile it.
-app = rx.App(style=styles.BASE_STYLE, stylesheets=["/shared/fonts/fonts.css"])
+app = rx.App(
+    style=styles.BASE_STYLE,
+    stylesheets=["/shared/fonts/fonts.css"],
+    theme=rx.theme(accent_color="violet"),
+)
 app.add_custom_404_page(page404.index404)  # noqa: F405

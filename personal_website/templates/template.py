@@ -65,7 +65,7 @@ def template(
             from personal_website.components.footer import footer
             from personal_website.components.navbar import navbar
 
-            return rx.chakra.box(navbar(), page_content(), footer())
+            return rx.box(navbar(), page_content(), footer())
 
         return templated_page
 
