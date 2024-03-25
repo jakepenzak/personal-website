@@ -34,3 +34,5 @@ jobs:
         run: reflex init
       - name: Export the website
         run: reflex export
+      - name: Test Docker Build
+        run: docker compose build
