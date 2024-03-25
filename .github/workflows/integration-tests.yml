@@ -30,8 +30,6 @@ jobs:
           python-version: '3.11' 
       - name: Install Requirements for personal_website and reflex
         run: pip install '${{ github.event.inputs.reflex_dep || env.REFLEX_DEP }}' -r env/requirements.txt
-      - name: Rename the directory
-        run: mv jacob-pieniazek.com personal_website
       - name: Init Website for personal_website
         run: reflex init
       - name: Export the website
