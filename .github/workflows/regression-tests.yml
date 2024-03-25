@@ -24,6 +24,11 @@ jobs:
           python-version: '3.11' 
       - name: Install Requirements for personal_website
         run: pip install -r env/requirements.txt 
+      - name: Rename the directory
+        run: |
+        cd ..
+        mv jacob-pieniazek.com personal_website
+        cd personal_website
       - name: Init Website for personal_website
         run: reflex init
       - name: Export the website
