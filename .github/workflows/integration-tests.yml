@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: '3.11' 
       - name: Install Requirements for personal_website and reflex
-        run: pip install '${{ github.event.inputs.reflex_dep || env.REFLEX_DEP }}' -r requirements.txt
+        run: pip install '${{ github.event.inputs.reflex_dep || env.REFLEX_DEP }}' -r env/requirements.txt
       - name: Init Website for reflex-web
         run: reflex init
       - name: Export the website
