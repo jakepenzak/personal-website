@@ -1,67 +1,18 @@
 import reflex as rx
 
 from personal_website.styles import NAVBAR
+from assets import asset_data
 
-NAVBAR_LOGO = "/shared/icon.png"
 
-
-def navbar_logo(**style_props):
-    """Create a Reflex logo component.
-
-    Args:
-        style_props: The style properties to apply to the component.
+def navbar() -> rx.Component:
     """
-    return rx.chakra.link(
-        rx.chakra.image(
-            src=NAVBAR_LOGO,
-            **style_props,
-        ),
-        href="/",
-    )
-
-
-## For mobile & when screen is small
-pages = ["Articles", "Resume", "Research", "Projects"]
-
-
-def menu_button() -> rx.Component:
-    """The menu button on the top right of the page.
+    Create the navbar component.
 
     Returns:
-        The menu button component.
+        rx.Component: The created navbar component.
     """
 
-    return rx.chakra.box(
-        rx.chakra.menu(
-            rx.chakra.menu_button(
-                rx.chakra.icon(tag="hamburger", size="4em"),
-            ),
-            rx.chakra.menu_list(
-                *[
-                    rx.chakra.menu_item(
-                        rx.chakra.link(
-                            page,
-                            href=f"/{page.lower()}",
-                            width="100%",
-                        )
-                    )
-                    for page in pages
-                ],
-            ),
-        ),
-        display=["flex", "flex", "flex", "flex", "none", "none"],
-    )
-
-
-def navbar(sidebar: rx.Component = None) -> rx.Component:
-    """Create the navbar component.
-
-    Args:
-        sidebar: The sidebar component to use.
-    """
-
-    # Create the navbar component.
-    return rx.chakra.vstack(
+    navbar = rx.chakra.vstack(
         rx.chakra.box(
             rx.chakra.hstack(
                 navbar_logo(**NAVBAR["NAVBAR_LOGO_STYLE"]),
@@ -124,3 +75,59 @@ def navbar(sidebar: rx.Component = None) -> rx.Component:
         top="0",
         z_index="999",
     )
+
+    return navbar
+
+
+def navbar_logo(**style_props) -> rx.Component:
+    """
+    Create a Reflex logo component.
+
+    Args:
+        style_props: The style properties to apply to the component.
+
+    Returns:
+        rx.Component: The logo component.
+    """
+    navbar_logo = rx.chakra.link(
+        rx.chakra.image(
+            src=asset_data.NAVBAR_LOGO,
+            **style_props,
+        ),
+        href="/",
+    )
+
+    return navbar_logo
+
+
+## For mobile & when screen is small
+def menu_button() -> rx.Component:
+    """The menu button on the top right of the page.
+
+    Returns:
+        rx.Component: The menu button component.
+    """
+    pages = ["Articles", "Resume", "Research", "Projects"]
+
+    menu_button = rx.chakra.box(
+        rx.chakra.menu(
+            rx.chakra.menu_button(
+                rx.chakra.icon(tag="hamburger", size="4em"),
+            ),
+            rx.chakra.menu_list(
+                *[
+                    rx.chakra.menu_item(
+                        rx.chakra.link(
+                            page,
+                            href=f"/{page.lower()}",
+                            width="100%",
+                        )
+                    )
+                    for page in pages
+                ],
+            ),
+        ),
+        display=["flex", "flex", "flex", "flex", "none", "none"],
+    )
+
+    return menu_button

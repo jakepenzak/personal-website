@@ -1,35 +1,63 @@
-"""The home page of the app."""
-
+"""The home page of the website."""
 import reflex as rx
-
+from typing import Tuple
 from personal_website.components.spline import spline_component_index_page
 from personal_website.styles import INDEX_PAGE
 from personal_website.templates import template
 from personal_website.utilities.markdown import read_markdown
-from assets.index.skills.skills_data import (
+from assets.asset_data import (
     skills_data,
     tech_logos_dict,
     library_logos_dict,
 )
+from personal_website.utilities.container import container
 
 
-def container(*children, **kwargs):
-    kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.chakra.container(
-        *children,
-        **kwargs,
+# Create the Home page
+@template(route="/", title="Home")
+def index() -> rx.Component:
+    """The home page.
+
+    Returns:
+        rx.Component: The UI for the home page.
+    """
+
+    return rx.box(
+        header(),
+        intro(),
+        skillsets_section(),
+        width="100%",
+        max_width="100%",
+        overflow_x="hidden",
+        **INDEX_PAGE["INDEX_PAGE_STYLE"],
     )
 
 
-def image_link(src, href):
+## Helper functions
+def image_link(src: str, href: str) -> rx.Component:
+    """
+    Creates a link with an image.
+
+    Args:
+        src (str): The source URL of the image.
+        href (str): The URL that the link should navigate to.
+
+    Returns:
+        rx.Component: The link component with the specified image source and target URL.
+    """
     return rx.link(rx.image(src=src), href=href, target="_blank")
 
 
-## Header
+## Header Section
 def header() -> rx.Component:
-    """The header section of the home page."""
+    """
+    The header section of the home page.
 
-    heading = container(
+    Returns:
+        rx.Component: The header component.
+    """
+
+    header = container(
         rx.chakra.hstack(
             rx.chakra.center(
                 rx.chakra.heading(
@@ -61,12 +89,17 @@ def header() -> rx.Component:
         **INDEX_PAGE["HEADER_CONTAINER_STYLE"],
     )
 
-    return heading
+    return header
 
 
-## Introduction
+## Introduction Section
 def intro() -> rx.Component:
-    """The introduction section of the home page."""
+    """
+    The introduction section of the home page.
+
+    Returns:
+        rx.Component: The rendered introduction section.
+    """
 
     welcome = rx.chakra.heading(
         """
@@ -116,7 +149,18 @@ def intro() -> rx.Component:
     return intro
 
 
+## Skillsets Section
 def skillsets_section() -> rx.Component:
+    """
+    Returns a component representing the skillsets section of the personal website.
+
+    This section includes a heading, a radar chart displaying skill ratings,
+    a section for libraries, and a section for the tech stack. The layout of
+    the sections is responsive, adapting to different screen sizes.
+
+    Returns:
+        rx.Component: The skillsets section component.
+    """
     header = rx.heading(
         """
         Skillsets
@@ -143,7 +187,56 @@ def skillsets_section() -> rx.Component:
         height="50vh",
     )
 
-    libraries_heading = rx.heading(
+    (
+        libraries_header,
+        libraries_intro,
+        libraries_grid,
+        libraries,
+    ) = create_libraries_section()
+
+    stack_header, stack_intro, stack_grid, tech_stack = create_tech_stack_section()
+
+    # Used for mobile and tablet view
+    skills_tabs = create_skills_tabs(
+        **{
+            "libraries_intro": libraries_intro,
+            "libraries_grid": libraries_grid,
+            "stack_intro": stack_intro,
+            "stack_grid": stack_grid,
+        }
+    )
+
+    skill_section = rx.box(
+        rx.container(**INDEX_PAGE["SKILLS_CONTAINER_STYLE"]),
+        rx.vstack(
+            header,
+            skills_radar,
+            rx.hstack(
+                libraries,
+                tech_stack,
+                padding_x="3em",
+                width="100%",
+            ),
+            display=["none", "none", "none", "flex", "flex", "flex"],
+        ),
+        rx.vstack(
+            header,
+            skills_tabs,
+            display=["flex", "flex", "flex", "none", "none", "none"],
+        ),
+    )
+
+    return skill_section
+
+
+def create_libraries_section() -> Tuple[rx.Component]:
+    """
+    Creates a section for displaying Python libraries.
+
+    Returns:
+        Tuple[rx.Component]: A tuple containing the header, intro, grid, and the entire libraries section.
+    """
+    libraries_header = rx.heading(
         """
             Python Libraries
             """,
@@ -173,7 +266,7 @@ def skillsets_section() -> rx.Component:
 
     libraries = rx.center(
         rx.vstack(
-            libraries_heading,
+            libraries_header,
             libraries_intro,
             libraries_grid,
         ),
@@ -181,7 +274,17 @@ def skillsets_section() -> rx.Component:
         width="100%",
     )
 
-    stack_heading = rx.heading(
+    return libraries_header, libraries_intro, libraries_grid, libraries
+
+
+def create_tech_stack_section() -> Tuple[rx.Component]:
+    """
+    Create a section displaying the tech stack and tools used.
+
+    Returns:
+        Tuple[rx.Component]: A tuple containing the components of the tech stack section.
+    """
+    stack_header = rx.heading(
         """
             Tech Stack & Tools
             """,
@@ -210,7 +313,7 @@ def skillsets_section() -> rx.Component:
 
     tech_stack = rx.center(
         rx.vstack(
-            stack_heading,
+            stack_header,
             stack_intro,
             stack_grid,
         ),
@@ -218,12 +321,24 @@ def skillsets_section() -> rx.Component:
         width="100%",
     )
 
-    stack = rx.hstack(
-        libraries,
-        tech_stack,
-        padding_x="3em",
-        width="100%",
-    )
+    return stack_header, stack_intro, stack_grid, tech_stack
+
+
+def create_skills_tabs(**kwargs) -> rx.Component:
+    """
+    Creates a tabbed component for displaying skills, Python libraries, and tech stack.
+
+    Args:
+        **kwargs: Additional keyword arguments to pass to the tabbed component.
+
+    Returns:
+        rx.Component: The tabbed component for displaying skills, Python libraries, and tech stack.
+    """
+
+    libraries_intro = kwargs.get("libraries_intro")
+    libraries_grid = kwargs.get("libraries_grid")
+    stack_intro = kwargs.get("stack_intro")
+    stack_grid = kwargs.get("stack_grid")
 
     ## Used for mobile and tablet view
     skills_list = rx.unordered_list(
@@ -260,38 +375,4 @@ def skillsets_section() -> rx.Component:
         width="100%",
     )
 
-    skill_section = rx.box(
-        rx.container(**INDEX_PAGE["SKILLS_CONTAINER_STYLE"]),
-        rx.vstack(
-            header,
-            skills_radar,
-            stack,
-            display=["none", "none", "none", "flex", "flex", "flex"],
-        ),
-        rx.vstack(
-            header,
-            skills_tabs,
-            display=["flex", "flex", "flex", "none", "none", "none"],
-        ),
-    )
-
-    return skill_section
-
-
-@template(route="/", title="Home")
-def index() -> rx.Component:
-    """The home page.
-
-    Returns:
-        The UI for the home page.
-    """
-
-    return rx.box(
-        header(),
-        intro(),
-        skillsets_section(),
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
-        **INDEX_PAGE["INDEX_PAGE_STYLE"],
-    )
+    return skills_tabs

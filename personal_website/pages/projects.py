@@ -1,20 +1,41 @@
 """The projects page."""
-
 import reflex as rx
 
 from personal_website.styles import PROJECTS_PAGE
 from personal_website.templates import template
+from personal_website.utilities.container import container
 
 
-def container(*children, **kwargs):
-    kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.chakra.container(
-        *children,
-        **kwargs,
+# Create the projects page
+@template(route="/projects", title="Projects")
+def projects() -> rx.Component:
+    """
+    The projects page.
+
+    Returns:
+        rx.Component: The UI for the projects page.
+    """
+    return rx.chakra.vstack(
+        header(),
+        rx.chakra.divider(width="80vh"),
+        rx.chakra.text(
+            "Under construction...",
+            font_size="flex",
+            padding_y="2em",
+            font_family="Hack",
+            text_align="center",
+            width="100%",
+        ),
+        rx.chakra.center(rx.chakra.image(src="/shared/website_bar.png", width="100%")),
+        position="relative",
+        min_height="80vh",
+        width="100%",
+        max_width="100%",
+        overflow_x="hidden",
     )
 
 
-## Projects Page Heading
+## Header Section
 def header():
     heading = rx.chakra.heading(
         "Projects",
@@ -41,30 +62,3 @@ def header():
     )
 
     return header
-
-
-@template(route="/projects", title="Projects")
-def projects() -> rx.Component:
-    """The projects page.
-
-    Returns:
-        The UI for the projects page.
-    """
-    return rx.chakra.vstack(
-        header(),
-        rx.chakra.divider(width="80vh"),
-        rx.chakra.text(
-            "Under construction...",
-            font_size="flex",
-            padding_y="2em",
-            font_family="Hack",
-            text_align="center",
-            width="100%",
-        ),
-        rx.chakra.center(rx.chakra.image(src="/shared/website_bar.png", width="100%")),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
-    )

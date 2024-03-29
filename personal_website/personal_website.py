@@ -1,5 +1,3 @@
-"""Welcome to Reflex!."""
-
 import reflex as rx
 
 from personal_website import styles

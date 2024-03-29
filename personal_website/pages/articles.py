@@ -1,19 +1,11 @@
 """The articles page."""
-
 import reflex as rx
 
-from assets.shared import links
+from assets import asset_data
 from personal_website.styles import ARTICLES_PAGE
 from personal_website.templates import template
 from personal_website.utilities.markdown import read_markdown
-
-
-def container(*children, **kwargs):
-    kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.chakra.container(
-        *children,
-        **kwargs,
-    )
+from personal_website.utilities.container import container
 
 
 ## Articles Header
@@ -104,7 +96,7 @@ def body():
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href=links.FWL_URL,
+        href=asset_data.FWL_URL,
         is_external=True,
     )
 
@@ -129,7 +121,7 @@ def body():
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href=links.LOGISTIC_URL,
+        href=asset_data.LOGISTIC_URL,
         is_external=True,
     )
 
@@ -154,7 +146,7 @@ def body():
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href=links.NM1_URL,
+        href=asset_data.NM1_URL,
         is_external=True,
     )
 
@@ -179,7 +171,7 @@ def body():
             # padding_x="3em", MIDDLE COLUMN
             padding_bottom="3em",
         ),
-        href=links.NM2_URL,
+        href=asset_data.NM2_URL,
         is_external=True,
     )
 
@@ -204,7 +196,7 @@ def body():
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href=links.NM3_URL,
+        href=asset_data.NM3_URL,
         is_external=True,
     )
 
@@ -229,7 +221,7 @@ def body():
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href=links.TSNE_URL,
+        href=asset_data.TSNE_URL,
         is_external=True,
     )
 
@@ -254,7 +246,7 @@ def body():
             # padding_x="3em", MIDDLE COLUMN
             padding_bottom="3em",
         ),
-        href=links.DML1_URL,
+        href=asset_data.DML1_URL,
         is_external=True,
     )
 
@@ -279,7 +271,7 @@ def body():
             padding_x="3em",
             padding_bottom="3em",
         ),
-        href=links.DML2_URL,
+        href=asset_data.DML2_URL,
         is_external=True,
     )
 

@@ -17,7 +17,13 @@ class Spline_Index(rx.Component):
 spline_index = Spline_Index.create
 
 
-def spline_component_index_page():
+def spline_component_index_page() -> rx.Component:
+    """
+    Returns a Chakra UI component for the index page of the spline component.
+
+    Returns:
+        rx.Component: The Chakra UI component for the index page.
+    """
     return rx.chakra.center(
         rx.chakra.center(
             spline_index(),

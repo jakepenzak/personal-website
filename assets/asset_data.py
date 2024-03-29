@@ -1,5 +1,30 @@
 from typing import NamedTuple
 
+# Logo Paths
+FOOTER_LOGO = "/shared/icon-inverted.png"
+LINKEDIN_LOGO = "/shared/social_icons/linkedin.png"
+MEDIUM_LOGO = "/shared/social_icons/medium.png"
+GITHUB_LOGO = "/shared/social_icons/github.png"
+EMAIL_LOGO = "/shared/social_icons/email.png"
+NAVBAR_LOGO = "/shared/icon.png"
+
+# Social Media Links
+GITHUB_URL = "https://github.com/jakepenzak"
+CONTACT_URL = "mailto:jakepzak@gmail.com"
+LINKEDIN_URL = "https://www.linkedin.com/in/japieniazek/"
+MEDIUM_URL = "https://medium.com/@jakepenzak"
+
+# Article Links
+FWL_URL = "https://towardsdatascience.com/controlling-for-x-9cb51652f7ad"
+LOGISTIC_URL = "https://towardsdatascience.com/predictive-parameters-in-a-logistic-regression-making-sense-of-it-all-476bde9825f3"
+NM1_URL = "https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-1-basic-optimization-theory-ff7c5f966565"
+NM2_URL = "https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-2-constrained-optimization-theory-dc18613c5770"
+NM3_URL = "https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-3-applied-profit-maximization-23a8c16167cd"
+TSNE_URL = "https://towardsdatascience.com/t-sne-from-scratch-ft-numpy-172ee2a61df7"
+DML1_URL = "https://towardsdatascience.com/double-machine-learning-simplified-part-1-basic-causal-inference-applications-3f7afc9852ee"
+DML2_URL = "https://towardsdatascience.com/double-machine-learning-simplified-part-2-extensions-the-cate-99926151cac"
+
+# Index Page
 skills_data = [
     {
         "subject": "Econometrics/Causal Inference",
@@ -108,6 +133,10 @@ tech_logos_dict = {
     "PowerBI": LogoMeta(
         asset_path="/index/skills/tech_logos/powerbi.png",
         link="https://powerbi.microsoft.com/en-us/",
+    ),
+    "Delta Lake": LogoMeta(
+        asset_path="/index/skills/tech_logos/delta.png",
+        link="https://delta.io/",
     ),
 }
 

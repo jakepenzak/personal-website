@@ -4,20 +4,43 @@ import reflex as rx
 from personal_website.styles import RESEARCH_PAGE
 from personal_website.templates import template
 from personal_website.utilities.markdown import read_markdown
+from personal_website.utilities.container import container
 
 
-def container(*children, **kwargs):
-    kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.chakra.container(
-        *children,
-        **kwargs,
+# Create the research page
+@template(route="/research", title="Research")
+def research() -> rx.Component:
+    """The research page.
+
+    Returns:
+        rx.Component: The UI for the research page.
+    """
+    return rx.chakra.vstack(
+        header(),
+        rx.chakra.divider(width="80vh"),
+        body(),
+        rx.chakra.box(
+            rx.chakra.center(
+                rx.chakra.image(src="/shared/website_bar.png", width="100%")
+            ),
+            padding_top="5em",
+        ),
+        position="relative",
+        min_height="80vh",
+        width="100%",
+        max_width="100%",
+        overflow_x="hidden",
     )
 
 
-## Research Header
-def heading():
-    """The heading section of the resume page."""
+## Header Section
+def header() -> rx.Component:
+    """
+    Returns the heading component for the research page.
 
+    Returns:
+        rx.Component: The heading component.
+    """
     heading = rx.chakra.heading(
         """
         Research
@@ -49,10 +72,14 @@ def heading():
     return header
 
 
-## Research Body
-def body():
-    """The body section of the articles page."""
+## Body Section
+def body() -> rx.Component:
+    """
+    Returns the body component for the research page.
 
+    Returns:
+        rx.Component: The body component.
+    """
     p1 = rx.chakra.link(
         read_markdown("assets/research/thesis.md"),
         href="/research/thesis.pdf",
@@ -69,28 +96,3 @@ def body():
     )
 
     return body
-
-
-@template(route="/research", title="Research")
-def research() -> rx.Component:
-    """The research page.
-
-    Returns:
-        The UI for the research page.
-    """
-    return rx.chakra.vstack(
-        heading(),
-        rx.chakra.divider(width="80vh"),
-        body(),
-        rx.chakra.box(
-            rx.chakra.center(
-                rx.chakra.image(src="/shared/website_bar.png", width="100%")
-            ),
-            padding_top="5em",
-        ),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
-    )

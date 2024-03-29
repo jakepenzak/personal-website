@@ -3,18 +3,31 @@ import reflex as rx
 
 from personal_website.styles import RESUME_PAGE
 from personal_website.templates import template
+from personal_website.utilities.container import container
 
 
-def container(*children, **kwargs):
-    kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.chakra.container(
-        *children,
-        **kwargs,
+# Create the resume page
+@template(route="/resume", title="Professional Resume")
+def resume() -> rx.Component:
+    """The resume page.
+
+    Returns:
+        rx.Component: The UI for the resume page.
+    """
+    return rx.chakra.vstack(
+        heading(),
+        rx.chakra.divider(width="80vh"),
+        body(),
+        position="relative",
+        min_height="80vh",
+        width="100%",
+        max_width="100%",
+        overflow_x="hidden",
     )
 
 
-## Resume Page Heading
-def heading():
+## Header Section
+def heading() -> rx.Component:
     """The heading section of the resume page."""
 
     heading = rx.chakra.heading(
@@ -70,22 +83,3 @@ def body():
     )
 
     return resume
-
-
-@template(route="/resume", title="Professional Resume")
-def resume() -> rx.Component:
-    """The resume page.
-
-    Returns:
-        The UI for the resume page.
-    """
-    return rx.chakra.vstack(
-        heading(),
-        rx.chakra.divider(width="80vh"),
-        body(),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
-    )
