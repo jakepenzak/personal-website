@@ -8,7 +8,28 @@ from personal_website.utilities.markdown import read_markdown
 from personal_website.utilities.container import container
 
 
-## Articles Header
+# Create the articles page
+@template(route="/articles", title="Articles")
+def articles() -> rx.Component:
+    """The articles page.
+
+    Returns:
+        The UI for the articles page.
+    """
+    return rx.chakra.vstack(
+        header(),
+        rx.chakra.divider(width="80vh"),
+        body(),
+        rx.chakra.center(rx.chakra.image(src="/shared/website_bar.png", width="100%")),
+        position="relative",
+        min_height="80vh",
+        width="100%",
+        max_width="100%",
+        overflow_x="hidden",
+    )
+
+
+## Header Section
 def header():
     """The introduction section of the articles page."""
 
@@ -60,17 +81,17 @@ def header():
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    intro = rx.chakra.box(
+    header = rx.chakra.box(
         container(**ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
         rx.chakra.vstack(
             heading, heading_mobile, markdown_content, markdown_content_mobile
         ),
     )
 
-    return intro
+    return header
 
 
-## Articles Body
+## Body Section
 def body():
     """The body section of the articles page."""
 
@@ -275,7 +296,7 @@ def body():
         is_external=True,
     )
 
-    intro = rx.chakra.box(
+    body = rx.chakra.box(
         container(**ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
         rx.chakra.hstack(
             dml2,
@@ -316,24 +337,4 @@ def body():
         ),
     )
 
-    return intro
-
-
-@template(route="/articles", title="Articles")
-def articles() -> rx.Component:
-    """The articles page.
-
-    Returns:
-        The UI for the articles page.
-    """
-    return rx.chakra.vstack(
-        header(),
-        rx.chakra.divider(width="80vh"),
-        body(),
-        rx.chakra.center(rx.chakra.image(src="/shared/website_bar.png", width="100%")),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
-    )
+    return body
