@@ -6,7 +6,11 @@ from personal_website.components.spline import spline_component_index_page
 from personal_website.styles import INDEX_PAGE
 from personal_website.templates import template
 from personal_website.utilities.markdown import read_markdown
-from assets.index.skills.skills_data import skills_data, tech_logos_dict
+from assets.index.skills.skills_data import (
+    skills_data,
+    tech_logos_dict,
+    library_logos_dict,
+)
 
 
 def container(*children, **kwargs):
@@ -15,6 +19,10 @@ def container(*children, **kwargs):
         *children,
         **kwargs,
     )
+
+
+def image_link(src, href):
+    return rx.link(rx.image(src=src), href=href, target="_blank")
 
 
 ## Header
@@ -135,7 +143,25 @@ def skillsets_section() -> rx.Component:
         height="50vh",
     )
 
-    python_eco = rx.center(
+    libraries_intro = rx.text(
+        """Below is a selection of some of the python libraries 
+                I use or have used in my personal & professional work. This list is by no means exhaustive,
+                but it does cover a subset of the core libraries I consider myself to be moderately to highly proficient in."""
+    )
+
+    libraries_grid = rx.grid(
+        *[
+            image_link(library_logos_dict[lib].asset_path, library_logos_dict[lib].link)
+            for lib in list(library_logos_dict.keys())
+        ],
+        columns="6",
+        spacing="4",
+        align="center",
+        justify="center",
+        padding_y="2em",
+    )
+
+    libraries = rx.center(
         rx.vstack(
             rx.heading(
                 """
@@ -146,47 +172,44 @@ def skillsets_section() -> rx.Component:
                 text_align="center",
                 padding_top="1em",
             ),
-            rx.text(
-                """Below is a selection of some of the python libraries 
-            I use or have used in my personal & professional work. This list is by no means exhaustive,
-            but it does cover a subset of the core libraries I consider myself to be moderately to highly proficient in."""
-            ),
+            libraries_intro,
+            libraries_grid,
         ),
         padding_x="3em",
         width="100%",
     )
 
-    def image_link(src, href):
-        return rx.link(rx.image(src=src), href=href, target="_blank")
+    stack_heading = rx.heading(
+        """
+            Tech Stack & Tools
+            """,
+        font_size="1.5em",
+        font_family="HackBold",
+        text_align="center",
+        padding_top="1em",
+    )
 
-    stack_grid = rx.center(
-        rx.grid(
-            *[
-                image_link(tech_logos_dict[t].asset_path, tech_logos_dict[t].link)
-                for t in list(tech_logos_dict.keys())
-            ],
-            columns="4",
-            spacing="4",
-            align="center",
-            justify="center",
-        )
+    stack_intro = rx.text(
+        """Similarly, below is a selection of some of the tech
+                stack & tools that I use or have used in my personal & professional work."""
+    )
+
+    stack_grid = rx.grid(
+        *[
+            image_link(tech_logos_dict[t].asset_path, tech_logos_dict[t].link)
+            for t in list(tech_logos_dict.keys())
+        ],
+        columns="4",
+        spacing="4",
+        align="center",
+        justify="center",
+        padding_y="3em",
     )
 
     tech_stack = rx.center(
         rx.vstack(
-            rx.heading(
-                """
-            Tech Stack & Tools
-            """,
-                font_size="1.5em",
-                font_family="HackBold",
-                text_align="center",
-                padding_top="1em",
-            ),
-            rx.text(
-                """Similarly, below is a selection of some of the tech 
-            stack & tools that I use or have used in my personal & professional work."""
-            ),
+            stack_heading,
+            stack_intro,
             stack_grid,
         ),
         padding_x="3em",
@@ -194,13 +217,13 @@ def skillsets_section() -> rx.Component:
     )
 
     stack = rx.hstack(
-        python_eco,
+        libraries,
         tech_stack,
         padding_x="3em",
         width="100%",
     )
 
-    # Used for mobile and tablet view
+    ## Used for mobile and tablet view
     skills_list = rx.unordered_list(
         *[rx.list_item(skill) for skill in [d["subject"] for d in skills_data]]
     )
@@ -209,7 +232,7 @@ def skillsets_section() -> rx.Component:
         rx.tabs.root(
             rx.tabs.list(
                 rx.tabs.trigger("Skills", value="Skills"),
-                rx.tabs.trigger("Python Ecosystem", value="Python Ecosystem"),
+                rx.tabs.trigger("Python Libraries", value="Python Libraries"),
                 rx.tabs.trigger("Tech Stack", value="Tech Stack"),
                 size="2",
             ),
@@ -218,10 +241,12 @@ def skillsets_section() -> rx.Component:
                 value="Skills",
             ),
             rx.tabs.content(
-                rx.text("Python Ecosystem content"),
-                value="Python Ecosystem",
+                libraries_intro,
+                libraries_grid,
+                value="Python Libraries",
             ),
             rx.tabs.content(
+                stack_intro,
                 stack_grid,
                 value="Tech Stack",
             ),
@@ -235,7 +260,7 @@ def skillsets_section() -> rx.Component:
         rx.vstack(
             header,
             skills_radar,
-            rx.center(stack, width="100%"),
+            stack,
             display=["none", "none", "none", "flex", "flex", "flex"],
         ),
         rx.vstack(

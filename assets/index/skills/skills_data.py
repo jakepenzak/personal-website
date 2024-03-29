@@ -74,7 +74,7 @@ tech_logos_dict = {
         asset_path="/index/skills/tech_logos/docker.png", link="https://www.docker.com/"
     ),
     "GitHub": LogoMeta(
-        asset_path="/index/skills/tech_logos/github.png", link="https://ww.github.com/"
+        asset_path="/index/skills/tech_logos/github.png", link="https://www.github.com/"
     ),
     "Jupyter": LogoMeta(
         asset_path="/index/skills/tech_logos/jupyter.png", link="https://jupyter.org/"
@@ -95,5 +95,102 @@ tech_logos_dict = {
     ),
 }
 
-# tech_list = rx.unordered_list(
-#     *[rx.link(rx.list_item(tech), href=tech_logos_dict[tech].link, target="_blank") for tech in list(tech_logos_dict.keys())])
+library_logos_dict = {
+    "EconML": LogoMeta(
+        asset_path="/index/skills/library_logos/econml.jpg",
+        link="https://www.microsoft.com/en-us/research/project/econml/",
+    ),
+    "DoubleML": LogoMeta(
+        asset_path="/index/skills/library_logos/doubleml.png",
+        link="https://docs.doubleml.org/stable/index.html",
+    ),
+    "DoWhy": LogoMeta(
+        asset_path="/index/skills/library_logos/dowhy.png",
+        link="https://www.pywhy.org/dowhy/v0.11.1/",
+    ),
+    "CausalML": LogoMeta(
+        asset_path="/index/skills/library_logos/causalml.png",
+        link="https://causalml.readthedocs.io/en/latest/",
+    ),
+    "SciKit-Learn": LogoMeta(
+        asset_path="/index/skills/library_logos/sklearn.png",
+        link="https://scikit-learn.org/stable/",
+    ),
+    "XGBoost": LogoMeta(
+        asset_path="/index/skills/library_logos/xgboost.png",
+        link="https://xgboost.readthedocs.io/en/latest/",
+    ),
+    "LightGBM": LogoMeta(
+        asset_path="/index/skills/library_logos/lightgbm.svg",
+        link="https://lightgbm.readthedocs.io/en/latest/",
+    ),
+    "PyTorch": LogoMeta(
+        asset_path="/index/skills/library_logos/pytorch.png",
+        link="https://pytorch.org/",
+    ),
+    "InterpretML": LogoMeta(
+        asset_path="/index/skills/library_logos/interpretml.png",
+        link="https://interpret.ml/",
+    ),
+    "SHAP": LogoMeta(
+        asset_path="/index/skills/library_logos/shap.png",
+        link="https://shap.readthedocs.io/en/latest/",
+    ),
+    "StatsModels": LogoMeta(
+        asset_path="/index/skills/library_logos/statsmodels.svg",
+        link="https://www.statsmodels.org/stable/index.html",
+    ),
+    "Nixtla": LogoMeta(
+        asset_path="/index/skills/library_logos/nixtla.png",
+        link="https://nixtlaverse.nixtla.io/",
+    ),
+    "PyMC": LogoMeta(
+        asset_path="/index/skills/library_logos/pymc.svg", link="https://docs.pymc.io/"
+    ),
+    "Scipy": LogoMeta(
+        asset_path="/index/skills/library_logos/scipy.png",
+        link="https://www.scipy.org/",
+    ),
+    "Pyomo": LogoMeta(
+        asset_path="/index/skills/library_logos/pyomo.png", link="http://www.pyomo.org/"
+    ),
+    "Pandas": LogoMeta(
+        asset_path="/index/skills/library_logos/pandas.svg",
+        link="https://pandas.pydata.org/",
+    ),
+    "Ibis": LogoMeta(
+        asset_path="/index/skills/library_logos/ibis.png",
+        link="https://ibis-project.org/",
+    ),
+    "Numpy": LogoMeta(
+        asset_path="/index/skills/library_logos/numpy.svg", link="https://numpy.org/"
+    ),
+    "Cupy": LogoMeta(
+        asset_path="/index/skills/library_logos/cupy.png", link="https://cupy.dev/"
+    ),
+    "Rapids": LogoMeta(
+        asset_path="/index/skills/library_logos/rapids.png", link="https://rapids.ai/"
+    ),
+    "NBDev": LogoMeta(
+        asset_path="/index/skills/library_logos/nbdev.png",
+        link="https://nbdev.fast.ai/",
+    ),
+    "Kedro": LogoMeta(
+        asset_path="/index/skills/library_logos/kedro.png",
+        link="https://kedro.readthedocs.io/en/stable/",
+    ),
+    "Reflex": LogoMeta(
+        asset_path="/index/skills/library_logos/reflex.svg", link="https://reflex.dev/"
+    ),
+    "Matplotlib": LogoMeta(
+        asset_path="/index/skills/library_logos/matplotlib.svg",
+        link="https://matplotlib.org/",
+    ),
+    "Seaborn": LogoMeta(
+        asset_path="/index/skills/library_logos/seaborn.svg",
+        link="https://seaborn.pydata.org/",
+    ),
+    "Plotly": LogoMeta(
+        asset_path="/index/skills/library_logos/plotly.png", link="https://plotly.com/"
+    ),
+}
