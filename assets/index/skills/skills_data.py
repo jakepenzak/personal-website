@@ -19,7 +19,7 @@ skills_data = [
     },
     {
         "subject": "Deep Learning/AI",
-        "rating": 55,
+        "rating": 60,
     },
     {
         "subject": "Web Development",
@@ -89,11 +89,28 @@ tech_logos_dict = {
         asset_path="/index/skills/tech_logos/spark.png",
         link="https://spark.apache.org/",
     ),
+    "duckDB": LogoMeta(
+        asset_path="/index/skills/tech_logos/duckdb.png", link="https://duckdb.org/"
+    ),
     "VS Code": LogoMeta(
         asset_path="/index/skills/tech_logos/vscode.png",
         link="https://code.visualstudio.com/",
     ),
+    "Python": LogoMeta(
+        asset_path="/index/skills/tech_logos/python.png", link="https://www.python.org/"
+    ),
+    "Stata": LogoMeta(
+        asset_path="/index/skills/tech_logos/stata.jpg", link="https://www.stata.com/"
+    ),
+    "Linux": LogoMeta(
+        asset_path="/index/skills/tech_logos/linux.png", link="https://www.linux.org/"
+    ),
+    "PowerBI": LogoMeta(
+        asset_path="/index/skills/tech_logos/powerbi.png",
+        link="https://powerbi.microsoft.com/en-us/",
+    ),
 }
+
 
 library_logos_dict = {
     "EconML": LogoMeta(

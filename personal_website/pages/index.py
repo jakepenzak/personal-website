@@ -143,6 +143,16 @@ def skillsets_section() -> rx.Component:
         height="50vh",
     )
 
+    libraries_heading = rx.heading(
+        """
+            Python Libraries
+            """,
+        font_size="1.5em",
+        font_family="HackBold",
+        text_align="center",
+        padding_top="1em",
+    )
+
     libraries_intro = rx.text(
         """Below is a selection of some of the python libraries 
                 I use or have used in my personal & professional work. This list is by no means exhaustive,
@@ -163,15 +173,7 @@ def skillsets_section() -> rx.Component:
 
     libraries = rx.center(
         rx.vstack(
-            rx.heading(
-                """
-            Python Libraries
-            """,
-                font_size="1.5em",
-                font_family="HackBold",
-                text_align="center",
-                padding_top="1em",
-            ),
+            libraries_heading,
             libraries_intro,
             libraries_grid,
         ),
@@ -199,11 +201,11 @@ def skillsets_section() -> rx.Component:
             image_link(tech_logos_dict[t].asset_path, tech_logos_dict[t].link)
             for t in list(tech_logos_dict.keys())
         ],
-        columns="4",
+        columns="5",
         spacing="4",
         align="center",
         justify="center",
-        padding_y="3em",
+        padding_y="4em",
     )
 
     tech_stack = rx.center(
@@ -238,16 +240,19 @@ def skillsets_section() -> rx.Component:
             ),
             rx.tabs.content(
                 skills_list,
+                padding_y="1em",
                 value="Skills",
             ),
             rx.tabs.content(
                 libraries_intro,
                 libraries_grid,
+                padding_y="1em",
                 value="Python Libraries",
             ),
             rx.tabs.content(
                 stack_intro,
                 stack_grid,
+                padding_y="1em",
                 value="Tech Stack",
             ),
             default_value="Skills",
