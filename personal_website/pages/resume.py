@@ -4,6 +4,7 @@ import reflex as rx
 from personal_website.styles import RESUME_PAGE
 from personal_website.templates import template
 from personal_website.utilities.container import container
+from assets import asset_data
 
 
 # Create the resume page
@@ -69,12 +70,12 @@ def body():
     resume = rx.chakra.link(
         rx.chakra.center(
             rx.chakra.image(
-                src="/resume/resume.jpg",
+                src=asset_data.RESUME_IMAGE,
                 border_radius="15px 50px",
                 border="3px solid #555",
             )
         ),
-        href="/resume/resume.pdf",
+        href=asset_data.RESUME_LINK,
         is_external=True,
         padding_top="0.5em",
         padding_bottom="2em",

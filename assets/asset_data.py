@@ -1,5 +1,9 @@
 from typing import NamedTuple
 
+## COMMON
+# Website Footer Image
+WEBSITE_FOOTER_IMAGE = "/shared/website_bar.png"
+
 # Logo Paths
 FOOTER_LOGO = "/shared/icon-inverted.png"
 LINKEDIN_LOGO = "/shared/social_icons/linkedin.png"
@@ -14,17 +18,10 @@ CONTACT_URL = "mailto:jakepzak@gmail.com"
 LINKEDIN_URL = "https://www.linkedin.com/in/japieniazek/"
 MEDIUM_URL = "https://medium.com/@jakepenzak"
 
-# Article Links
-FWL_URL = "https://towardsdatascience.com/controlling-for-x-9cb51652f7ad"
-LOGISTIC_URL = "https://towardsdatascience.com/predictive-parameters-in-a-logistic-regression-making-sense-of-it-all-476bde9825f3"
-NM1_URL = "https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-1-basic-optimization-theory-ff7c5f966565"
-NM2_URL = "https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-2-constrained-optimization-theory-dc18613c5770"
-NM3_URL = "https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-3-applied-profit-maximization-23a8c16167cd"
-TSNE_URL = "https://towardsdatascience.com/t-sne-from-scratch-ft-numpy-172ee2a61df7"
-DML1_URL = "https://towardsdatascience.com/double-machine-learning-simplified-part-1-basic-causal-inference-applications-3f7afc9852ee"
-DML2_URL = "https://towardsdatascience.com/double-machine-learning-simplified-part-2-extensions-the-cate-99926151cac"
+## Index Page
+INDEX_INTRO = "assets/index/index_intro.md"
+INDEX_PHOTO = "/index/self.jpg"
 
-# Index Page
 skills_data = [
     {
         "subject": "Econometrics/Causal Inference",
@@ -44,11 +41,11 @@ skills_data = [
     },
     {
         "subject": "Deep Learning/AI",
-        "rating": 60,
+        "rating": 65,
     },
     {
         "subject": "Web Development",
-        "rating": 50,
+        "rating": 46,
     },
     {
         "subject": "DevOps + MLOps",
@@ -240,3 +237,75 @@ library_logos_dict = {
         asset_path="/index/skills/library_logos/plotly.png", link="https://plotly.com/"
     ),
 }
+
+## Article Page
+ARTICLES_INTRO = "assets/articles/intro.md"
+
+
+class ArticleMeta(NamedTuple):
+    img_src: str
+    href: str
+    title_src: str
+    descr_src: str
+
+
+articles_meta_dict = {
+    "DML2": ArticleMeta(
+        img_src="/articles/dml2/cover.png",
+        href="https://towardsdatascience.com/double-machine-learning-simplified-part-2-extensions-the-cate-99926151cac",
+        title_src="assets/articles/dml2/title.md",
+        descr_src="assets/articles/dml2/description.md",
+    ),
+    "DML1": ArticleMeta(
+        img_src="/articles/dml1/cover.png",
+        href="https://towardsdatascience.com/double-machine-learning-simplified-part-1-basic-causal-inference-applications-3f7afc9852ee",
+        title_src="assets/articles/dml1/title.md",
+        descr_src="assets/articles/dml1/description.md",
+    ),
+    "TSNE": ArticleMeta(
+        img_src="/articles/tsne/cover.png",
+        href="https://towardsdatascience.com/t-sne-from-scratch-ft-numpy-172ee2a61df7",
+        title_src="assets/articles/tsne/title.md",
+        descr_src="assets/articles/tsne/description.md",
+    ),
+    "NM3": ArticleMeta(
+        img_src="/articles/nm3/cover.jpeg",
+        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-3-applied-profit-maximization-23a8c16167cd",
+        title_src="assets/articles/nm3/title.md",
+        descr_src="assets/articles/nm3/description.md",
+    ),
+    "NM2": ArticleMeta(
+        img_src="/articles/nm2/cover.jpeg",
+        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-2-constrained-optimization-theory-dc18613c5770",
+        title_src="assets/articles/nm2/title.md",
+        descr_src="assets/articles/nm2/description.md",
+    ),
+    "NM1": ArticleMeta(
+        img_src="/articles/nm1/cover.gif",
+        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-1-basic-optimization-theory-ff7c5f966565",
+        title_src="assets/articles/nm1/title.md",
+        descr_src="assets/articles/nm1/description.md",
+    ),
+    "Logistic": ArticleMeta(
+        img_src="/articles/logistic/cover.png",
+        href="https://towardsdatascience.com/predictive-parameters-in-a-logistic-regression-making-sense-of-it-all-476bde9825f3",
+        title_src="assets/articles/logistic/title.md",
+        descr_src="assets/articles/logistic/description.md",
+    ),
+    "FWL": ArticleMeta(
+        img_src="/articles/fwl/cover.png",
+        href="https://towardsdatascience.com/controlling-for-x-9cb51652f7ad",
+        title_src="assets/articles/fwl/title.md",
+        descr_src="assets/articles/fwl/description.md",
+    ),
+}
+
+## Research Page
+THESIS_TITLE = "assets/research/thesis.md"
+CAPSTONE_TITLE = "assets/research/capstone.md"
+
+THESIS_LINK = "/research/thesis.pdf"
+
+## Resume Page
+RESUME_IMAGE = "/resume/resume.jpg"
+RESUME_LINK = "/resume/resume.pdf"

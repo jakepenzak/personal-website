@@ -10,6 +10,7 @@ from assets.asset_data import (
     tech_logos_dict,
     library_logos_dict,
 )
+from assets import asset_data
 from personal_website.utilities.container import container
 
 
@@ -114,7 +115,7 @@ def intro() -> rx.Component:
     body = rx.chakra.box(
         rx.chakra.vstack(
             read_markdown(
-                "assets/index/index_intro.md",
+                asset_data.INDEX_INTRO,
                 component_map=INDEX_PAGE["MARKDOWN_STYLE"],
             ),
         ),
@@ -125,7 +126,7 @@ def intro() -> rx.Component:
         rx.chakra.center(
             rx.chakra.hstack(
                 rx.chakra.image(
-                    src="/index/self.jpg", max_height="35em", max_width="35em"
+                    src=asset_data.INDEX_PHOTO, max_height="35em", max_width="35em"
                 ),
                 rx.chakra.vstack(welcome, body, padding_left="12em"),
                 padding_x="5em",
@@ -133,7 +134,7 @@ def intro() -> rx.Component:
             ),
             rx.chakra.vstack(
                 rx.chakra.image(
-                    src="/index/self.jpg",
+                    src=asset_data.INDEX_PHOTO,
                     height="flex",
                     width="flex",
                     max_height="35em",

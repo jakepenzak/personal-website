@@ -5,6 +5,7 @@ from personal_website.styles import RESEARCH_PAGE
 from personal_website.templates import template
 from personal_website.utilities.markdown import read_markdown
 from personal_website.utilities.container import container
+from assets import asset_data
 
 
 # Create the research page
@@ -21,7 +22,7 @@ def research() -> rx.Component:
         body(),
         rx.chakra.box(
             rx.chakra.center(
-                rx.chakra.image(src="/shared/website_bar.png", width="100%")
+                rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
             ),
             padding_top="5em",
         ),
@@ -81,13 +82,13 @@ def body() -> rx.Component:
         rx.Component: The body component.
     """
     p1 = rx.chakra.link(
-        read_markdown("assets/research/thesis.md"),
-        href="/research/thesis.pdf",
+        read_markdown(asset_data.THESIS_TITLE),
+        href=asset_data.THESIS_LINK,
         _as="thesis_pieniazek.pdf",
         is_external=True,
     )
 
-    p2 = read_markdown("assets/research/capstone.md")
+    p2 = read_markdown(asset_data.CAPSTONE_TITLE)
 
     body = rx.chakra.box(
         container(**RESEARCH_PAGE["BODY_CONTAINER_STYLE"]),

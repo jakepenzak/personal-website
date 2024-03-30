@@ -4,6 +4,7 @@ import reflex as rx
 from personal_website.styles import PROJECTS_PAGE
 from personal_website.templates import template
 from personal_website.utilities.container import container
+from assets import asset_data
 
 
 # Create the projects page
@@ -26,7 +27,9 @@ def projects() -> rx.Component:
             text_align="center",
             width="100%",
         ),
-        rx.chakra.center(rx.chakra.image(src="/shared/website_bar.png", width="100%")),
+        rx.chakra.center(
+            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
+        ),
         position="relative",
         min_height="80vh",
         width="100%",

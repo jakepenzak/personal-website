@@ -144,8 +144,11 @@ ARTICLES_PAGE = {
         ),
     },
     "BODY_CONTAINER_STYLE": {"padding_top": "3em", "padding_x": "3em", "width": "100%"},
-    "MARKDOWN_STYLE_BLOCK": {
+    "MARKDOWN_STYLE_BLOCK_HEADER": {
         "p": lambda text: rx.chakra.text(text, color="#522181", font_family="HackBold")
+    },
+    "MARKDOWN_STYLE_BLOCK_BODY": {
+        "p": lambda text: rx.chakra.text(text, color="black", font_family="Hack")
     },
     "SPLINE_CONTAINER_STYLE": {
         "padding_bottom": "5em",

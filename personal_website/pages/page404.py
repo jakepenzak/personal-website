@@ -3,6 +3,7 @@ import reflex as rx
 from personal_website.base_state import State
 from personal_website.components.footer import footer
 from personal_website.components.navbar import navbar
+from assets import asset_data
 
 
 # Create a 404 page with the navbar, 404 content, spacer, and footer.
@@ -48,7 +49,7 @@ def _404() -> rx.Component:
                 " doesn't exist.",
             ),
             rx.chakra.spacer(height="4em"),
-            rx.chakra.image(src="/shared/website_bar.png", width="100%"),
+            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%"),
         ),
         position="relative",
         min_height="80vh",
