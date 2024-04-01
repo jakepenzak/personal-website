@@ -1,6 +1,6 @@
 import reflex as rx
 
-from personal_website import styles
+from personal_website.structural import styles
 
 # Import all the pages.
 from personal_website.pages import *  # noqa: F403

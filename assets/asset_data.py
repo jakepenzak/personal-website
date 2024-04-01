@@ -22,7 +22,7 @@ MEDIUM_URL = "https://medium.com/@jakepenzak"
 INDEX_INTRO = "assets/index/index_intro.md"
 INDEX_PHOTO = "/index/self.jpg"
 
-skills_data = [
+SKILLS_DATA = [
     {
         "subject": "Econometrics/Causal Inference",
         "rating": 100,
@@ -71,7 +71,10 @@ class LogoMeta(NamedTuple):
     link: str
 
 
-tech_logos_dict = {
+TECH_INTRO_TXT = """Similarly, below is a selection of some of the tech
+                stack & tools that I use or have used in my personal & professional work."""
+
+TECH_LOGOS_META_DICT = {
     "Azure": LogoMeta(
         asset_path="/index/skills/tech_logos/azure.png",
         link="https://azure.microsoft.com/en-us",
@@ -137,8 +140,11 @@ tech_logos_dict = {
     ),
 }
 
+LIBRARY_INTRO_TXT = """Below is a selection of some of the python libraries 
+                I use or have used in my personal & professional work. This list is by no means exhaustive,
+                but it does cover a subset of the core libraries I consider myself to be moderately to highly proficient in."""
 
-library_logos_dict = {
+LIBRARY_LOGOS_META_DICT = {
     "EconML": LogoMeta(
         asset_path="/index/skills/library_logos/econml.jpg",
         link="https://www.microsoft.com/en-us/research/project/econml/",
@@ -249,7 +255,7 @@ class ArticleMeta(NamedTuple):
     descr_src: str
 
 
-articles_meta_dict = {
+ARTICLES_META_DICT = {
     "DML2": ArticleMeta(
         img_src="/articles/dml2/cover.png",
         href="https://towardsdatascience.com/double-machine-learning-simplified-part-2-extensions-the-cate-99926151cac",

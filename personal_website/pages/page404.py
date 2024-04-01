@@ -40,6 +40,7 @@ def _404() -> rx.Component:
     Returns:
         rx.Component: The React component for the 404 page.
     """
+
     return rx.chakra.center(
         rx.chakra.vstack(
             rx.chakra.heading(rx.constants.Page404.TITLE),

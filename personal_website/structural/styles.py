@@ -18,7 +18,6 @@ BASE_STYLE = {
 }
 
 # NAVIGATION BAR
-
 NAVBAR = {
     "NAVBAR_STYLE": {
         "bg": "rgba(255,255,255, 0.9)",
@@ -51,7 +50,6 @@ NAVBAR = {
 }
 
 # FOOTER
-
 FOOTER = {
     "FOOTER_STYLE": {
         "box_shadow": "medium-lg",
@@ -74,7 +72,6 @@ FOOTER = {
 
 
 #  INDEX PAGE
-
 INDEX_PAGE = {
     "HEADER_CONTAINER_STYLE": {
         "padding_top": "2em",
@@ -102,8 +99,6 @@ INDEX_PAGE = {
         "padding_top": "2.5em",
         "padding_bottom": "3.5em",
         "padding_x": [["auto", "2em"]],
-        "position": "relative",
-        "min_height": "80vh",
     },
     "MARKDOWN_STYLE": {
         "a": lambda text, **props: rx.chakra.link(

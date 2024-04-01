@@ -1,10 +1,12 @@
 """The research page."""
 import reflex as rx
 
-from personal_website.styles import RESEARCH_PAGE
-from personal_website.templates import template
-from personal_website.utilities.markdown import read_markdown
-from personal_website.utilities.container import container
+from personal_website.structural import styles
+from personal_website.structural import template
+from personal_website.components.utilities.markdown import read_markdown
+from personal_website.components.utilities.container import container
+from personal_website.components.utilities.header import create_heading
+from personal_website.components.utilities.page_vstack import page_vstack
 from assets import asset_data
 
 
@@ -16,7 +18,7 @@ def research() -> rx.Component:
     Returns:
         rx.Component: The UI for the research page.
     """
-    return rx.chakra.vstack(
+    return page_vstack(
         header(),
         rx.chakra.divider(width="80vh"),
         body(),
@@ -26,11 +28,6 @@ def research() -> rx.Component:
             ),
             padding_top="5em",
         ),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
     )
 
 
@@ -42,32 +39,20 @@ def header() -> rx.Component:
     Returns:
         rx.Component: The heading component.
     """
-    heading = rx.chakra.heading(
-        """
-        Research
-        """,
-        font_size="4em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
 
-    heading_mobile = rx.chakra.heading(
-        """
-        Research
-        """,
-        font_size="2.75em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
+    heading_txt = "Research"
+
+    heading = create_heading(heading_txt)
+    heading_mobile = create_heading(
+        heading_txt,
+        font_size="2.5em",
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
     header = rx.chakra.box(
-        container(**RESEARCH_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
+        container(**styles.RESEARCH_PAGE["HEADER_CONTAINER_STYLE"]),
+        heading,
+        heading_mobile,
     )
 
     return header
@@ -91,7 +76,7 @@ def body() -> rx.Component:
     p2 = read_markdown(asset_data.CAPSTONE_TITLE)
 
     body = rx.chakra.box(
-        container(**RESEARCH_PAGE["BODY_CONTAINER_STYLE"]),
+        container(**styles.RESEARCH_PAGE["BODY_CONTAINER_STYLE"]),
         rx.chakra.vstack(p1, p2, spacing="3em", text_align="left"),
         padding_x="2em",
     )

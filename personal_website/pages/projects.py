@@ -1,9 +1,11 @@
 """The projects page."""
 import reflex as rx
 
-from personal_website.styles import PROJECTS_PAGE
-from personal_website.templates import template
-from personal_website.utilities.container import container
+from personal_website.structural import styles
+from personal_website.structural import template
+from personal_website.components.utilities.container import container
+from personal_website.components.utilities.header import create_heading
+from personal_website.components.utilities.page_vstack import page_vstack
 from assets import asset_data
 
 
@@ -16,7 +18,7 @@ def projects() -> rx.Component:
     Returns:
         rx.Component: The UI for the projects page.
     """
-    return rx.chakra.vstack(
+    return page_vstack(
         header(),
         rx.chakra.divider(width="80vh"),
         rx.chakra.text(
@@ -30,38 +32,22 @@ def projects() -> rx.Component:
         rx.chakra.center(
             rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
         ),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
     )
 
 
 ## Header Section
 def header():
-    heading = rx.chakra.heading(
-        "Projects",
-        font_size="4em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
-
-    heading_mobile = rx.chakra.heading(
+    heading = create_heading("Projects")
+    heading_mobile = create_heading(
         "Projects",
         font_size="2.75em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
     header = rx.chakra.box(
-        container(**PROJECTS_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
+        container(**styles.PROJECTS_PAGE["HEADER_CONTAINER_STYLE"]),
+        heading,
+        heading_mobile,
     )
 
     return header

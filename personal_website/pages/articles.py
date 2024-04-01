@@ -2,11 +2,12 @@
 import reflex as rx
 
 from assets import asset_data
-from assets.asset_data import articles_meta_dict
-from personal_website.styles import ARTICLES_PAGE
-from personal_website.templates import template
-from personal_website.utilities.markdown import read_markdown
-from personal_website.utilities.container import container
+from personal_website.structural import styles
+from personal_website.structural import template
+from personal_website.components.utilities.markdown import read_markdown
+from personal_website.components.utilities.container import container
+from personal_website.components.utilities.header import create_heading
+from personal_website.components.utilities.page_vstack import page_vstack
 
 
 # Create the articles page
@@ -17,18 +18,13 @@ def articles() -> rx.Component:
     Returns:
         The UI for the articles page.
     """
-    return rx.chakra.vstack(
+    return page_vstack(
         header(),
         rx.chakra.divider(width="80vh"),
         body(),
         rx.chakra.center(
             rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
         ),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
     )
 
 
@@ -41,27 +37,10 @@ def header() -> rx.Component:
         rx.Component: The header section of the articles page.
     """
 
-    heading = rx.chakra.heading(
-        """
-        Articles
-        """,
-        font_size="4em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
-
-    heading_mobile = rx.chakra.heading(
-        """
-        Articles
-        """,
+    heading = create_heading("Articles")
+    heading_mobile = create_heading(
+        "Articles",
         font_size="2.75em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
@@ -69,31 +48,16 @@ def header() -> rx.Component:
         rx.chakra.vstack(
             read_markdown(
                 asset_data.ARTICLES_INTRO,
-                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
-            ),
-        ),
-        width="100%",
-        padding_x="12em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
-
-    markdown_content_mobile = rx.chakra.box(
-        rx.chakra.vstack(
-            read_markdown(
-                asset_data.ARTICLES_INTRO,
-                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
+                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
             ),
         ),
         width="100%",
         padding_x="6em",
-        display=["flex", "flex", "none", "none", "none", "none"],
     )
 
     header = rx.chakra.box(
-        container(**ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
-        rx.chakra.vstack(
-            heading, heading_mobile, markdown_content, markdown_content_mobile
-        ),
+        container(**styles.ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
+        rx.chakra.vstack(heading, heading_mobile, markdown_content),
     )
 
     return header
@@ -110,10 +74,10 @@ def body() -> rx.Component:
 
     article_grid = rx.chakra.box(
         create_article_grid(
-            columns="3", display=["None", "None", "None", "flex", "flex", "flex"]
+            columns="3", display=["None", "None", "flex", "flex", "flex", "flex"]
         ),
         create_article_grid(
-            columns="1", display=["flex", "flex", "flex", "None", "None", "None"]
+            columns="1", display=["flex", "flex", "None", "None", "None", "None"]
         ),
     )
 
@@ -138,21 +102,20 @@ def image_link_description(
     return rx.link(
         rx.vstack(
             rx.flex(
-                rx.image(src=img_src, max_height="25em", width="100%"),
+                rx.image(src=img_src),
                 direction="column",
                 align="center",
                 justify="center",
-                width="100%",
             ),
             read_markdown(
                 title_src,
-                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_HEADER"],
+                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_HEADER"],
                 height="100%",
                 width="100%",
             ),
             read_markdown(
                 descr_src,
-                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_BODY"],
+                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_BODY"],
                 height="100%",
                 width="100%",
             ),
@@ -175,17 +138,18 @@ def create_article_grid(
     Returns:
         rx.Component: The grid of articles.
     """
+
     article_grid = rx.container(
-        container(**ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
+        container(**styles.ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
         rx.grid(
             *[
                 image_link_description(
-                    articles_meta_dict[article].img_src,
-                    articles_meta_dict[article].href,
-                    articles_meta_dict[article].title_src,
-                    articles_meta_dict[article].descr_src,
+                    asset_data.ARTICLES_META_DICT[article].img_src,
+                    asset_data.ARTICLES_META_DICT[article].href,
+                    asset_data.ARTICLES_META_DICT[article].title_src,
+                    asset_data.ARTICLES_META_DICT[article].descr_src,
                 )
-                for article in list(articles_meta_dict.keys())
+                for article in list(asset_data.ARTICLES_META_DICT.keys())
             ],
             columns=columns,
             spacing="9",

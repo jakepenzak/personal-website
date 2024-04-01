@@ -2,16 +2,11 @@
 import reflex as rx
 from typing import Tuple
 from personal_website.components.spline import spline_component_index_page
-from personal_website.styles import INDEX_PAGE
-from personal_website.templates import template
-from personal_website.utilities.markdown import read_markdown
-from assets.asset_data import (
-    skills_data,
-    tech_logos_dict,
-    library_logos_dict,
-)
+from personal_website.structural import styles
+from personal_website.structural import template
+from personal_website.components.utilities.markdown import read_markdown
+from personal_website.components.utilities.container import container
 from assets import asset_data
-from personal_website.utilities.container import container
 
 
 # Create the Home page
@@ -27,26 +22,13 @@ def index() -> rx.Component:
         header(),
         intro(),
         skillsets_section(),
+        position="relative",
+        min_height="80vh",
         width="100%",
         max_width="100%",
         overflow_x="hidden",
-        **INDEX_PAGE["INDEX_PAGE_STYLE"],
+        **styles.INDEX_PAGE["INDEX_PAGE_STYLE"],
     )
-
-
-## Helper functions
-def image_link(src: str, href: str) -> rx.Component:
-    """
-    Creates a link with an image.
-
-    Args:
-        src (str): The source URL of the image.
-        href (str): The URL that the link should navigate to.
-
-    Returns:
-        rx.Component: The link component with the specified image source and target URL.
-    """
-    return rx.link(rx.image(src=src), href=href, target="_blank")
 
 
 ## Header Section
@@ -87,7 +69,7 @@ def header() -> rx.Component:
             ),
             display=["flex", "flex", "flex", "none", "none", "none"],
         ),
-        **INDEX_PAGE["HEADER_CONTAINER_STYLE"],
+        **styles.INDEX_PAGE["HEADER_CONTAINER_STYLE"],
     )
 
     return header
@@ -116,13 +98,13 @@ def intro() -> rx.Component:
         rx.chakra.vstack(
             read_markdown(
                 asset_data.INDEX_INTRO,
-                component_map=INDEX_PAGE["MARKDOWN_STYLE"],
+                component_map=styles.INDEX_PAGE["MARKDOWN_STYLE"],
             ),
         ),
     )
 
     intro = rx.chakra.box(
-        container(**INDEX_PAGE["INTRO_CONTAINER_STYLE"]),
+        container(**styles.INDEX_PAGE["INTRO_CONTAINER_STYLE"]),
         rx.chakra.center(
             rx.chakra.hstack(
                 rx.chakra.image(
@@ -137,8 +119,8 @@ def intro() -> rx.Component:
                     src=asset_data.INDEX_PHOTO,
                     height="flex",
                     width="flex",
-                    max_height="35em",
-                    max_width="35em",
+                    max_height="25em",
+                    max_width="25em",
                 ),
                 rx.chakra.vstack(welcome, body),
                 padding_x="3em",
@@ -182,7 +164,7 @@ def skillsets_section() -> rx.Component:
             ),
             rx.recharts.polar_grid(),
             rx.recharts.polar_angle_axis(data_key="subject"),
-            data=skills_data,
+            data=asset_data.SKILLS_DATA,
         ),
         width="100%",
         height="50vh",
@@ -208,7 +190,7 @@ def skillsets_section() -> rx.Component:
     )
 
     skill_section = rx.box(
-        rx.container(**INDEX_PAGE["SKILLS_CONTAINER_STYLE"]),
+        rx.container(**styles.INDEX_PAGE["SKILLS_CONTAINER_STYLE"]),
         rx.vstack(
             header,
             skills_radar,
@@ -230,6 +212,20 @@ def skillsets_section() -> rx.Component:
     return skill_section
 
 
+def image_link(src: str, href: str) -> rx.Component:
+    """
+    Creates a link with an image.
+
+    Args:
+        src (str): The source URL of the image.
+        href (str): The URL that the link should navigate to.
+
+    Returns:
+        rx.Component: The link component with the specified image source and target URL.
+    """
+    return rx.link(rx.image(src=src), href=href, target="_blank")
+
+
 def create_libraries_section() -> Tuple[rx.Component]:
     """
     Creates a section for displaying Python libraries.
@@ -247,16 +243,15 @@ def create_libraries_section() -> Tuple[rx.Component]:
         padding_top="1em",
     )
 
-    libraries_intro = rx.text(
-        """Below is a selection of some of the python libraries 
-                I use or have used in my personal & professional work. This list is by no means exhaustive,
-                but it does cover a subset of the core libraries I consider myself to be moderately to highly proficient in."""
-    )
+    libraries_intro = rx.text(asset_data.LIBRARY_INTRO_TXT)
 
     libraries_grid = rx.grid(
         *[
-            image_link(library_logos_dict[lib].asset_path, library_logos_dict[lib].link)
-            for lib in list(library_logos_dict.keys())
+            image_link(
+                asset_data.LIBRARY_LOGOS_META_DICT[lib].asset_path,
+                asset_data.LIBRARY_LOGOS_META_DICT[lib].link,
+            )
+            for lib in list(asset_data.LIBRARY_LOGOS_META_DICT.keys())
         ],
         columns="6",
         spacing="4",
@@ -295,15 +290,15 @@ def create_tech_stack_section() -> Tuple[rx.Component]:
         padding_top="1em",
     )
 
-    stack_intro = rx.text(
-        """Similarly, below is a selection of some of the tech
-                stack & tools that I use or have used in my personal & professional work."""
-    )
+    stack_intro = rx.text(asset_data.TECH_INTRO_TXT)
 
     stack_grid = rx.grid(
         *[
-            image_link(tech_logos_dict[t].asset_path, tech_logos_dict[t].link)
-            for t in list(tech_logos_dict.keys())
+            image_link(
+                asset_data.TECH_LOGOS_META_DICT[t].asset_path,
+                asset_data.TECH_LOGOS_META_DICT[t].link,
+            )
+            for t in list(asset_data.TECH_LOGOS_META_DICT.keys())
         ],
         columns="5",
         spacing="4",
@@ -343,7 +338,10 @@ def create_skills_tabs(**kwargs) -> rx.Component:
 
     ## Used for mobile and tablet view
     skills_list = rx.unordered_list(
-        *[rx.list_item(skill) for skill in [d["subject"] for d in skills_data]]
+        *[
+            rx.list_item(skill)
+            for skill in [d["subject"] for d in asset_data.SKILLS_DATA]
+        ]
     )
 
     skills_tabs = rx.center(

@@ -1,7 +1,7 @@
 import reflex as rx
 
 from assets import asset_data
-from personal_website.styles import FOOTER
+from personal_website.structural import styles
 
 
 def footer() -> rx.Component:
@@ -17,34 +17,34 @@ def footer() -> rx.Component:
                 rx.chakra.link(
                     rx.chakra.image(src=asset_data.LINKEDIN_LOGO, height="3em"),
                     href=asset_data.LINKEDIN_URL,
-                    style=FOOTER["FOOTER_ITEM_STYLE"],
+                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
                 rx.chakra.link(
                     rx.chakra.image(src=asset_data.MEDIUM_LOGO, height="3em"),
                     href=asset_data.MEDIUM_URL,
-                    style=FOOTER["FOOTER_ITEM_STYLE"],
+                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
                 rx.chakra.link(
                     rx.chakra.image(src=asset_data.GITHUB_LOGO, height="3em"),
                     href=asset_data.GITHUB_URL,
-                    style=FOOTER["FOOTER_ITEM_STYLE"],
+                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
                 rx.chakra.link(
                     rx.chakra.image(src=asset_data.EMAIL_LOGO, height="3em"),
                     href=asset_data.CONTACT_URL,
-                    style=FOOTER["FOOTER_ITEM_STYLE"],
+                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                 ),
             ),
-            footer_logo(**FOOTER["FOOTER_LOGO_STYLE"]),
+            footer_logo(**styles.FOOTER["FOOTER_LOGO_STYLE"]),
             justify="space-between",
             color="#94a3b8",
             align_items="top",
             min_width="100%",
         ),
-        **FOOTER["FOOTER_STYLE"],
+        **styles.FOOTER["FOOTER_STYLE"],
     )
 
     return footer

@@ -1,9 +1,11 @@
 """The resume page."""
 import reflex as rx
 
-from personal_website.styles import RESUME_PAGE
-from personal_website.templates import template
-from personal_website.utilities.container import container
+from personal_website.structural import styles
+from personal_website.structural import template
+from personal_website.components.utilities.container import container
+from personal_website.components.utilities.header import create_heading
+from personal_website.components.utilities.page_vstack import page_vstack
 from assets import asset_data
 
 
@@ -15,15 +17,10 @@ def resume() -> rx.Component:
     Returns:
         rx.Component: The UI for the resume page.
     """
-    return rx.chakra.vstack(
+    return page_vstack(
         heading(),
         rx.chakra.divider(width="80vh"),
         body(),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
     )
 
 
@@ -31,39 +28,24 @@ def resume() -> rx.Component:
 def heading() -> rx.Component:
     """The heading section of the resume page."""
 
-    heading = rx.chakra.heading(
-        """
-        Professional Resume
-        """,
-        font_size="4em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
-
-    heading_mobile = rx.chakra.heading(
-        """
-        Professional Resume
-        """,
+    heading = create_heading("Professional Resume")
+    heading_mobile = create_heading(
+        "Professional Resume",
         font_size="2.75em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
     header = rx.chakra.box(
-        container(**RESUME_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
+        container(**styles.RESUME_PAGE["HEADER_CONTAINER_STYLE"]),
+        heading,
+        heading_mobile,
     )
 
     return header
 
 
 ## Resume Body
-def body():
+def body() -> rx.Component:
     """The body section of the resume page."""
 
     # Resume
