@@ -1,330 +1,16 @@
 """The articles page."""
-
 import reflex as rx
 
-from assets.shared import links
-from personal_website.styles import ARTICLES_PAGE
-from personal_website.templates import template
-from personal_website.utilities.markdown import read_markdown
+from assets import asset_data
+from personal_website.structural import styles
+from personal_website.structural import template
+from personal_website.components.utilities.markdown import read_markdown
+from personal_website.components.utilities.container import container
+from personal_website.components.utilities.header import create_heading
+from personal_website.components.utilities.page_vstack import page_vstack
 
 
-def container(*children, **kwargs):
-    kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.container(
-        *children,
-        **kwargs,
-    )
-
-
-## Articles Header
-def header():
-    """The introduction section of the articles page."""
-
-    heading = rx.heading(
-        """
-        Articles
-        """,
-        font_size="4em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
-
-    heading_mobile = rx.heading(
-        """
-        Articles
-        """,
-        font_size="2.75em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["flex", "flex", "none", "none", "none", "none"],
-    )
-
-    markdown_content = rx.box(
-        rx.vstack(
-            read_markdown(
-                "assets/articles/intro.md",
-                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
-            ),
-        ),
-        width="100%",
-        padding_x="12em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
-
-    markdown_content_mobile = rx.box(
-        rx.vstack(
-            read_markdown(
-                "assets/articles/intro.md",
-                component_map=ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
-            ),
-        ),
-        width="100%",
-        padding_x="6em",
-        display=["flex", "flex", "none", "none", "none", "none"],
-    )
-
-    intro = rx.box(
-        container(**ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
-        rx.vstack(heading, heading_mobile, markdown_content, markdown_content_mobile),
-    )
-
-    return intro
-
-
-## Articles Body
-def body():
-    """The body section of the articles page."""
-
-    # Blocks
-    fwl = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/fwl/cover.png",
-                        height="100%",
-                        width="100%",
-                        max_width="25em",
-                        max_height="25em",
-                    ),
-                    read_markdown(
-                        "assets/articles/fwl/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/fwl/description.md"),
-                )
-            ),
-            padding_x="3em",
-            padding_bottom="3em",
-        ),
-        href=links.FWL_URL,
-        is_external=True,
-    )
-
-    logistic = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/logistic/cover.png",
-                        height="100%",
-                        width="100%",
-                        max_width="35em",
-                        max_height="35em",
-                    ),
-                    read_markdown(
-                        "assets/articles/logistic/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/logistic/description.md"),
-                )
-            ),
-            padding_x="3em",
-            padding_bottom="3em",
-        ),
-        href=links.LOGISTIC_URL,
-        is_external=True,
-    )
-
-    nm1 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/nm1/cover.gif",
-                        height="100%",
-                        width="100%",
-                        max_width="25em",
-                        max_height="25em",
-                    ),
-                    read_markdown(
-                        "assets/articles/nm1/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/nm1/description.md"),
-                )
-            ),
-            padding_x="3em",
-            padding_bottom="3em",
-        ),
-        href=links.NM1_URL,
-        is_external=True,
-    )
-
-    nm2 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/nm2/cover.jpeg",
-                        height="100%",
-                        width="100%",
-                        max_width="25em",
-                        max_height="25em",
-                    ),
-                    read_markdown(
-                        "assets/articles/nm2/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/nm2/description.md"),
-                )
-            ),
-            # padding_x="3em", MIDDLE COLUMN
-            padding_bottom="3em",
-        ),
-        href=links.NM2_URL,
-        is_external=True,
-    )
-
-    nm3 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/nm3/cover.jpeg",
-                        height="100%",
-                        width="100%",
-                        max_width="25em",
-                        max_height="25em",
-                    ),
-                    read_markdown(
-                        "assets/articles/nm3/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/nm3/description.md"),
-                )
-            ),
-            padding_x="3em",
-            padding_bottom="3em",
-        ),
-        href=links.NM3_URL,
-        is_external=True,
-    )
-
-    tsne = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/tsne/cover.png",
-                        height="100%",
-                        width="100%",
-                        max_width="25em",
-                        max_height="25em",
-                    ),
-                    read_markdown(
-                        "assets/articles/tsne/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/tsne/description.md"),
-                )
-            ),
-            padding_x="3em",
-            padding_bottom="3em",
-        ),
-        href=links.TSNE_URL,
-        is_external=True,
-    )
-
-    dml1 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/dml1/cover.png",
-                        height="100%",
-                        width="100%",
-                        max_width="25em",
-                        max_height="25em",
-                    ),
-                    read_markdown(
-                        "assets/articles/dml1/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/dml1/description.md"),
-                )
-            ),
-            # padding_x="3em", MIDDLE COLUMN
-            padding_bottom="3em",
-        ),
-        href=links.DML1_URL,
-        is_external=True,
-    )
-
-    dml2 = rx.link(
-        rx.box(
-            rx.center(
-                rx.vstack(
-                    rx.image(
-                        src="/articles/dml2/cover.png",
-                        height="100%",
-                        width="100%",
-                        max_width="25em",
-                        max_height="25em",
-                    ),
-                    read_markdown(
-                        "assets/articles/dml2/title.md",
-                        component_map=ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK"],
-                    ),
-                    read_markdown("assets/articles/dml2/description.md"),
-                )
-            ),
-            padding_x="3em",
-            padding_bottom="3em",
-        ),
-        href=links.DML2_URL,
-        is_external=True,
-    )
-
-    intro = rx.box(
-        container(**ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
-        rx.hstack(
-            dml2,
-            dml1,
-            tsne,
-            display=["none", "none", "none", "none", "flex", "flex"],
-            padding_bottom="5em",
-            padding_x="5em",
-        ),
-        rx.hstack(
-            nm3,
-            nm2,
-            nm1,
-            display=["none", "none", "none", "none", "flex", "flex"],
-            padding_bottom="5em",
-            padding_x="5em",
-        ),
-        rx.center(
-            rx.hstack(
-                logistic,
-                fwl,
-                display=["none", "none", "none", "none", "flex", "flex"],
-                # padding_bottom="5em",
-                padding_x="10em",
-            )
-        ),
-        rx.vstack(
-            dml2,
-            rx.box(dml1, padding_x="3em"),
-            tsne,
-            nm3,
-            rx.box(nm2, padding_x="3em"),
-            nm1,
-            logistic,
-            fwl,
-            display=["flex", "flex", "flex", "flex", "none", "none"],
-            padding_x="1em",
-        ),
-    )
-
-    return intro
-
-
+# Create the articles page
 @template(route="/articles", title="Articles")
 def articles() -> rx.Component:
     """The articles page.
@@ -332,14 +18,148 @@ def articles() -> rx.Component:
     Returns:
         The UI for the articles page.
     """
-    return rx.vstack(
+    return page_vstack(
         header(),
-        rx.divider(width="80vh"),
+        rx.chakra.divider(width="80vh"),
         body(),
-        rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
+        rx.chakra.center(
+            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
+        ),
     )
+
+
+## Header Section
+def header() -> rx.Component:
+    """
+    The header section of the articles page.
+
+    Returns:
+        rx.Component: The header section of the articles page.
+    """
+
+    heading = create_heading("Articles")
+    heading_mobile = create_heading(
+        "Articles",
+        font_size="2.75em",
+        display=["flex", "flex", "none", "none", "none", "none"],
+    )
+
+    markdown_content = rx.chakra.box(
+        rx.chakra.vstack(
+            read_markdown(
+                asset_data.ARTICLES_INTRO,
+                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
+            ),
+        ),
+        width="100%",
+        padding_x="6em",
+    )
+
+    header = rx.chakra.box(
+        container(**styles.ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
+        rx.chakra.vstack(heading, heading_mobile, markdown_content),
+    )
+
+    return header
+
+
+## Body Section
+def body() -> rx.Component:
+    """
+    Returns the body component for the articles page.
+
+    Returns:
+        rx.Component: The body component for the articles page.
+    """
+
+    article_grid = rx.chakra.box(
+        create_article_grid(
+            columns="3", display=["None", "None", "flex", "flex", "flex", "flex"]
+        ),
+        create_article_grid(
+            columns="1", display=["flex", "flex", "None", "None", "None", "None"]
+        ),
+    )
+
+    return article_grid
+
+
+def image_link_description(
+    img_src: str, href: str, title_src: str, descr_src: str
+) -> rx.Component:
+    """
+    Creates a component that represents an image link with a title and description.
+
+    Args:
+        img_src (str): The source URL of the image.
+        href (str): The URL that the link should navigate to.
+        title_src (str): The source URL of the title content.
+        descr_src (str): The source URL of the description content.
+
+    Returns:
+        rx.Component: The generated component.
+    """
+    return rx.link(
+        rx.vstack(
+            rx.flex(
+                rx.image(src=img_src),
+                direction="column",
+                align="center",
+                justify="center",
+            ),
+            read_markdown(
+                title_src,
+                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_HEADER"],
+                height="100%",
+                width="100%",
+            ),
+            read_markdown(
+                descr_src,
+                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_BODY"],
+                height="100%",
+                width="100%",
+            ),
+        ),
+        href=href,
+        target="_blank",
+    )
+
+
+def create_article_grid(
+    columns: str, display: list = ["flex", "flex", "flex", "flex", "flex", "flex"]
+) -> rx.Component:
+    """
+    Creates a grid of articles with specified number of columns and display style.
+
+    Args:
+        columns (str): The number of columns in the grid.
+        display (list, optional): The display style. Defaults to ["flex", "flex", "flex", "flex", "flex", "flex"].
+
+    Returns:
+        rx.Component: The grid of articles.
+    """
+
+    article_grid = rx.container(
+        container(**styles.ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
+        rx.grid(
+            *[
+                image_link_description(
+                    asset_data.ARTICLES_META_DICT[article].img_src,
+                    asset_data.ARTICLES_META_DICT[article].href,
+                    asset_data.ARTICLES_META_DICT[article].title_src,
+                    asset_data.ARTICLES_META_DICT[article].descr_src,
+                )
+                for article in list(asset_data.ARTICLES_META_DICT.keys())
+            ],
+            columns=columns,
+            spacing="9",
+            align="center",
+            justify="center",
+            padding_y="1em",
+            padding_x="2em",
+        ),
+        display=display,
+        padding_x="2em",
+    )
+
+    return article_grid

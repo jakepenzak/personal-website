@@ -14,7 +14,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN python3.11 -m venv $VIRTUAL_ENV
 
 # Install app requirements and reflex inside virtualenv
-RUN pip install -r env/requirements.txt
+RUN pip install -r env/requirements.txt -r env/reflex_requirements.txt
 
 # Deploy templates and prepare app
 RUN reflex init

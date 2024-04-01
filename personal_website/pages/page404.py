@@ -1,28 +1,56 @@
 import reflex as rx
 
-from personal_website import styles
 from personal_website.base_state import State
 from personal_website.components.footer import footer
 from personal_website.components.navbar import navbar
+from assets import asset_data
+
+
+# Create a 404 page with the navbar, 404 content, spacer, and footer.
+def index404() -> rx.Component:
+    """
+    Renders the 404 page with the navbar, 404 content, spacer, and footer.
+
+    Returns:
+        rx.Component: The rendered 404 page component.
+    """
+    return rx.chakra.box(navbar(), _404(), rx.chakra.spacer(), footer(), width="100%")
 
 
 class State404(State):
+    """
+    Represents the state for a 404 page.
+
+    Attributes:
+        origin_url (str): The original URL that led to the 404 page.
+    """
+
     @rx.var
     def origin_url(self) -> str:
         return self.router_data.get("asPath", "")
 
 
-def _404():
-    return rx.center(
-        rx.vstack(
-            rx.heading(rx.constants.Page404.TITLE),
-            rx.text(
+def _404() -> rx.Component:
+    """
+    Returns a React component for the 404 page.
+
+    The component displays a centered layout with a heading, a text message indicating that the page doesn't exist,
+    a spacer, and an image.
+
+    Returns:
+        rx.Component: The React component for the 404 page.
+    """
+
+    return rx.chakra.center(
+        rx.chakra.vstack(
+            rx.chakra.heading(rx.constants.Page404.TITLE),
+            rx.chakra.text(
                 "Oops, the page at ",
-                rx.code(State404.origin_url),
+                rx.chakra.code(State404.origin_url),
                 " doesn't exist.",
             ),
-            rx.spacer(height="4em"),
-            rx.image(src="/shared/website_bar.png", width="100%"),
+            rx.chakra.spacer(height="4em"),
+            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%"),
         ),
         position="relative",
         min_height="80vh",
@@ -30,8 +58,3 @@ def _404():
         max_width="100%",
         overflow_x="hidden",
     )
-
-
-def index():
-    # Wrap the component in the template.
-    return rx.box(navbar(), _404(), rx.spacer(), footer(), width="100%")

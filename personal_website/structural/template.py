@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from personal_website import styles
 from typing import Callable
+
 import reflex as rx
+
 
 # Meta tags for the app.
 default_meta = [
@@ -61,8 +62,8 @@ def template(
             on_load=on_load,
         )
         def templated_page():
-            from personal_website.components.navbar import navbar
             from personal_website.components.footer import footer
+            from personal_website.components.navbar import navbar
 
             return rx.box(navbar(), page_content(), footer())
 

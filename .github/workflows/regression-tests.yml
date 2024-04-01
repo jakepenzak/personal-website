@@ -1,0 +1,32 @@
+name: regression-tests
+
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  reflex-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.11' 
+      - name: Install Requirements for personal_website
+        run: pip install -r env/requirements.txt -r env/reflex_requirements.txt
+      - name: Init Website for personal_website
+        run: reflex init
+      - name: Export the website
+        run: reflex export
+      - name: Test Docker Build
+        run: docker compose build

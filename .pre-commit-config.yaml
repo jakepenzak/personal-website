@@ -1,12 +1,11 @@
 repos:
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        args: ["--apply"]
-  - repo: https://github.com/psf/black
-    rev: 23.1.0
-    hooks:
-      - id: black
-        args: ["--config", "pyproject.toml"]
-        language_version: python3.11
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.2.2
+  hooks:
+  - id: ruff
+    types_or: [ python, pyi, jupyter ]
+    args: [--fix]
+    exclude: econometricML/
+  - id: ruff-format
+    types_or: [ python, pyi, jupyter ]
+    exclude: econometricML/

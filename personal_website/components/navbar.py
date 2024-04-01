@@ -1,47 +1,123 @@
 import reflex as rx
 
-from personal_website.base_state import State
-from personal_website.styles import NAVBAR
-
-NAVBAR_LOGO = "/shared/icon.png"
+from personal_website.structural import styles
+from assets import asset_data
 
 
-def navbar_logo(**style_props):
-    """Create a Reflex logo component.
+def navbar() -> rx.Component:
+    """
+    Create the navbar component.
+
+    Returns:
+        rx.Component: The created navbar component.
+    """
+
+    navbar = rx.chakra.vstack(
+        rx.chakra.box(
+            rx.chakra.hstack(
+                navbar_logo(**styles.NAVBAR["NAVBAR_LOGO_STYLE"]),
+                rx.chakra.spacer(),
+                rx.chakra.link(
+                    "Articles",
+                    href="/articles",
+                    display=["none", "none", "none", "none", "flex", "flex"],
+                    **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
+                ),
+                rx.chakra.link(
+                    "Professional Resume",
+                    href="/resume",
+                    display=["none", "none", "none", "none", "flex", "flex"],
+                    **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
+                ),
+                rx.chakra.link(
+                    "Research",
+                    href="/research",
+                    display=["none", "none", "none", "none", "flex", "flex"],
+                    **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
+                ),
+                rx.chakra.menu(
+                    rx.chakra.menu_button(
+                        rx.chakra.hstack(
+                            rx.chakra.text(
+                                "Projects", **styles.NAVBAR["NAVAR_MENU_BUTTON_STYLE"]
+                            ),
+                            rx.chakra.icon(
+                                tag="chevron_down",
+                                **styles.NAVBAR["NAVBAR_MENU_CHEVRON_STYLE"],
+                            ),
+                        ),
+                        display=["none", "none", "none", "none", "flex", "flex"],
+                        width="8em",
+                        border="none",
+                        _hover={"text_decoration": "underline"},
+                    ),
+                    rx.chakra.menu_list(
+                        rx.chakra.link(
+                            rx.chakra.menu_item(
+                                "About", **styles.NAVBAR["NAVBAR_DROPDOWN_STYLE"]
+                            ),
+                            href="/projects",
+                        ),
+                        rx.chakra.menu_divider(),
+                        rx.chakra.link(
+                            rx.chakra.menu_item(
+                                "Forthcoming", **styles.NAVBAR["NAVBAR_DROPDOWN_STYLE"]
+                            ),
+                            href="/projects",
+                        ),
+                    ),
+                ),
+                menu_button(),
+            ),
+            **styles.NAVBAR["NAVBAR_STYLE"],
+        ),
+        position="sticky",
+        top="0",
+        z_index="999",
+    )
+
+    return navbar
+
+
+def navbar_logo(**style_props) -> rx.Component:
+    """
+    Create a Reflex logo component.
 
     Args:
         style_props: The style properties to apply to the component.
+
+    Returns:
+        rx.Component: The logo component.
     """
-    return rx.link(
-        rx.image(
-            src=NAVBAR_LOGO,
+    navbar_logo = rx.chakra.link(
+        rx.chakra.image(
+            src=asset_data.NAVBAR_LOGO,
             **style_props,
         ),
         href="/",
     )
 
+    return navbar_logo
+
 
 ## For mobile & when screen is small
-pages = ["Articles", "Resume", "Research", "Projects"]
-
-
 def menu_button() -> rx.Component:
     """The menu button on the top right of the page.
 
     Returns:
-        The menu button component.
+        rx.Component: The menu button component.
     """
-    from reflex.page import get_decorated_pages
+    pages = ["Articles", "Resume", "Research", "Projects"]
 
-    return rx.box(
-        rx.menu(
-            rx.menu_button(
-                rx.icon(tag="hamburger", size="4em"),
+    menu_button = rx.chakra.box(
+        rx.chakra.menu(
+            rx.chakra.menu_button(
+                rx.chakra.icon(tag="hamburger", size="4em"),
             ),
-            rx.menu_list(
+            rx.chakra.menu_list(
                 *[
-                    rx.menu_item(
-                        rx.link(
+                    rx.chakra.menu_item(
+                        rx.chakra.link(
                             page,
                             href=f"/{page.lower()}",
                             width="100%",
@@ -54,71 +130,4 @@ def menu_button() -> rx.Component:
         display=["flex", "flex", "flex", "flex", "none", "none"],
     )
 
-
-def navbar(sidebar: rx.Component = None) -> rx.Component:
-    """Create the navbar component.
-
-    Args:
-        sidebar: The sidebar component to use.
-    """
-
-    # Create the navbar component.
-    return rx.vstack(
-        rx.box(
-            rx.hstack(
-                navbar_logo(**NAVBAR["NAVBAR_LOGO_STYLE"]),
-                rx.spacer(),
-                rx.link(
-                    "Articles",
-                    href="/articles",
-                    display=["none", "none", "none", "none", "flex", "flex"],
-                    **NAVBAR["NAVBAR_BUTTON_STYLE"],
-                ),
-                rx.link(
-                    "Professional Resume",
-                    href="/resume",
-                    display=["none", "none", "none", "none", "flex", "flex"],
-                    **NAVBAR["NAVBAR_BUTTON_STYLE"],
-                ),
-                rx.link(
-                    "Research",
-                    href="/research",
-                    display=["none", "none", "none", "none", "flex", "flex"],
-                    **NAVBAR["NAVBAR_BUTTON_STYLE"],
-                ),
-                rx.menu(
-                    rx.menu_button(
-                        rx.hstack(
-                            rx.text("Projects", **NAVBAR["NAVAR_MENU_BUTTON_STYLE"]),
-                            rx.icon(
-                                tag="chevron_down",
-                                **NAVBAR["NAVBAR_MENU_CHEVRON_STYLE"],
-                            ),
-                        ),
-                        display=["none", "none", "none", "none", "flex", "flex"],
-                        width="8em",
-                        border="none",
-                        _hover={"text_decoration": "underline"},
-                    ),
-                    rx.menu_list(
-                        rx.link(
-                            rx.menu_item("About", **NAVBAR["NAVBAR_DROPDOWN_STYLE"]),
-                            href="/projects",
-                        ),
-                        rx.menu_divider(),
-                        rx.link(
-                            rx.menu_item(
-                                "Forthcoming", **NAVBAR["NAVBAR_DROPDOWN_STYLE"]
-                            ),
-                            href="/projects",
-                        ),
-                    ),
-                ),
-                menu_button(),
-            ),
-            **NAVBAR["NAVBAR_STYLE"],
-        ),
-        position="sticky",
-        top="0",
-        z_index="999",
-    )
+    return menu_button

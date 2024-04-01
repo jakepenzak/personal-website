@@ -6,19 +6,18 @@ import reflex as rx
 text_color = "black"
 
 BASE_STYLE = {
-    rx.MenuButton: {
+    rx.chakra.MenuButton: {
         "width": "3em",
         "height": "3em",
         "background_color": "white",
         "border": "1px solid #F4F3F6",
         "border_radius": "0.375rem",
     },
-    rx.MenuItem: {"_hover": {"color": "#522181", "bg": "#F5EFFE"}},
+    rx.chakra.MenuItem: {"_hover": {"color": "#522181", "bg": "#F5EFFE"}},
     "font_family": "Hack",
 }
 
 # NAVIGATION BAR
-
 NAVBAR = {
     "NAVBAR_STYLE": {
         "bg": "rgba(255,255,255, 0.9)",
@@ -51,7 +50,6 @@ NAVBAR = {
 }
 
 # FOOTER
-
 FOOTER = {
     "FOOTER_STYLE": {
         "box_shadow": "medium-lg",
@@ -74,7 +72,6 @@ FOOTER = {
 
 
 #  INDEX PAGE
-
 INDEX_PAGE = {
     "HEADER_CONTAINER_STYLE": {
         "padding_top": "2em",
@@ -90,15 +87,21 @@ INDEX_PAGE = {
         "padding_x": "3em",
         "padding_y": "3em",
     },
+    "SKILLS_CONTAINER_STYLE": {
+        # "height": "12em",
+        "width": "100%",
+        "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",
+        "opacity": "0.4;",
+        "padding_x": "3em",
+        "padding_y": "3em",
+    },
     "INDEX_PAGE_STYLE": {
         "padding_top": "2.5em",
         "padding_bottom": "3.5em",
         "padding_x": [["auto", "2em"]],
-        "position": "relative",
-        "min_height": "80vh",
     },
     "MARKDOWN_STYLE": {
-        "a": lambda text, **props: rx.link(
+        "a": lambda text, **props: rx.chakra.link(
             text,
             **props,
             text_decoration="underline",
@@ -119,8 +122,8 @@ ARTICLES_PAGE = {
         "width": "100%",
     },
     "MARKDOWN_STYLE_INTRO": {
-        "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
-        "a": lambda text, **props: rx.link(
+        "code": lambda text: rx.chakra.code(text, color="#1F1944", bg="#EAE4FD"),
+        "a": lambda text, **props: rx.chakra.link(
             text,
             **props,
             # font_weight="bold",
@@ -136,8 +139,11 @@ ARTICLES_PAGE = {
         ),
     },
     "BODY_CONTAINER_STYLE": {"padding_top": "3em", "padding_x": "3em", "width": "100%"},
-    "MARKDOWN_STYLE_BLOCK": {
-        "p": lambda text: rx.text(text, color="#522181", font_family="HackBold")
+    "MARKDOWN_STYLE_BLOCK_HEADER": {
+        "p": lambda text: rx.chakra.text(text, color="#522181", font_family="HackBold")
+    },
+    "MARKDOWN_STYLE_BLOCK_BODY": {
+        "p": lambda text: rx.chakra.text(text, color="black", font_family="Hack")
     },
     "SPLINE_CONTAINER_STYLE": {
         "padding_bottom": "5em",
@@ -186,8 +192,8 @@ PROJECTS_PAGE = {
 ## UNUSED
 
 # MARKDOWN = {
-#     "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
-#     "a": lambda text, **props: rx.link(
+#     "code": lambda text: rx.chakra.code(text, color="#1F1944", bg="#EAE4FD"),
+#     "a": lambda text, **props: rx.chakra.link(
 #         text,
 #         **props,
 #         # font_weight="bold",

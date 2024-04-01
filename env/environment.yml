@@ -1,6 +1,5 @@
 name: personal_website
 channels:
-  - conda-forge
   - defaults
   - pip
 dependencies:
@@ -9,3 +8,4 @@ dependencies:
   - pip:
     - -r requirements.txt
     - -r dev_requirements.txt
+    - -r reflex_requirements.txt

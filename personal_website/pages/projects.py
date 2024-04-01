@@ -1,59 +1,27 @@
 """The projects page."""
-
 import reflex as rx
 
-from personal_website.styles import PROJECTS_PAGE
-from personal_website.templates import template
+from personal_website.structural import styles
+from personal_website.structural import template
+from personal_website.components.utilities.container import container
+from personal_website.components.utilities.header import create_heading
+from personal_website.components.utilities.page_vstack import page_vstack
+from assets import asset_data
 
 
-def container(*children, **kwargs):
-    kwargs = {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"], **kwargs}
-    return rx.container(
-        *children,
-        **kwargs,
-    )
-
-
-## Projects Page Heading
-def header():
-    heading = rx.heading(
-        "Projects",
-        font_size="4em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["none", "none", "flex", "flex", "flex", "flex"],
-    )
-
-    heading_mobile = rx.heading(
-        "Projects",
-        font_size="2.75em",
-        font_family="HackBold",
-        text_align="center",
-        color=["#522181"],
-        padding_bottom="0.5em",
-        display=["flex", "flex", "none", "none", "none", "none"],
-    )
-
-    header = rx.box(
-        container(**PROJECTS_PAGE["HEADER_CONTAINER_STYLE"]), heading, heading_mobile
-    )
-
-    return header
-
-
+# Create the projects page
 @template(route="/projects", title="Projects")
 def projects() -> rx.Component:
-    """The projects page.
+    """
+    The projects page.
 
     Returns:
-        The UI for the projects page.
+        rx.Component: The UI for the projects page.
     """
-    return rx.vstack(
+    return page_vstack(
         header(),
-        rx.divider(width="80vh"),
-        rx.text(
+        rx.chakra.divider(width="80vh"),
+        rx.chakra.text(
             "Under construction...",
             font_size="flex",
             padding_y="2em",
@@ -61,10 +29,25 @@ def projects() -> rx.Component:
             text_align="center",
             width="100%",
         ),
-        rx.center(rx.image(src="/shared/website_bar.png", width="100%")),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
+        rx.chakra.center(
+            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
+        ),
     )
+
+
+## Header Section
+def header():
+    heading = create_heading("Projects")
+    heading_mobile = create_heading(
+        "Projects",
+        font_size="2.75em",
+        display=["flex", "flex", "none", "none", "none", "none"],
+    )
+
+    header = rx.chakra.box(
+        container(**styles.PROJECTS_PAGE["HEADER_CONTAINER_STYLE"]),
+        heading,
+        heading_mobile,
+    )
+
+    return header
