@@ -1,10 +1,10 @@
 @font-face {
     font-family: Hack;
-    src: url("hack/HACKNERDFONTPROPO-REGULAR.TTF") format("opentype");
+    src: url("../public/shared/fonts/hack/HACKNERDFONTPROPO-REGULAR.TTF") format("opentype");
 }
 
 @font-face {
     font-family: HackBold;
     font-weight: Bold;
-    src: url("hack/HACKNERDFONTPROPO-BOLD.TTF") format("opentype");
+    src: url("../public/shared/fonts/hack/HACKNERDFONTPROPO-BOLD.TTF") format("opentype");
 }
