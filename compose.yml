@@ -17,5 +17,8 @@ services:
     build:
       context: .
       dockerfile: Caddy.Dockerfile
+    volumes:
+       - caddy-data:/root/.caddy
+    restart: always
     depends_on:
       - app
