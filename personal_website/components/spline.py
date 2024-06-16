@@ -36,7 +36,7 @@ def spline_component_index_page() -> rx.Component:
     return rx.chakra.center(
         rx.chakra.center(
             spline_index(),
-            width="20em",
+            width="30em",
             height="30em",
         ),
         width="100%",
