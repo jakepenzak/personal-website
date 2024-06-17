@@ -95,7 +95,7 @@ def intro() -> rx.Component:
     )
 
     body = rx.chakra.box(
-        rx.chakra.vstack(
+        rx.vstack(
             read_markdown(
                 asset_data.INDEX_INTRO,
                 component_map=styles.INDEX_PAGE["MARKDOWN_STYLE"],

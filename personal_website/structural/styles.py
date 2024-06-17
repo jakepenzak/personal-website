@@ -15,6 +15,8 @@ BASE_STYLE = {
     },
     rx.chakra.MenuItem: {"_hover": {"color": "#522181", "bg": "#F5EFFE"}},
     "font_family": "Hack",
+    "bg": "white",
+    "color": text_color,
 }
 
 # NAVIGATION BAR
@@ -38,6 +40,7 @@ NAVBAR = {
     },
     "NAVAR_MENU_BUTTON_STYLE": {
         "color": text_color,
+        "bg": "white",
         "font_size": "1.1em",
         "padding_left": "0.75em",
         "_hover": {
