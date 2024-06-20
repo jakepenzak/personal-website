@@ -11,40 +11,35 @@ def footer() -> rx.Component:
     Returns:
         rx.Component: The footer component.
     """
-    footer = rx.chakra.box(
-        rx.chakra.hstack(
-            rx.chakra.hstack(
-                rx.chakra.link(
-                    rx.chakra.image(src=asset_data.LINKEDIN_LOGO, height="3em"),
+    footer = rx.box(
+        rx.hstack(
+            rx.hstack(
+                rx.link(
+                    rx.image(src=asset_data.LINKEDIN_LOGO, height="3em"),
                     href=asset_data.LINKEDIN_URL,
-                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
-                rx.chakra.link(
-                    rx.chakra.image(src=asset_data.MEDIUM_LOGO, height="3em"),
+                rx.link(
+                    rx.image(src=asset_data.MEDIUM_LOGO, height="3em"),
                     href=asset_data.MEDIUM_URL,
-                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
-                rx.chakra.link(
-                    rx.chakra.image(src=asset_data.GITHUB_LOGO, height="3em"),
+                rx.link(
+                    rx.image(src=asset_data.GITHUB_LOGO, height="3em"),
                     href=asset_data.GITHUB_URL,
-                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                     is_external=True,
                 ),
-                rx.chakra.link(
-                    rx.chakra.image(src=asset_data.EMAIL_LOGO, height="3em"),
+                rx.link(
+                    rx.image(src=asset_data.EMAIL_LOGO, height="3em"),
                     href=asset_data.CONTACT_URL,
-                    style=styles.FOOTER["FOOTER_ITEM_STYLE"],
                 ),
+                align="center",
             ),
             footer_logo(**styles.FOOTER["FOOTER_LOGO_STYLE"]),
-            justify="space-between",
-            color="#94a3b8",
-            align_items="top",
-            min_width="100%",
+            justify="between",
+            align="center",
+            **styles.FOOTER["FOOTER_STYLE"],
         ),
-        **styles.FOOTER["FOOTER_STYLE"],
     )
 
     return footer
@@ -60,8 +55,8 @@ def footer_logo(**style_props) -> rx.Component:
     Returns:
         rx.Component: The logo component.
     """
-    return rx.chakra.link(
-        rx.chakra.image(
+    return rx.link(
+        rx.image(
             src=asset_data.FOOTER_LOGO,
             **style_props,
         ),

@@ -12,74 +12,60 @@ def navbar() -> rx.Component:
         rx.Component: The created navbar component.
     """
 
-    navbar = rx.chakra.vstack(
-        rx.chakra.box(
-            rx.chakra.hstack(
-                navbar_logo(**styles.NAVBAR["NAVBAR_LOGO_STYLE"]),
-                rx.chakra.spacer(),
-                rx.chakra.link(
+    navbar = rx.box(
+        rx.hstack(
+            navbar_logo(),
+            rx.spacer(),
+            rx.center(
+                rx.link(
                     "Articles",
                     href="/articles",
                     display=["none", "none", "none", "none", "flex", "flex"],
                     **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
                 ),
-                rx.chakra.link(
+                rx.link(
                     "Professional Resume",
                     href="/resume",
                     display=["none", "none", "none", "none", "flex", "flex"],
                     **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
                 ),
-                rx.chakra.link(
+                rx.link(
                     "Research",
                     href="/research",
                     display=["none", "none", "none", "none", "flex", "flex"],
                     **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
                 ),
-                rx.chakra.menu(
-                    rx.chakra.menu_button(
-                        rx.chakra.hstack(
-                            rx.chakra.text(
-                                "Projects", **styles.NAVBAR["NAVAR_MENU_BUTTON_STYLE"]
-                            ),
-                            rx.chakra.icon(
-                                tag="chevron_down",
-                                **styles.NAVBAR["NAVBAR_MENU_CHEVRON_STYLE"],
-                            ),
+                rx.menu.root(
+                    rx.menu.trigger(
+                        rx.button(
+                            rx.text("Projects", **styles.NAVBAR["NAVBAR_BUTTON_STYLE"]),
+                            rx.icon("chevron_down"),
+                            variant="ghost",
+                            radius="full",
                         ),
                         display=["none", "none", "none", "none", "flex", "flex"],
-                        width="8em",
-                        border="none",
-                        _hover={"text_decoration": "underline"},
                     ),
-                    rx.chakra.menu_list(
-                        rx.chakra.link(
-                            rx.chakra.menu_item(
-                                "About", **styles.NAVBAR["NAVBAR_DROPDOWN_STYLE"]
-                            ),
-                            href="/projects",
-                        ),
-                        rx.chakra.menu_divider(),
-                        rx.chakra.link(
-                            rx.chakra.menu_item(
-                                "Forthcoming", **styles.NAVBAR["NAVBAR_DROPDOWN_STYLE"]
-                            ),
-                            href="/projects",
-                        ),
+                    rx.menu.content(
+                        rx.menu.item(navbar_link("About", "/projects")),
+                        rx.divider(),
+                        rx.menu.item(navbar_link("Forthcoming", "/projects")),
                     ),
                 ),
                 menu_button(),
             ),
+            align="center",
             **styles.NAVBAR["NAVBAR_STYLE"],
         ),
-        position="sticky",
-        top="0",
-        z_index="999",
     )
 
     return navbar
 
 
-def navbar_logo(**style_props) -> rx.Component:
+def navbar_link(text: str, url: str) -> rx.Component:
+    return rx.link(rx.text(text, size="4", weight="medium"), href=url)
+
+
+def navbar_logo() -> rx.Component:
     """
     Create a Reflex logo component.
 
@@ -89,10 +75,10 @@ def navbar_logo(**style_props) -> rx.Component:
     Returns:
         rx.Component: The logo component.
     """
-    navbar_logo = rx.chakra.link(
-        rx.chakra.image(
+    navbar_logo = rx.link(
+        rx.image(
             src=asset_data.NAVBAR_LOGO,
-            **style_props,
+            height="4em",
         ),
         href="/",
     )
@@ -109,20 +95,20 @@ def menu_button() -> rx.Component:
     """
     pages = ["Articles", "Resume", "Research", "Projects"]
 
-    menu_button = rx.chakra.box(
-        rx.chakra.menu(
-            rx.chakra.menu_button(
-                rx.chakra.icon(tag="hamburger", size="4em"),
+    menu_button = rx.box(
+        rx.menu.root(
+            rx.menu.trigger(
+                rx.button(
+                    rx.icon("menu"),
+                    weight="medium",
+                    variant="ghost",
+                    size="3",
+                    color="#522181",
+                ),
             ),
-            rx.chakra.menu_list(
+            rx.menu.content(
                 *[
-                    rx.chakra.menu_item(
-                        rx.chakra.link(
-                            page,
-                            href=f"/{page.lower()}",
-                            width="100%",
-                        )
-                    )
+                    rx.menu.item(navbar_link(page, f"/{page.lower()}"))
                     for page in pages
                 ],
             ),

@@ -1,11 +1,6 @@
 """The projects page."""
 import reflex as rx
-
-from personal_website.structural import styles
 from personal_website.structural import template
-from personal_website.components.utilities.container import container
-from personal_website.components.utilities.header import create_heading
-from personal_website.components.utilities.page_vstack import page_vstack
 from assets import asset_data
 
 
@@ -18,10 +13,10 @@ def projects() -> rx.Component:
     Returns:
         rx.Component: The UI for the projects page.
     """
-    return page_vstack(
+    return rx.vstack(
         header(),
-        rx.chakra.divider(width="80vh"),
-        rx.chakra.text(
+        rx.divider(width="25%", border_top="1px solid rgba(0, 0, 0, 0.25)"),
+        rx.text(
             "Under construction...",
             font_size="flex",
             padding_y="2em",
@@ -29,25 +24,29 @@ def projects() -> rx.Component:
             text_align="center",
             width="100%",
         ),
-        rx.chakra.center(
-            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
-        ),
+        rx.spacer(),
+        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        align="center",
+        min_height="80vh",
     )
 
 
 ## Header Section
 def header():
-    heading = create_heading("Projects")
-    heading_mobile = create_heading(
+    heading = rx.heading("Projects")
+    heading_mobile = rx.heading(
         "Projects",
-        font_size="2.75em",
+        font_size="2em",
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    header = rx.chakra.box(
-        container(**styles.PROJECTS_PAGE["HEADER_CONTAINER_STYLE"]),
+    header = rx.vstack(
         heading,
         heading_mobile,
+        align_items="center",
+        padding_top="2em",
+        padding_x="2em",
+        max_height="100vh",
     )
 
     return header

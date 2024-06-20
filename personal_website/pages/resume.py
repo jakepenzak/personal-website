@@ -1,11 +1,7 @@
 """The resume page."""
 import reflex as rx
 
-from personal_website.structural import styles
 from personal_website.structural import template
-from personal_website.components.utilities.container import container
-from personal_website.components.utilities.header import create_heading
-from personal_website.components.utilities.page_vstack import page_vstack
 from assets import asset_data
 
 
@@ -17,10 +13,14 @@ def resume() -> rx.Component:
     Returns:
         rx.Component: The UI for the resume page.
     """
-    return page_vstack(
+    return rx.vstack(
         heading(),
-        rx.chakra.divider(width="80vh"),
+        rx.divider(width="25%", border_top="1px solid rgba(0, 0, 0, 0.25)"),
         body(),
+        rx.spacer(),
+        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        align="center",
+        min_height="80vh",
     )
 
 
@@ -28,17 +28,20 @@ def resume() -> rx.Component:
 def heading() -> rx.Component:
     """The heading section of the resume page."""
 
-    heading = create_heading("Professional Resume")
-    heading_mobile = create_heading(
+    heading = rx.heading("Professional Resume")
+    heading_mobile = rx.heading(
         "Professional Resume",
-        font_size="2.75em",
+        font_size="2em",
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    header = rx.chakra.box(
-        container(**styles.RESUME_PAGE["HEADER_CONTAINER_STYLE"]),
+    header = rx.vstack(
         heading,
         heading_mobile,
+        align_items="center",
+        padding_top="2em",
+        padding_x="2em",
+        max_height="100vh",
     )
 
     return header
@@ -49,20 +52,22 @@ def body() -> rx.Component:
     """The body section of the resume page."""
 
     # Resume
-    resume = rx.chakra.link(
-        rx.chakra.center(
-            rx.chakra.image(
+    resume = rx.box(
+        rx.link(
+            rx.image(
                 src=asset_data.RESUME_IMAGE,
                 border_radius="15px 50px",
                 border="3px solid #555",
-            )
+            ),
+            href=asset_data.RESUME_LINK,
+            is_external=True,
         ),
-        href=asset_data.RESUME_LINK,
-        is_external=True,
         padding_top="0.5em",
         padding_bottom="2em",
         padding_x="2em",
-        max_width="80vh",
+        max_width="45em",
+        max_height="70em",
+        align="center",
     )
 
-    return resume
+    return rx.box(resume)

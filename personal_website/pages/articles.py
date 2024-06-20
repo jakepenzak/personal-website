@@ -5,9 +5,6 @@ from assets import asset_data
 from personal_website.structural import styles
 from personal_website.structural import template
 from personal_website.components.utilities.markdown import read_markdown
-from personal_website.components.utilities.container import container
-from personal_website.components.utilities.header import create_heading
-from personal_website.components.utilities.page_vstack import page_vstack
 
 
 # Create the articles page
@@ -18,13 +15,14 @@ def articles() -> rx.Component:
     Returns:
         The UI for the articles page.
     """
-    return page_vstack(
+    return rx.vstack(
         header(),
-        rx.chakra.divider(width="80vh"),
+        rx.divider(width="25%", border_top="1px solid rgba(0, 0, 0, 0.25)"),
         body(),
-        rx.chakra.center(
-            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")
-        ),
+        rx.spacer(),
+        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        align="center",
+        min_height="80vh",
     )
 
 
@@ -37,27 +35,32 @@ def header() -> rx.Component:
         rx.Component: The header section of the articles page.
     """
 
-    heading = create_heading("Articles")
-    heading_mobile = create_heading(
+    heading = rx.heading("Articles")
+    heading_mobile = rx.heading(
         "Articles",
-        font_size="2.75em",
+        font_size="2em",
         display=["flex", "flex", "none", "none", "none", "none"],
     )
 
-    markdown_content = rx.chakra.box(
-        rx.chakra.vstack(
+    markdown_content = rx.vstack(
             read_markdown(
                 asset_data.ARTICLES_INTRO,
                 component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
             ),
-        ),
         width="100%",
-        padding_x="6em",
+        padding_x="2em",
+        align="center",
     )
 
-    header = rx.chakra.box(
-        container(**styles.ARTICLES_PAGE["HEADER_CONTAINER_STYLE"]),
-        rx.chakra.vstack(heading, heading_mobile, markdown_content),
+    header = rx.vstack(
+        heading,
+        heading_mobile,
+        markdown_content,
+        align="center",
+        padding_top="2em",
+        padding_x="2em",
+        max_height="100vh",
+        width="100%",
     )
 
     return header
@@ -72,7 +75,7 @@ def body() -> rx.Component:
         rx.Component: The body component for the articles page.
     """
 
-    article_grid = rx.chakra.box(
+    article_grid = rx.box(
         create_article_grid(
             columns="3", display=["None", "None", "flex", "flex", "flex", "flex"]
         ),
@@ -139,8 +142,7 @@ def create_article_grid(
         rx.Component: The grid of articles.
     """
 
-    article_grid = rx.container(
-        container(**styles.ARTICLES_PAGE["BODY_CONTAINER_STYLE"]),
+    article_grid = rx.box(
         rx.grid(
             *[
                 image_link_description(
@@ -159,7 +161,8 @@ def create_article_grid(
             padding_x="2em",
         ),
         display=display,
-        padding_x="2em",
+        padding_top="1em",
+        max_width=["80vw", "80vw", "80vw", "60vw", "60vw", "60vw"],
     )
 
     return article_grid

@@ -14,7 +14,7 @@ def index404() -> rx.Component:
     Returns:
         rx.Component: The rendered 404 page component.
     """
-    return rx.chakra.box(navbar(), _404(), rx.chakra.spacer(), footer(), width="100%")
+    return rx.box(navbar(), _404(), rx.spacer(), footer())
 
 
 class State404(State):
@@ -41,20 +41,20 @@ def _404() -> rx.Component:
         rx.Component: The React component for the 404 page.
     """
 
-    return rx.chakra.center(
-        rx.chakra.vstack(
-            rx.chakra.heading(rx.constants.Page404.TITLE),
-            rx.chakra.text(
+    return rx.center(
+        rx.vstack(
+            rx.spacer(height="4em"),
+            rx.heading(rx.constants.Page404.TITLE, display=["flex"]),
+            rx.text(
                 "Oops, the page at ",
-                rx.chakra.code(State404.origin_url),
+                rx.code(State404.origin_url),
                 " doesn't exist.",
             ),
-            rx.chakra.spacer(height="4em"),
-            rx.chakra.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%"),
+            rx.spacer(height="4em"),
+            rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%"),
+            align_items="center"
         ),
-        position="relative",
-        min_height="80vh",
-        width="100%",
-        max_width="100%",
-        overflow_x="hidden",
+            min_height="80vh",
+            width="100%",
+            max_width="100%",
     )
