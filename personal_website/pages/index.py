@@ -5,7 +5,6 @@ from personal_website.components.spline import spline_component_index_page
 from personal_website.structural import styles
 from personal_website.structural import template
 from personal_website.components.utilities.markdown import read_markdown
-from personal_website.components.utilities.container import container
 from assets import asset_data
 
 
@@ -18,16 +17,17 @@ def index() -> rx.Component:
         rx.Component: The UI for the home page.
     """
 
-    return rx.box(
+    return rx.vstack(
         header(),
         intro(),
         skillsets_section(),
-        position="relative",
         min_height="80vh",
-        width="100%",
-        max_width="100%",
         overflow_x="hidden",
-        **styles.INDEX_PAGE["INDEX_PAGE_STYLE"],
+        max_width="100%",
+        align="center",
+        padding_top= "2.5em",
+        padding_bottom="3.5em",
+        padding_x="2em",
     )
 
 
@@ -40,36 +40,43 @@ def header() -> rx.Component:
         rx.Component: The header component.
     """
 
-    header = container(
-        rx.chakra.hstack(
-            rx.chakra.center(
-                rx.chakra.heading(
-                    """
-                    Jacob \n
-                    Pieniazek
-                    """,
-                    font_size="6em",
+    header = rx.container(
+        rx.hstack(
+            rx.center(
+                rx.heading(
+                    "Jacob \n Pieniazek",
+                    size="9",
                     font_family="HackBold",
                     color=["#522181"],
-                )
+                    align="center",
+                    display = ["none", "none", "flex", "flex", "flex", "flex"]
+                ),
             ),
+            rx.spacer(),
             spline_component_index_page(),
-            display=["none", "none", "none", "flex", "flex", "flex"],
+            display=["none", "none", "flex", "flex", "flex", "flex"],
+            justify="between",
+            align="center",
         ),
-        rx.chakra.center(
-            rx.chakra.heading(
-                """
-                    Jacob \n
-                    Pieniazek
-                    """,
-                font_size="4em",
-                font_family="HackBold",
-                color=["#522181"],
-                text_align="center",
+        rx.hstack(
+            rx.heading(
+                    "Jacob \n Pieniazek",
+                    size="9",
+                    font_family="HackBold",
+                    color=["#522181"],
+                    align="center",
+                    display = ["flex", "flex", "none", "none", "none", "none"]
+                ),
+                display=["flex", "flex", "none", "none", "none", "none"],
+                align="center",
+                justify="center",
             ),
-            display=["flex", "flex", "flex", "none", "none", "none"],
-        ),
-        **styles.INDEX_PAGE["HEADER_CONTAINER_STYLE"],
+        justify="between",
+        padding_top= "2em",
+        padding_bottom= "6em",
+        align="center",
+        width="100%",
+        height="100%",
     )
 
     return header
@@ -84,48 +91,49 @@ def intro() -> rx.Component:
         rx.Component: The rendered introduction section.
     """
 
-    welcome = rx.chakra.heading(
-        """
-        Welcome!
-        """,
-        font_size="2em",
-        font_family="HackBold",
-        text_align="center",
-        padding_top="1em",
+    welcome = rx.center(
+        rx.heading(
+            "Welcome!",
+            size="6",
+            font_family="HackBold",
+            align="center",
+            padding_top="1em",
+            display="flex",
+        )
     )
 
-    body = rx.chakra.box(
-        rx.vstack(
-            read_markdown(
-                asset_data.INDEX_INTRO,
-                component_map=styles.INDEX_PAGE["MARKDOWN_STYLE"],
+    body = read_markdown(
+        asset_data.INDEX_INTRO,
+        component_map=styles.INDEX_PAGE["MARKDOWN_STYLE"],
+    )
+
+    intro = rx.box(
+        rx.container(**styles.INDEX_PAGE["INTRO_CONTAINER_STYLE"]),
+        rx.hstack(
+            rx.image(
+                src=asset_data.INDEX_PHOTO,
+                max_height="35em",
+                max_width="35em",
+                align="center",
             ),
+            rx.vstack(welcome, body, padding_left="12em", align="center"),
+            padding_x="5em",
+            display=["none", "none", "none", "flex", "flex", "flex"],
+            align_items="center",
         ),
-    )
-
-    intro = rx.chakra.box(
-        container(**styles.INDEX_PAGE["INTRO_CONTAINER_STYLE"]),
-        rx.chakra.center(
-            rx.chakra.hstack(
-                rx.chakra.image(
-                    src=asset_data.INDEX_PHOTO, max_height="35em", max_width="35em"
-                ),
-                rx.chakra.vstack(welcome, body, padding_left="12em"),
-                padding_x="5em",
-                display=["none", "none", "none", "flex", "flex", "flex"],
+        rx.vstack(
+            rx.image(
+                src=asset_data.INDEX_PHOTO,
+                height="flex",
+                width="flex",
+                max_height="25em",
+                max_width="25em",
+                align="center",
             ),
-            rx.chakra.vstack(
-                rx.chakra.image(
-                    src=asset_data.INDEX_PHOTO,
-                    height="flex",
-                    width="flex",
-                    max_height="25em",
-                    max_width="25em",
-                ),
-                rx.chakra.vstack(welcome, body),
-                padding_x="3em",
-                display=["flex", "flex", "flex", "none", "none", "none"],
-            ),
+            rx.box(rx.vstack(welcome, body, align="center")),
+            padding_x="3em",
+            display=["flex", "flex", "flex", "none", "none", "none"],
+            align_items="center",
         ),
     )
 
