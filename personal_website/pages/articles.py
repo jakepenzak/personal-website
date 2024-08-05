@@ -104,23 +104,27 @@ def image_link_description(
     """
     return rx.link(
         rx.vstack(
-            rx.flex(
+            rx.box(
                 rx.image(src=img_src),
                 direction="column",
                 align="center",
                 justify="center",
+                # height="25vh",
+                # width="25vh",
             ),
             read_markdown(
                 title_src,
                 component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_HEADER"],
                 height="100%",
                 width="100%",
+                font_size="0.9em",
             ),
             read_markdown(
                 descr_src,
                 component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_BODY"],
                 height="100%",
                 width="100%",
+                font_size="0.7em",
             ),
         ),
         href=href,
@@ -162,7 +166,7 @@ def create_article_grid(
         ),
         display=display,
         padding_top="1em",
-        max_width=["80vw", "80vw", "80vw", "60vw", "60vw", "60vw"],
+        max_width=["80vw", "80vw", "80vw", "80vw", "80vw", "80vw"],
     )
 
     return article_grid
