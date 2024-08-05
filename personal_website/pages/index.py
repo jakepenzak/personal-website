@@ -179,13 +179,13 @@ def skillsets_section() -> rx.Component:
     )
 
     (
-        libraries_header,
+        _,
         libraries_intro,
         libraries_grid,
         libraries,
     ) = create_libraries_section()
 
-    stack_header, stack_intro, stack_grid, tech_stack = create_tech_stack_section()
+    _, stack_intro, stack_grid, tech_stack = create_tech_stack_section()
 
     # Used for mobile and tablet view
     skills_tabs = create_skills_tabs(
@@ -251,7 +251,10 @@ def create_libraries_section() -> Tuple[rx.Component]:
         padding_top="1em",
     )
 
-    libraries_intro = rx.text(asset_data.LIBRARY_INTRO_TXT)
+    libraries_intro = rx.box(
+        rx.text(asset_data.LIBRARY_INTRO_TXT),
+        height="10em"
+    )
 
     libraries_grid = rx.grid(
         *[
@@ -298,7 +301,9 @@ def create_tech_stack_section() -> Tuple[rx.Component]:
         padding_top="1em",
     )
 
-    stack_intro = rx.text(asset_data.TECH_INTRO_TXT)
+    stack_intro = rx.box(
+        rx.text(asset_data.TECH_INTRO_TXT),
+                          height="7.5em")
 
     stack_grid = rx.grid(
         *[
