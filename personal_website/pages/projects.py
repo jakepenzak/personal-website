@@ -57,7 +57,8 @@ def body():
         target="_blank",
         padding_y="3em",
         align="center",
-        width="35%",
+        width="50%",
+        max_width="500px",
     )
 
     return caml

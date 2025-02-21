@@ -80,7 +80,7 @@ TECH_LOGOS_META_DICT = {
         link="https://azure.microsoft.com/en-us",
     ),
     "DataBricks": LogoMeta(
-        asset_path="/index/skills/tech_logos/databricks.webp",
+        asset_path="https://user-images.githubusercontent.com/25181517/197845567-86a09ca9-d96f-42c4-9ab1-8bce95ab000d.png",
         link="https://databricks.com/",
     ),
     "Digital Ocean": LogoMeta(
@@ -127,7 +127,8 @@ TECH_LOGOS_META_DICT = {
         link="https://marimo.io/",
     ),
     "Quarto": LogoMeta(
-        asset_path="/index/skills/tech_logos/quarto.webp", link="https://quarto.org/"
+        asset_path="https://github.com/quarto-dev/quarto-web/raw/main/quarto-icon.svg",
+        link="https://quarto.org/",
     ),
     "Mardown": LogoMeta(
         asset_path="https://github.com/devicons/devicon/raw/master/icons/markdown/markdown-original.svg",
@@ -183,9 +184,8 @@ TECH_LOGOS_META_DICT = {
     ),
 }
 
-LIBRARY_INTRO_TXT = """Below is a selection of some of the python libraries/frameworks/ecosystems 
-                I use or have used in my personal & professional work. This list is not exhaustive,
-                but it does cover a subset of the core libraries I have used."""
+LIBRARY_INTRO_TXT = """Below is a non-exhaustive selection of some of the python libraries/frameworks/ecosystems 
+                I use or have used in my personal & professional work."""
 
 LIBRARY_LOGOS_META_DICT = {
     "EconML": LogoMeta(

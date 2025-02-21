@@ -167,7 +167,7 @@ def create_article_grid(
         ),
         display=display,
         padding_top="1em",
-        max_width=["80vw", "80vw", "80vw", "80vw", "80vw", "80vw"],
+        max_width=["80vw", "80vw", "75vw", "70vw", "65vw", "60vw"],
     )
 
     return article_grid
