@@ -29,8 +29,11 @@ jobs:
       - name: Install project dependencies
         run: uv sync
       - name: Init Website for personal_website
-        run: reflex init
+        shell: bash
+        run: source .venv/bin/activate && reflex init
       - name: Export the website
-        run: reflex export
+        shell: bash
+        run: source .venv/bin/activate && reflex export
       - name: Test Docker Build
-        run: docker build .
+        shell: bash
+        run: source .venv/bin/activate && docker build .
