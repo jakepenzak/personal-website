@@ -1,4 +1,5 @@
 """The projects page."""
+
 import reflex as rx
 from personal_website.structural import template
 from assets import asset_data
@@ -16,14 +17,7 @@ def projects() -> rx.Component:
     return rx.vstack(
         header(),
         rx.divider(width="25%", border_top="1px solid rgba(0, 0, 0, 0.25)"),
-        rx.text(
-            "Under construction...",
-            font_size="flex",
-            padding_y="2em",
-            font_family="Hack",
-            text_align="center",
-            width="100%",
-        ),
+        body(),
         rx.spacer(),
         rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
         align="center",
@@ -50,3 +44,21 @@ def header():
     )
 
     return header
+
+
+def body():
+    caml = rx.link(
+        rx.center(
+            rx.image(
+                src="https://raw.githubusercontent.com/jakepenzak/caml/main/docs/assets/main_logo.svg",
+            ),
+        ),
+        href="https://caml-docs.com",
+        target="_blank",
+        padding_y="3em",
+        align="center",
+        width="50%",
+        max_width="500px",
+    )
+
+    return caml

@@ -4,8 +4,6 @@ env:
   TELEMETRY_ENABLED: false
   REFLEX_DEP: "git+https://github.com/reflex-dev/reflex@main"
 on:
-  push:
-    branches: ["*"]
   pull_request:
     branches: ["*"]
   workflow_dispatch:
@@ -27,12 +25,24 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v3
         with:
-          python-version: '3.11' 
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          # Install a specific version of uv.
+          version: "0.5.21"
+
+      - name: Install project dependencies
+        run: uv sync
       - name: Install Requirements for personal_website and reflex
-        run: pip install '${{ github.event.inputs.reflex_dep || env.REFLEX_DEP }}' -r env/requirements.txt
+        run: uv pip install '${{ github.event.inputs.reflex_dep || env.REFLEX_DEP }}'
       - name: Init Website for personal_website
-        run: reflex init
+        shell: bash
+        run: source .venv/bin/activate && reflex init
       - name: Export the website
-        run: reflex export
+        shell: bash
+        run: source .venv/bin/activate && reflex export
       - name: Test Docker Build
-        run: docker compose build
+        shell: bash
+        run: source .venv/bin/activate && docker build . -f main.Dockerfile

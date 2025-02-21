@@ -1,9 +1,6 @@
 name: regression-tests
 
-
 on:
-  push:
-    branches: ["*"]
   pull_request:
     branches: ["*"]
 
@@ -21,12 +18,22 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v3
         with:
-          python-version: '3.11' 
-      - name: Install Requirements for personal_website
-        run: pip install -r env/requirements.txt -r env/reflex_requirements.txt
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          # Install a specific version of uv.
+          version: "0.5.21"
+
+      - name: Install project dependencies
+        run: uv sync
       - name: Init Website for personal_website
-        run: reflex init
+        shell: bash
+        run: source .venv/bin/activate && reflex init
       - name: Export the website
-        run: reflex export
+        shell: bash
+        run: source .venv/bin/activate && reflex export
       - name: Test Docker Build
-        run: docker compose build
+        shell: bash
+        run: source .venv/bin/activate && docker build . -f main.Dockerfile

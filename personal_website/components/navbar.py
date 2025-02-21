@@ -46,9 +46,13 @@ def navbar() -> rx.Component:
                         display=["none", "none", "none", "none", "flex", "flex"],
                     ),
                     rx.menu.content(
-                        rx.menu.item(navbar_link("About", "/projects")),
-                        rx.divider(),
-                        rx.menu.item(navbar_link("Forthcoming", "/projects")),
+                        rx.menu.item(navbar_link("All Projects", "/projects")),
+                        rx.divider(color_scheme="violet"),
+                        rx.menu.item(
+                            navbar_link(
+                                "CaML", "https://caml-docs.com", target="_blank"
+                            )
+                        ),
                     ),
                 ),
                 menu_button(),
@@ -61,8 +65,8 @@ def navbar() -> rx.Component:
     return navbar
 
 
-def navbar_link(text: str, url: str) -> rx.Component:
-    return rx.link(rx.text(text, size="4", weight="medium"), href=url)
+def navbar_link(text: str, url: str, **kwargs) -> rx.Component:
+    return rx.link(rx.text(text, size="4", weight="medium"), href=url, **kwargs)
 
 
 def navbar_logo() -> rx.Component:
