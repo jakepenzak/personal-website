@@ -1,8 +1,6 @@
 import reflex as rx
 
 from personal_website.base_state import State
-from personal_website.components.footer import footer
-from personal_website.components.navbar import navbar
 from personal_website.structural import template
 from assets import asset_data
 

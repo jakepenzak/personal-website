@@ -1,4 +1,5 @@
 """The research page."""
+
 import reflex as rx
 
 from personal_website.structural import template

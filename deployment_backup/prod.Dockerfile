@@ -34,7 +34,7 @@ RUN mv .web/_static /tmp/_static
 RUN rm -rf .web && mkdir .web
 RUN mv /tmp/_static .web/_static
 
-# Stage 2: copy artifacts into slim image 
+# Stage 2: copy artifacts into slim image
 FROM python:3.11-slim
 WORKDIR /app
 RUN adduser --disabled-password --home /app reflex
