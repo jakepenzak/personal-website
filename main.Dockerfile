@@ -1,8 +1,7 @@
 # This docker file is intended to be used with docker compose to deploy a production
 # instance of a Reflex app.
 
-# Stage 1: init
-FROM python:3.11 as init
+FROM python:3.11
 
 # The installer requires curl (and certificates) to download the release archive
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
@@ -26,7 +25,7 @@ ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install app requirements and reflex inside virtualenv
-RUN $uv sync
+RUN uv sync
 
 # Deploy templates and prepare app
 RUN reflex init
@@ -38,4 +37,4 @@ EXPOSE 3000
 EXPOSE 8000
 
 # Always apply migrations before starting the backend.
-CMD reflex db migrate && reflex run --env prod
+CMD ["reflex db migrate && reflex run --env prod"]
