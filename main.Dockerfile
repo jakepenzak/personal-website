@@ -4,11 +4,17 @@
 # Stage 1: init
 FROM python:3.11 as init
 
-ARG uv=/root/.cargo/bin/uv
+# The installer requires curl (and certificates) to download the release archive
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
 
-# Install `uv` for faster package boostrapping
-ADD --chmod=755 https://astral.sh/uv/0.5.21/install.sh /install.sh
-RUN /install.sh && rm /install.sh
+# Download the latest installer
+ADD https://astral.sh/uv/0.5.21/install.sh /uv-installer.sh
+
+# Run the installer then remove it
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+
+# Ensure the installed binary is on the `PATH`
+ENV PATH="/root/.local/bin/:$PATH"
 
 # Copy local context to `/app` inside container (see .dockerignore)
 WORKDIR /app
@@ -18,7 +24,6 @@ RUN mkdir -p /app/data /app/uploaded_files
 # Create virtualenv which will be copied into final container
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN $uv venv
 
 # Install app requirements and reflex inside virtualenv
 RUN $uv sync
