@@ -7,7 +7,7 @@ FROM python:3.11 as init
 ARG uv=/root/.cargo/bin/uv
 
 # Install `uv` for faster package boostrapping
-ADD --chmod=755 https://astral.sh/uv/0.4.30/install.sh /install.sh
+ADD --chmod=755 https://astral.sh/uv/0.5.21/install.sh /install.sh
 RUN /install.sh && rm /install.sh
 
 # Copy local context to `/app` inside container (see .dockerignore)
@@ -21,7 +21,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN $uv venv
 
 # Install app requirements and reflex inside virtualenv
-RUN $uv pip install -r env/requirements.txt -r env/reflex_requirements.txt
+RUN $uv sync
 
 # Deploy templates and prepare app
 RUN reflex init

@@ -1,4 +1,5 @@
 """The home page of the website."""
+
 import reflex as rx
 from typing import Tuple
 from personal_website.components.spline import spline_component_index_page
@@ -25,7 +26,7 @@ def index() -> rx.Component:
         overflow_x="hidden",
         max_width="100%",
         align="center",
-        padding_top= "2.5em",
+        padding_top="2.5em",
         padding_bottom="3.5em",
         padding_x="2em",
     )
@@ -49,7 +50,7 @@ def header() -> rx.Component:
                     font_family="HackBold",
                     color=["#522181"],
                     align="center",
-                    display = ["none", "none", "flex", "flex", "flex", "flex"]
+                    display=["none", "none", "flex", "flex", "flex", "flex"],
                 ),
             ),
             rx.spacer(),
@@ -60,20 +61,20 @@ def header() -> rx.Component:
         ),
         rx.hstack(
             rx.heading(
-                    "Jacob \n Pieniazek",
-                    size="9",
-                    font_family="HackBold",
-                    color=["#522181"],
-                    align="center",
-                    display = ["flex", "flex", "none", "none", "none", "none"]
-                ),
-                display=["flex", "flex", "none", "none", "none", "none"],
+                "Jacob \n Pieniazek",
+                size="9",
+                font_family="HackBold",
+                color=["#522181"],
                 align="center",
-                justify="center",
+                display=["flex", "flex", "none", "none", "none", "none"],
             ),
+            display=["flex", "flex", "none", "none", "none", "none"],
+            align="center",
+            justify="center",
+        ),
         justify="between",
-        padding_top= "2em",
-        padding_bottom= "6em",
+        padding_top="2em",
+        padding_bottom="6em",
         align="center",
         width="100%",
         height="100%",
@@ -102,9 +103,12 @@ def intro() -> rx.Component:
         )
     )
 
-    body = read_markdown(
-        asset_data.INDEX_INTRO,
-        component_map=styles.INDEX_PAGE["MARKDOWN_STYLE"],
+    body = rx.box(
+        read_markdown(
+            asset_data.INDEX_INTRO,
+            component_map=styles.INDEX_PAGE["MARKDOWN_STYLE"],
+        ),
+        width=["100%", "100%", "100%", "100%", "75%", "75%"],
     )
 
     intro = rx.box(
@@ -116,7 +120,7 @@ def intro() -> rx.Component:
                 max_width="35em",
                 align="center",
             ),
-            rx.vstack(welcome, body, padding_left="12em", align="center"),
+            rx.vstack(welcome, body, padding_left="6em", align="center"),
             padding_x="5em",
             display=["none", "none", "none", "flex", "flex", "flex"],
             align_items="center",
@@ -173,9 +177,11 @@ def skillsets_section() -> rx.Component:
             rx.recharts.polar_grid(),
             rx.recharts.polar_angle_axis(data_key="subject"),
             data=asset_data.SKILLS_DATA,
+            width="100%",
+            height="100%",
         ),
-        width="100%",
-        height="50vh",
+        width="95vw",
+        height=["0vh", "0vh", "20vh", "30vh", "40vh", "50vh"],
     )
 
     (
@@ -208,12 +214,12 @@ def skillsets_section() -> rx.Component:
                 padding_x="3em",
                 width="100%",
             ),
-            display=["none", "none", "none", "flex", "flex", "flex"],
+            display=["none", "none", "flex", "flex", "flex", "flex"],
         ),
         rx.vstack(
             header,
             skills_tabs,
-            display=["flex", "flex", "flex", "none", "none", "none"],
+            display=["flex", "flex", "none", "none", "none", "none"],
         ),
     )
 
@@ -231,7 +237,14 @@ def image_link(src: str, href: str) -> rx.Component:
     Returns:
         rx.Component: The link component with the specified image source and target URL.
     """
-    return rx.link(rx.image(src=src), href=href, target="_blank")
+    return rx.link(
+        rx.center(
+            rx.image(src=src, max_height="3em"),
+            href=href,
+            target="_blank",
+            align="center",
+        )
+    )
 
 
 def create_libraries_section() -> Tuple[rx.Component]:
@@ -251,10 +264,7 @@ def create_libraries_section() -> Tuple[rx.Component]:
         padding_top="1em",
     )
 
-    libraries_intro = rx.box(
-        rx.text(asset_data.LIBRARY_INTRO_TXT),
-        height="10em"
-    )
+    libraries_intro = rx.box(rx.text(asset_data.LIBRARY_INTRO_TXT), height="10em")
 
     libraries_grid = rx.grid(
         *[
@@ -301,9 +311,7 @@ def create_tech_stack_section() -> Tuple[rx.Component]:
         padding_top="1em",
     )
 
-    stack_intro = rx.box(
-        rx.text(asset_data.TECH_INTRO_TXT),
-                          height="7.5em")
+    stack_intro = rx.box(rx.text(asset_data.TECH_INTRO_TXT), height="7.5em")
 
     stack_grid = rx.grid(
         *[

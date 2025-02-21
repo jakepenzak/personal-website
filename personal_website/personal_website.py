@@ -10,7 +10,4 @@ app = rx.App(
     style=styles.BASE_STYLE,
     stylesheets=["/shared/fonts/fonts.css"],
     theme=rx.theme(accent_color="violet"),
-    appearance="light",
 )
-
-app.add_custom_404_page(page404.index404)  # noqa: F405

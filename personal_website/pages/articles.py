@@ -1,4 +1,5 @@
 """The articles page."""
+
 import reflex as rx
 
 from assets import asset_data
@@ -43,10 +44,10 @@ def header() -> rx.Component:
     )
 
     markdown_content = rx.vstack(
-            read_markdown(
-                asset_data.ARTICLES_INTRO,
-                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
-            ),
+        read_markdown(
+            asset_data.ARTICLES_INTRO,
+            component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_INTRO"],
+        ),
         width="100%",
         padding_x="2em",
         align="center",
