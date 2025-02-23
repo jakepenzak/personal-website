@@ -364,7 +364,7 @@ ARTICLES_META_DICT = {
     ),
     "FWL": ArticleMeta(
         img_src="/articles/fwl/cover.webp",
-        href="https://towardsdatascience.com/controlling-for-x-9cb51652f7ad",
+        href="/articles/fwl",
         title_src="assets/articles/fwl/title.md",
         descr_src="assets/articles/fwl/description.md",
     ),
