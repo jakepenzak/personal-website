@@ -15,7 +15,6 @@ def fwl() -> rx.Component:
 
     return rx.vstack(
         rx.box(rx.html(iframe_gen("/notebooks/fwl.html")), width="100%"),
-        rx.spacer(),
         rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
         min_height="80vh",
         width="100%",

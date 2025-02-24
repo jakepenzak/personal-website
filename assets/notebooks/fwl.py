@@ -293,8 +293,6 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(FWL, Stargazer, multiple, naive):
-    file = open('table.html','w')
-
     order = ['read','read_star','HHinc','pareduc','IQ','Intercept']
     columns = ['Naive OLS','Multiple OLS','FWL']
     rename = {'read':'Read (Days/Month)','read_star':'Read*','hhincome':'HH Income',
@@ -309,8 +307,8 @@ def _(FWL, Stargazer, multiple, naive):
 
     from IPython.display import display, HTML
 
-    HTML(regtable.render_html())
-    return HTML, columns, display, file, order, regtable, rename
+    HTML(f'<center>{regtable.render_html()}</center>')
+    return HTML, columns, display, order, regtable, rename
 
 
 @app.cell

@@ -37,4 +37,4 @@ EXPOSE 3000
 EXPOSE 8000
 
 # Always apply migrations before starting the backend.
-CMD ["reflex db migrate && reflex run --env prod"]
+CMD reflex db migrate && reflex run --env prod
