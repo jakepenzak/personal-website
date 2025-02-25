@@ -6,8 +6,21 @@ app = marimo.App(width="medium")
 
 @app.cell(hide_code=True)
 def _():
+    # Relevant Imports
+
     import marimo as mo
-    return (mo,)
+
+    import pandas as pd
+    import numpy as np
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    from scipy.stats import skewnorm
+    import statsmodels.formula.api as sm
+    from stargazer.stargazer import Stargazer  # noqa: F401
+    from IPython.display import display, HTML
+
+    sns.set_theme(style="darkgrid")
+    return HTML, Stargazer, display, mo, np, pd, plt, skewnorm, sm, sns
 
 
 @app.cell
@@ -27,7 +40,7 @@ def _(mo):
         r"""
         ## Introduction
 
-        Applied econometrics is generally interested in establishing causality. That is, what is the “treatment” effect of T on some outcome y. In a simple bivariate case, we can imagine randomly assigning treatment T=1 to some individuals and T=0 to others. This can be represented by the following linear regression model:
+        Applied econometrics is generally interested in establishing causality. That is, what is the “treatment” effect of $T$ on some outcome $y$. In a simple bivariate case, we can imagine randomly assigning treatment $T=1$ to some individuals and $T=0$ to others. This can be represented by the following linear regression model:
 
         $$
         \begin{equation}
@@ -36,7 +49,7 @@ def _(mo):
         \end{equation}
         $$
 
-        If we assume the treatment is truly randomly assigned, then T is independent to the error term or, in the economists jargon, exogenous. Therefore, we can estimate eq. (1) using ordinary least squares (OLS) and interpret the coefficient estimate on T with a causal interpretation - the average treatment effect (ATE):
+        If we assume the treatment is truly randomly assigned, then $T$ is independent to the error term or, in the economists jargon, exogenous. Therefore, we can estimate eq. (1) using ordinary least squares (OLS) and interpret the coefficient estimate on $T$ with a causal interpretation - the average treatment effect (ATE):
 
         $$
         \begin{equation}
@@ -54,7 +67,7 @@ def _(mo):
         \end{equation}
         $$
 
-        where we now control for a set of observed covariates X. The key estimate of interest on Read takes on a causal interpretation if and only if the CIA holds. That is, time spent reading is exogenous (i.e., no uncontrolled confounders) conditional on X. Equivalently,
+        where we now control for a set of observed covariates $X$. The key estimate of interest on Read takes on a causal interpretation if and only if the CIA holds. That is, time spent reading is exogenous (i.e., no uncontrolled confounders) conditional on $X$. Equivalently,
 
         $$
         \begin{equation}
@@ -63,9 +76,9 @@ def _(mo):
         \end{equation}
         $$
 
-        Without the CIA, our coefficient estimates are biased and we are limited in what we can say in terms of causality. Realistically, it is often quite difficult to make the argument for the CIA and, unfortunately, this assumption is not directly testable. In fact, what I have discussed above is a fundamental motivator for an entire field of econometrics that is devoted to establishing, developing, and implementing quasi-experimental research designs to establish causality including, but most definitely not limited to, difference-in-differences, synthetic control, and instrumental variable designs. These quasi-experimental designs seek to exploit exogenous ("as good as random") sources of variation in a treatment of interest T to study the causal effect of T on some outcome(s) y. There are some excellent econometric texts that are accessible to those with little to no background in econometrics, including "The Effect" by Nick Huntington-Klein, "Causal Inference: The Mixtape" by Scott Cunningham, or "Causal Inference for the Brave and True" by Matheus Facure Alves.[1][2][3] Joshua Angrist and Jörn-Steffen Pischke provide a deeper dive in "Mostly Harmless Econometrics" for those interested.[4]
+        Without the CIA, our coefficient estimates are biased and we are limited in what we can say in terms of causality. Realistically, it is often quite difficult to make the argument for the CIA and, unfortunately, this assumption is not directly testable. In fact, what I have discussed above is a fundamental motivator for an entire field of econometrics that is devoted to establishing, developing, and implementing quasi-experimental research designs to establish causality including, but most definitely not limited to, difference-in-differences, synthetic control, and instrumental variable designs. These quasi-experimental designs seek to exploit exogenous ("as good as random") sources of variation in a treatment of interest $T$ to study the causal effect of $T$ on some outcome(s) $y$. There are some excellent econometric texts that are accessible to those with little to no background in econometrics, including "The Effect" by Nick Huntington-Klein, "Causal Inference: The Mixtape" by Scott Cunningham, or "Causal Inference for the Brave and True" by Matheus Facure Alves.[1][2][3] Joshua Angrist and Jörn-Steffen Pischke provide a deeper dive in "Mostly Harmless Econometrics" for those interested.[4]
 
-        Despite the fact that establishing the CIA is particularly difficult through controlling for covariates alone, there is a substantial theorem in econometrics that provides some very powerful intuition into what it really means to "control" for additional covariates. Ultimately, this not only provides a deeper understanding to the underlying mechanisms of a linear regression, but also how to conceptualize key relationships of interest (i.e., the effect of T on Y).
+        Despite the fact that establishing the CIA is particularly difficult through controlling for covariates alone, there is a substantial theorem in econometrics that provides some very powerful intuition into what it really means to "control" for additional covariates. Ultimately, this not only provides a deeper understanding to the underlying mechanisms of a linear regression, but also how to conceptualize key relationships of interest (i.e., the effect of $T$ on $Y$).
 
         > Note that I have (intentionally) glossed over some additional causal inference/econometric assumptions, such as Positivity/Common Support & SUTVA/Counterfactual Consistency. In general, the CIA/Ignorability assumption is the most common assumption that needs to be defended. However, it is recommended that the interested reader familiarize themselves with the additional assumptuons. In brief, Positivity ensures we have non-treated households that are
         similar & comparable to treated households to enable counterfactual estimation & SUTVA ensures there is no
@@ -75,7 +88,7 @@ def _(mo):
 
         In the 19th century, econometricians Ragnar Frisch and Frederick V. Waugh developed, which was later generalized by Michael C. Lovell, a ~super cool~ theorem (the FWL Theorem) that allows for the estimation of any key parameter(s) in a linear regression where one first "partials out" the effects of the additional covariates.[5][6] First, a quick refresher on linear regression will be helpful.
 
-        A linear regression solves for the best linear predictors for an outcome y given a set of independent variables X, where the fitted values of y are projected onto the space spanned by X. In matrix notation, the linear regression model we are interested in is characterized by:
+        A linear regression solves for the best linear predictors for an outcome $y$ given a set of variables $X$, where the fitted values of $y$ are projected onto the space spanned by $X$. In matrix notation, the linear regression model we are interested in is characterized by:
 
         $$
         \begin{equation}
@@ -106,7 +119,7 @@ def _(mo):
 
         Let's return to our example of estimating the educational returns to reading as a child. Suppose we only want to obtain the key parameter of interest in eq. (3); that is, the effect of days per month spent reading as a child on educational attainment. Recall that in order to make a causal statement about our estimate, we must satisfy the CIA. Thus, we can control for a set of additional covariates X and then estimate (3) directly using the OLS estimator derived in (7). However, the FWL Theorem allows us to obtain the exact same key parameter estimate on Read under the following 3-step procedure:
 
-        1. Regress Read onto the set of covariates X only and, similarly, regress Education onto the set of covariates X only
+        1. Regress Read onto the set of covariates $X$ only and, similarly, regress Education onto the set of covariates $X$ only
 
         $$
         \begin{equation}
@@ -122,7 +135,7 @@ def _(mo):
         \end{equation}
         $$
 
-        2. Store the residuals after estimating (8)+(9) denoted Read* and Education*
+        2. Store the residuals after estimating (8)+(9) denoted $\text{Read}_i^*$ and $\text{Education}_i^*$
 
         $$
         \begin{equation}
@@ -138,7 +151,7 @@ def _(mo):
         \end{equation}
         $$
 
-        3. Regress Education* onto Read*
+        3. Regress $\text{Education}_i^*$ onto $\text{Read}_i^*$
 
         $$
         \begin{equation}
@@ -156,7 +169,7 @@ def _(mo):
         ## FWL Theorem Application
 
         In this section, we are going to simulate a highly stylized dataset to provide a simplified numerical example of applying the FWL theorem in answering our empirical question of the educational returns to childhood reading.
-        Suppose we hypothesize a set of demographic variables that we determine to be the relevant confounders necessary to satisfy the CIA in eq. (3), and thus allowing us to obtain a causal interpretation for the education returns to childhood reading. Namely, suppose we identify the key confounders to be the average education level of both parents in years (pareduc), household income as a child in tens of thousands of dollars (HHinc), and IQ score (IQ). We will artificially generate our dataset and the following data generating process (DGP) for the confounders as follows:
+        Suppose we hypothesize a set of demographic variables that we determine to be the relevant confounders necessary to satisfy the CIA in eq. (3), and thus allowing us to obtain a causal interpretation for the education returns to childhood reading. Namely, suppose we identify the key confounders to be the average education level of both parents in years ($\text{pareduc}$), household income as a child in tens of thousands of dollars ($\text{HHinc}$), and IQ score ($\text{IQ}$). We will artificially generate our dataset and the following data generating process (DGP) for the confounders as follows:
 
         $$
         \text{pareduc}_i \sim \mathcal{N}(14, 3) \newline
@@ -164,7 +177,7 @@ def _(mo):
         \text{IQ}_i \sim \mathcal{SN}(100, 10) \newline
         $$
 
-        Furthermore, to estimate eq. (3) we must have measures for the key treatment, average number of days in a month they read as a child (read), and the main outcome, their total educational attainment in years (educ). We artificially generate these key variables with gaussian error terms and heteroskedasticity in the education error term as follows:
+        Furthermore, to estimate eq. (3) we must have measures for the key treatment, average number of days in a month they read as a child ($\text{read}$), and the main outcome, their total educational attainment in years ($\text{educ}$). We artificially generate these key variables with gaussian error terms and heteroskedasticity in the education error term as follows:
 
         $$
         \begin{equation}
@@ -184,24 +197,10 @@ def _(mo):
 
         > Note that all values in the DGP were, in general, chosen arbitrarily such that the data works nicely for demonstration purposes. However, within the realm of this simulation we can interpret the coefficient on "read" as follows: On average, for each additional day a month that an individual read as child, their educational attainment increased by 0.2 years.
 
-        First, let's import key dependencies & generate data:
+        First, let's generate the data:
         """
     )
     return
-
-
-@app.cell
-def _():
-    import pandas as pd
-    import numpy as np
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-    from scipy.stats import skewnorm
-    import statsmodels.formula.api as sm
-    from stargazer.stargazer import Stargazer  # noqa: F401
-
-    sns.set_theme(style="darkgrid")
-    return Stargazer, np, pd, plt, skewnorm, sm, sns
 
 
 @app.cell
@@ -260,7 +259,7 @@ def _(df, plt, sns):
 
 @app.cell
 def _(mo):
-    mo.md(r"""The graph in the bottom right provides the scatter plot and naïve regression line of educ on read. This relationship, on the surface, shows a very strong positive relationship between days read a month as a child and educational attainment. However, we know that by construction this is not the true relationship between educ and read because of the common confounding covariates. We can quantify this result and the bias more formally via regression analysis. Let's now go ahead and estimate the naïve regression (i.e., eq. (3) less X), the multiple regression with all relevant covariates (i.e., eq. (3)), and the FWL 3 step process (i.e., eqs. (8)-(12)):""")
+    mo.md(r"""The graph in the bottom right provides the scatter plot and naïve regression line of educ on read. This relationship, on the surface, shows a very strong positive relationship between days read a month as a child and educational attainment. However, we know that by construction this is not the true relationship between educ and read because of the common confounding covariates. We can quantify this result and the bias more formally via regression analysis. Let's now go ahead and estimate the naïve regression (i.e., eq. (3) less $X$), the multiple regression with all relevant covariates (i.e., eq. (3)), and the FWL 3 step process (i.e., eqs. (8)-(12)):""")
     return
 
 
@@ -292,7 +291,7 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(FWL, Stargazer, multiple, naive):
+def _(FWL, HTML, Stargazer, multiple, naive):
     order = ['read','read_star','HHinc','pareduc','IQ','Intercept']
     columns = ['Naive OLS','Multiple OLS','FWL']
     rename = {'read':'Read (Days/Month)','read_star':'Read*','hhincome':'HH Income',
@@ -305,10 +304,8 @@ def _(FWL, Stargazer, multiple, naive):
     regtable.show_degrees_of_freedom(False)
     regtable.title('Table 1: The Effect of Childhood Reading on Educational Attainment')
 
-    from IPython.display import display, HTML
-
     HTML(f'<center>{regtable.render_html()}</center>')
-    return HTML, columns, display, order, regtable, rename
+    return columns, order, regtable, rename
 
 
 @app.cell

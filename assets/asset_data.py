@@ -334,7 +334,7 @@ ARTICLES_META_DICT = {
     ),
     "TSNE": ArticleMeta(
         img_src="/articles/tsne/cover.webp",
-        href="https://towardsdatascience.com/t-sne-from-scratch-ft-numpy-172ee2a61df7",
+        href="/articles/tsne",
         title_src="assets/articles/tsne/title.md",
         descr_src="assets/articles/tsne/description.md",
     ),
@@ -358,7 +358,7 @@ ARTICLES_META_DICT = {
     ),
     "Logistic": ArticleMeta(
         img_src="/articles/logistic/cover.webp",
-        href="https://towardsdatascience.com/predictive-parameters-in-a-logistic-regression-making-sense-of-it-all-476bde9825f3",
+        href="/articles/logistic",
         title_src="assets/articles/logistic/title.md",
         descr_src="assets/articles/logistic/description.md",
     ),

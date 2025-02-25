@@ -1,0 +1,817 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.11.8"
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "36001524e41bda02b2f0f102cac23da3",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "zZTZ",
+      "code_hash": null,
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bTIA",
+      "code_hash": null,
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h1 id=\"t-sne-from-scratch-ft-numpy\">t-SNE from Scratch (ft. NumPy):</h1>\n<span class=\"paragraph\"><center> <strong>Acquire a deep understanding of the inner workings of t-SNE via implementation from scratch in python</strong> </center></span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TlHQ",
+      "code_hash": null,
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h2 id=\"introduction\">Introduction</h2>\n<span class=\"paragraph\">I have found that one of the best ways to truly understanding any statistical algorithm or methodology is to manually implement it yourself. On the flip side, coding these algorithms can sometimes be time consuming and a real pain, and when somebody else has already done it, why would I want to spend my time doing it \u2014 seems inefficient, no? Both are fair points, and I am not here to make an argument for one over the other.</span>\n<span class=\"paragraph\">This article is designed for readers who are interested in understanding t-SNE via translation of the mathematics in the <a href=\"https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf\" rel=\"noopener\" target=\"_blank\">original paper</a> \u2014 by Laurens van der Maaten &amp; Geoffrey Hinton \u2014 into python code implementation.[1] I find these sort of exercises to be quite illuminating into the inner workings of statistical algorithms/models and really test your underlying understanding and assumptions regarding these algorithms/models. You are almost guaranteed to walk away with a better understanding then you had before. At the very minimum, successful implementation is always very satisfying!</span>\n<span class=\"paragraph\">This article will be accessible to individuals with any level of exposure of t-SNE. However, note a few things this post definitely is <strong>not</strong>:</span>\n<ol>\n<li>\n<span class=\"paragraph\">A <em>strictly</em> conceptual introduction and exploration of t-SNE, as there are plenty of other great resources out there that do this; nevertheless, I will be doing my best to connect the mathematical equations to their intuitive/conceptual counterparts at each stage of implementation.</span>\n</li>\n<li>\n<span class=\"paragraph\">A <em>comprehensive</em> discussion into the applications &amp; pros/cons of t-SNE, as well as direct comparisons of t-SNE to other dimensionality reduction techniques. I will, however, briefly touch on these topics throughout this article, but will by no means cover this in-depth.</span>\n</li>\n</ol>\n<span class=\"paragraph\">Without further ado, let\u2019s start with a <em>brief</em> introduction into t-SNE.</span>\n<h2 id=\"a-brief-introduction-to-t-sne\">A Brief Introduction to t-SNE</h2>\n<span class=\"paragraph\"><em>t-distributed stochastic neighbor embedding</em> (t-SNE) is a dimensionality reduction tool that is primarily used in datasets with a large dimensional feature space and enables one to visualize the data down, or project it, into a lower dimensional space (usually 2-D). It is especially useful for visualizing non-linearly separable data wherein linear methods such as <a href=\"https://en.m.wikipedia.org/wiki/Principal_component_analysis\" rel=\"noopener\" target=\"_blank\">Principal Component Analysis</a> (PCA) would fail. Generalizing linear frameworks of dimensionality reduction (such as PCA) into non-linear approaches (such as t-SNE) is also known as <a href=\"https://en.m.wikipedia.org/wiki/Nonlinear_dimensionality_reduction\" rel=\"noopener\" target=\"_blank\">Manifold Learning</a>. These methods can be extremely useful for visualizing and understanding the underlying structure of a high dimensional, non-linear data set, and can be great for disentangling and grouping together observations that are similar in the high-dimensional space. For more information on t-SNE and other manifold learning techniques, the <a href=\"https://scikit-learn.org/stable/modules/manifold.html\" rel=\"noopener\" target=\"_blank\">scikit-learn documentation</a> is a great resource. Additionally, to read about some cool areas t-SNE has seen applications, the <a href=\"https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding#cite_note-3\" rel=\"noopener\" target=\"_blank\">Wikipedia page</a> highlights some of these areas with references to the work.</span>\n<span class=\"paragraph\">Let\u2019s start with breaking down the name <em>t-distributed stochastic neighbor embedding</em> into its components. t-SNE is an extension on stochastic neighbor embedding (SNE) presented 6 years earlier in this <a href=\"https://cs.nyu.edu/~roweis/papers/sne_final.pdf\" rel=\"noopener\" target=\"_blank\">paper</a> by Geoffrey Hinton &amp; Sam Roweis. So let\u2019s start there. The <em>stochastic</em> part of the name comes from the fact that the objective function is not convex and thus different results can arise from different initializations. The <em>neighbor embedding</em> highlights the nature of the algorithm \u2014 optimally mapping the points in the original high-dimensional space into the corresponding low-dimensional space while best preserving the \u201cneighborhood\u201d structure of the points. SNE is comprised of the following (simplified) steps:</span>\n<ol>\n<li>\n<span class=\"paragraph\"><em>Obtain the Similarity Matrix between Points in the Original Space</em>: Compute the conditional probabilities for each datapoint <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex> relative to each datapoint <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex>. These conditional probabilities are calculated in the original high-dimensional space using a Gaussian centered at <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> and take on the following interpretation: the probability that i would pick <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex> as its neighbor in the original space. This creates a matrix that represents similarities between the points.</span>\n</li>\n<li>\n<span class=\"paragraph\"><em>Initialization</em>: Choose random starting points in the lower-dimensional space (say, 2-D) for each datapoint in the original space and compute new conditional probabilities similarly as above in this new space.</span>\n</li>\n<li>\n<span class=\"paragraph\"><em>Mapping</em>: Iteratively improve upon the points in the lower-dimensional space until the <a href=\"https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence\" rel=\"noopener\" target=\"_blank\">Kullback-Leibler divergences</a> between all the conditional probabilities is minimized. Essentially we are minimizing the differences in the probabilities between the similarity matrices of the two spaces so as to ensure the similarities are best preserved in the mapping of the original high-dimensional dataset to the low-dimensional dataset.</span>\n</li>\n</ol>\n<span class=\"paragraph\">t-SNE improves upon SNE in two primary ways:</span>\n<ol>\n<li>\n<span class=\"paragraph\">It minimizes the Kullback-Leibler divergences between the joint probabilities rather than the conditional probabilities. The authors refer to this as \u201csymmetric SNE\u201d b/c their approach ensures that the joint probabilities <marimo-tex class=\"arithmatex\">||(p_ij||)</marimo-tex> = <marimo-tex class=\"arithmatex\">||(p_ji||)</marimo-tex>. <strong>This results in a much better behaved cost function that is easier to optimize.</strong></span>\n</li>\n<li>\n<span class=\"paragraph\">It computes the similarities between points using a <a href=\"https://en.wikipedia.org/wiki/Student%27s_t-distribution\" rel=\"noopener\" target=\"_blank\">student's t-distribution</a> w/ one degree of freedom (also a <a href=\"https://en.wikipedia.org/wiki/Cauchy_distribution\" rel=\"noopener\" target=\"_blank\">Cauchy Distribution</a>) rather than a Gaussian in the low-dimensional space (step 2 above). Here we can see where the \u201ct\u201d in t-SNE is coming from. <strong>This improvement helps to alleviate the \u201ccrowding problem\u201d highlighted by the authors and to further improve the optimization problem.</strong> This \u201ccrowding problem\u201d can be envisioned as such: Imagine we have a 10-D space, the amount of space available in 2-D will not be sufficient to accurately capture those moderately dissimilar points compared to the amount of space for nearby points relative to the amount of space available in a 10-D space. More simply, just envision taking a 3-D space and projecting it down to 2-D, the 3-D space will have much more overall space to model the similarities relative to the projection down into 2-D. The Student-t distribution helps alleviate this problem by having heavier tails than the normal distribution. See the <a href=\"https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf\" rel=\"noopener\" target=\"_blank\">original paper</a> for a much more in-depth treatment of this problem.</span>\n</li>\n</ol>\n<span class=\"paragraph\">If this did not all track immediately, that is okay! I am hoping when we implement this in code, the pieces will all fall in to place. The main takeaway is this: <strong>t-SNE models similarities between datapoints in the high-dimensional space using joint probabilities of \u201cdatapoints choosing others as its neighbor\u201d, and then tries to find the best mapping of these points down into the low-dimensional space, while best preserving the original high-dimensional similarities.</strong></span>\n<h2 id=\"implementation-from-scratch\">Implementation from Scratch</h2>\n<span class=\"paragraph\">Let\u2019s now move on to understanding t-SNE via implementing the original version of the algorithm as presented in the <a href=\"https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf\" rel=\"noopener\" target=\"_blank\">paper</a> by Laurens van der Maaten &amp; Geoffrey Hinton. We will first start with implementing algorithm 1 below step-by-step, which will cover 95% of the main algorithm. There are two additional enhancements the authors note: 1) Early Exaggeration &amp; 2) Adaptive Learning Rates. We will only discuss adding in the early exaggeration as that is most conducive in aiding the interpretation of the actual algorithms inner workings, as the adaptive learning rate is focused on improving the rates of convergence.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "29a828bbc0e78a6606e0d5e66a1c4b6a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h1 id=\"t-sne-from-scratch-ft-numpy\">t-SNE from Scratch (ft. NumPy):</h1>\n<span class=\"paragraph\"><center> <strong>Acquire a deep understanding of the inner workings of t-SNE via implementation from scratch in python</strong> </center></span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "c0b44b233d3d8c49e6f35dcecaef1902",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h2 id=\"introduction\">Introduction</h2>\n<span class=\"paragraph\">I have found that one of the best ways to truly understanding any statistical algorithm or methodology is to manually implement it yourself. On the flip side, coding these algorithms can sometimes be time consuming and a real pain, and when somebody else has already done it, why would I want to spend my time doing it \u2014 seems inefficient, no? Both are fair points, and I am not here to make an argument for one over the other.</span>\n<span class=\"paragraph\">This article is designed for readers who are interested in understanding t-SNE via translation of the mathematics in the <a href=\"https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf\" rel=\"noopener\" target=\"_blank\">original paper</a> \u2014 by Laurens van der Maaten &amp; Geoffrey Hinton \u2014 into python code implementation.[1] I find these sort of exercises to be quite illuminating into the inner workings of statistical algorithms/models and really test your underlying understanding and assumptions regarding these algorithms/models. You are almost guaranteed to walk away with a better understanding then you had before. At the very minimum, successful implementation is always very satisfying!</span>\n<span class=\"paragraph\">This article will be accessible to individuals with any level of exposure of t-SNE. However, note a few things this post definitely is <strong>not</strong>:</span>\n<ol>\n<li>\n<span class=\"paragraph\">A <em>strictly</em> conceptual introduction and exploration of t-SNE, as there are plenty of other great resources out there that do this; nevertheless, I will be doing my best to connect the mathematical equations to their intuitive/conceptual counterparts at each stage of implementation.</span>\n</li>\n<li>\n<span class=\"paragraph\">A <em>comprehensive</em> discussion into the applications &amp; pros/cons of t-SNE, as well as direct comparisons of t-SNE to other dimensionality reduction techniques. I will, however, briefly touch on these topics throughout this article, but will by no means cover this in-depth.</span>\n</li>\n</ol>\n<span class=\"paragraph\">Without further ado, let\u2019s start with a <em>brief</em> introduction into t-SNE.</span>\n<h2 id=\"a-brief-introduction-to-t-sne\">A Brief Introduction to t-SNE</h2>\n<span class=\"paragraph\"><em>t-distributed stochastic neighbor embedding</em> (t-SNE) is a dimensionality reduction tool that is primarily used in datasets with a large dimensional feature space and enables one to visualize the data down, or project it, into a lower dimensional space (usually 2-D). It is especially useful for visualizing non-linearly separable data wherein linear methods such as <a href=\"https://en.m.wikipedia.org/wiki/Principal_component_analysis\" rel=\"noopener\" target=\"_blank\">Principal Component Analysis</a> (PCA) would fail. Generalizing linear frameworks of dimensionality reduction (such as PCA) into non-linear approaches (such as t-SNE) is also known as <a href=\"https://en.m.wikipedia.org/wiki/Nonlinear_dimensionality_reduction\" rel=\"noopener\" target=\"_blank\">Manifold Learning</a>. These methods can be extremely useful for visualizing and understanding the underlying structure of a high dimensional, non-linear data set, and can be great for disentangling and grouping together observations that are similar in the high-dimensional space. For more information on t-SNE and other manifold learning techniques, the <a href=\"https://scikit-learn.org/stable/modules/manifold.html\" rel=\"noopener\" target=\"_blank\">scikit-learn documentation</a> is a great resource. Additionally, to read about some cool areas t-SNE has seen applications, the <a href=\"https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding#cite_note-3\" rel=\"noopener\" target=\"_blank\">Wikipedia page</a> highlights some of these areas with references to the work.</span>\n<span class=\"paragraph\">Let\u2019s start with breaking down the name <em>t-distributed stochastic neighbor embedding</em> into its components. t-SNE is an extension on stochastic neighbor embedding (SNE) presented 6 years earlier in this <a href=\"https://cs.nyu.edu/~roweis/papers/sne_final.pdf\" rel=\"noopener\" target=\"_blank\">paper</a> by Geoffrey Hinton &amp; Sam Roweis. So let\u2019s start there. The <em>stochastic</em> part of the name comes from the fact that the objective function is not convex and thus different results can arise from different initializations. The <em>neighbor embedding</em> highlights the nature of the algorithm \u2014 optimally mapping the points in the original high-dimensional space into the corresponding low-dimensional space while best preserving the \u201cneighborhood\u201d structure of the points. SNE is comprised of the following (simplified) steps:</span>\n<ol>\n<li>\n<span class=\"paragraph\"><em>Obtain the Similarity Matrix between Points in the Original Space</em>: Compute the conditional probabilities for each datapoint <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex> relative to each datapoint <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex>. These conditional probabilities are calculated in the original high-dimensional space using a Gaussian centered at <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> and take on the following interpretation: the probability that i would pick <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex> as its neighbor in the original space. This creates a matrix that represents similarities between the points.</span>\n</li>\n<li>\n<span class=\"paragraph\"><em>Initialization</em>: Choose random starting points in the lower-dimensional space (say, 2-D) for each datapoint in the original space and compute new conditional probabilities similarly as above in this new space.</span>\n</li>\n<li>\n<span class=\"paragraph\"><em>Mapping</em>: Iteratively improve upon the points in the lower-dimensional space until the <a href=\"https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence\" rel=\"noopener\" target=\"_blank\">Kullback-Leibler divergences</a> between all the conditional probabilities is minimized. Essentially we are minimizing the differences in the probabilities between the similarity matrices of the two spaces so as to ensure the similarities are best preserved in the mapping of the original high-dimensional dataset to the low-dimensional dataset.</span>\n</li>\n</ol>\n<span class=\"paragraph\">t-SNE improves upon SNE in two primary ways:</span>\n<ol>\n<li>\n<span class=\"paragraph\">It minimizes the Kullback-Leibler divergences between the joint probabilities rather than the conditional probabilities. The authors refer to this as \u201csymmetric SNE\u201d b/c their approach ensures that the joint probabilities <marimo-tex class=\"arithmatex\">||(p_ij||)</marimo-tex> = <marimo-tex class=\"arithmatex\">||(p_ji||)</marimo-tex>. <strong>This results in a much better behaved cost function that is easier to optimize.</strong></span>\n</li>\n<li>\n<span class=\"paragraph\">It computes the similarities between points using a <a href=\"https://en.wikipedia.org/wiki/Student%27s_t-distribution\" rel=\"noopener\" target=\"_blank\">student's t-distribution</a> w/ one degree of freedom (also a <a href=\"https://en.wikipedia.org/wiki/Cauchy_distribution\" rel=\"noopener\" target=\"_blank\">Cauchy Distribution</a>) rather than a Gaussian in the low-dimensional space (step 2 above). Here we can see where the \u201ct\u201d in t-SNE is coming from. <strong>This improvement helps to alleviate the \u201ccrowding problem\u201d highlighted by the authors and to further improve the optimization problem.</strong> This \u201ccrowding problem\u201d can be envisioned as such: Imagine we have a 10-D space, the amount of space available in 2-D will not be sufficient to accurately capture those moderately dissimilar points compared to the amount of space for nearby points relative to the amount of space available in a 10-D space. More simply, just envision taking a 3-D space and projecting it down to 2-D, the 3-D space will have much more overall space to model the similarities relative to the projection down into 2-D. The Student-t distribution helps alleviate this problem by having heavier tails than the normal distribution. See the <a href=\"https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf\" rel=\"noopener\" target=\"_blank\">original paper</a> for a much more in-depth treatment of this problem.</span>\n</li>\n</ol>\n<span class=\"paragraph\">If this did not all track immediately, that is okay! I am hoping when we implement this in code, the pieces will all fall in to place. The main takeaway is this: <strong>t-SNE models similarities between datapoints in the high-dimensional space using joint probabilities of \u201cdatapoints choosing others as its neighbor\u201d, and then tries to find the best mapping of these points down into the low-dimensional space, while best preserving the original high-dimensional similarities.</strong></span>\n<h2 id=\"implementation-from-scratch\">Implementation from Scratch</h2>\n<span class=\"paragraph\">Let\u2019s now move on to understanding t-SNE via implementing the original version of the algorithm as presented in the <a href=\"https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf\" rel=\"noopener\" target=\"_blank\">paper</a> by Laurens van der Maaten &amp; Geoffrey Hinton. We will first start with implementing algorithm 1 below step-by-step, which will cover 95% of the main algorithm. There are two additional enhancements the authors note: 1) Early Exaggeration &amp; 2) Adaptive Learning Rates. We will only discuss adding in the early exaggeration as that is most conducive in aiding the interpretation of the actual algorithms inner workings, as the adaptive learning rate is focused on improving the rates of convergence.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "3646a506a25d1cb81b7fd6bb344d3a69",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<center> <img src=\"data:image/webp;base64,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\" style=\"max-width: 100%; height: auto;\"> </center>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "23489b4f49e25096cae0125c98a4b80b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h3 id=\"1-inputs\">1. Inputs</h3>\n<span class=\"paragraph\">Following the original paper, we will be using the publicly available <a href=\"https://www.openml.org/search?type=data&amp;status=active&amp;id=554&amp;sort=runs\" rel=\"noopener\" target=\"_blank\">MNIST dataset</a> from OpenML with images of handwritten digits from 0\u20139.[2] We will also randomly sample 1000 images from the dataset &amp; reduce the dimensionality of the dataset using Principal Component Analysis (PCA) and keep 30 components. These are both to improve computational time of the algorithm, as the code here is not optimized for speed, but rather for interpretability &amp; learning.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "d51f3174f2105843f00d6e973b1dd6b0",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "2b01abbb8ddfb00ad243e7e399ff4d49",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">This will be our X dataset with each row being an image and each column being a feature, or principal component in this case (i.e. linear combinations of the original pixels):</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "b634170d6b8758ddabb3d402b807d155",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='SFPL-0' random-id='0f228854-7e73-5227-5631-f84db72ad273'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/5746-38845-mU4N0shN.csv&quot;' data-total-rows='1000' data-total-columns='30' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "BYtC",
+      "code_hash": "4aac34b756d39ff686e388882708927a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">We also will need to specify the cost function parameters \u2014 perplexity \u2014 and the optimization parameters \u2014 iterations, learning rate, &amp; momentum. We will hold off on these for now and address them as they appear at each stage.</span>\n<span class=\"paragraph\">In terms of output, recall that we seek a the low-dimensional mapping of the original dataset X. We will be mapping the original space into a 2 dimensional space throughout this example. Thus, our new output will be the 1000 images now represented in a 2 dimensional space rather than the original 30 dimensional space, with a shape of [1000, 2].</span>\n<h3 id=\"2-compute-affinitiessimilarities-of-x-in-the-original-space\">2. Compute Affinities/Similarities of X in the Original Space</h3>\n<span class=\"paragraph\">Now that we have our inputs, the first step is to compute the pairwise similarities in the original high dimensional space. That is, for each image <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> we compute the probability that <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> would pick image <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex> as its neighbor in the original space for each <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex>. These probabilities are calculated via a normal distribution centered around each point and then are normalized to sum up to 1. Mathematically, we have:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\np_{j|i}=\\frac{\\exp{(-\\|x_i-x_j\\|^2/2\\sigma_i^2)}}{\\sum_{k\\ne i}\\exp{(-\\|x_i-x_j\\|^2/2\\sigma_i^2)}}\n\\tag{1}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">Note that, in our case with n = 1000, these computations will result in a 1000 x 1000 matrix of similarity scores. Note we set <marimo-tex class=\"arithmatex\">||(p||)</marimo-tex> = 0 whenever <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> = <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex> b/c we are modeling pairwise similarities. However, you may notice that we have not mentioned how <marimo-tex class=\"arithmatex\">||(\\sigma||)</marimo-tex> is determined. This value is determined for each observation <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> via a grid search based on the user-specified desired <a href=\"https://en.wikipedia.org/wiki/Perplexity\" rel=\"noopener\" target=\"_blank\">perplexity</a> of the distributions. We will talk about this immediately below, but let\u2019s first look at how we would code eq. (1) above:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "RGSE",
+      "code_hash": "57e646b057eba44915e648802835c6d3",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Kclp",
+      "code_hash": "6fd62aca730d9a8e6e60a72efc666162",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Now before we look at the results of this code, let\u2019s discuss how we determine the values of <marimo-tex class=\"arithmatex\">||(\\sigma||)</marimo-tex> via the grid_search() function. Given a specified value of perplexity (which in this context can be loosely thought about as the number of nearest neighbors for each point), we do a grid search over a range of values of <marimo-tex class=\"arithmatex\">||(\\sigma||)</marimo-tex> such that the following equation is as close to equality as possible for each <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex>:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\nPerp(P_i)=2^{H(P_i)}\n\\tag{2}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">where <marimo-tex class=\"arithmatex\">||(H(P_i)||)</marimo-tex> is the Shannon entropy of <marimo-tex class=\"arithmatex\">||(P||)</marimo-tex>:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\nH(P_i) = - \\sum_jp_{j|i}\\log_2p_{j|i}\n\\tag{2}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">In our case, we will set perplexity = 10 and set the search space to be defined by [0.01 * standard deviation of the norms for the difference between images <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex>, 5 * standard deviation of the norms for the difference between images <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex>] divided into 200 equal steps. Knowing this, we can define our grid_search() function as follows:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "idfp",
+      "code_hash": null,
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Now before we look at the results of this code, let\u2019s discuss how we determine the values of <marimo-tex class=\"arithmatex\">||(\\sigma||)</marimo-tex> via the grid_search() function. Given a specified value of perplexity (which in this context can be loosely thought about as the number of nearest neighbors for each point), we do a grid search over a range of values of <marimo-tex class=\"arithmatex\">||(\\sigma||)</marimo-tex> such that the following equation is as close to equality as possible for each <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex>:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\nPerp(P_i)=2^{H(P_i)}\n\\tag{2}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">where <marimo-tex class=\"arithmatex\">||(H(P_i)||)</marimo-tex> is the Shannon entropy of <marimo-tex class=\"arithmatex\">||(P||)</marimo-tex>:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\nH(P_i) = - \\sum_jp_{j|i}\\log_2p_{j|i}\n\\tag{2}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">In our case, we will set perplexity = 10 and set the search space to be defined by [0.01 * standard deviation of the norms for the difference between images <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex>, 5 * standard deviation of the norms for the difference between images <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex>] divided into 200 equal steps. Knowing this, we can define our grid_search() function as follows:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "dXZh",
+      "code_hash": null,
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "CVtz",
+      "code_hash": null,
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "aurT",
+      "code_hash": null,
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Given these functions, we can compute the affinity matrix via:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "emfo",
+      "code_hash": "f9818f885535593ab0144847451cce74",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hstk",
+      "code_hash": "82c840a40f69e186204f8813b300c1f4",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Given these functions, we can compute the affinity matrix via:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "nWHF",
+      "code_hash": "13d8c130440a4514651389bfc47582e7",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Computing Pairwise Affinities....\n"
+        },
+        {
+          "type": "stream",
+          "name": "stderr",
+          "text": "/tmp/marimo_38845/__marimo__cell_emfo_.py:34: RuntimeWarning: invalid value encountered in divide\n  p_new = np.maximum(p / np.sum(p), \u03b5)\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Completed Pairwise Affinities Matrix. \n\n"
+        }
+      ]
+    },
+    {
+      "id": "iLit",
+      "code_hash": "5a655d50d495064dd4630eb973e82dae",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='iLit-0' random-id='ec0e3abe-7a35-e7e6-05a4-bbce1ff95bd1'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11160-38845-7J1R746M.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZHCJ",
+      "code_hash": "6da78435e9581a2f18b64080be3f99e8",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Note, the diagonal elements are set to <marimo-tex class=\"arithmatex\">||(\\epsilon \\approx 0||)</marimo-tex> by construction (whenever <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> = <marimo-tex class=\"arithmatex\">||(j||)</marimo-tex>). Recall that a key extension of the t-SNE algorithm is to compute the joint probabilities rather than the conditional probabilities. This is computed simply as follow:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\np_{ij}=\\frac{p_{j|i}+p_{i|j}}{2n}\n\\tag{3}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">Thus, we can define a new function</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ROlb",
+      "code_hash": "a8e296ae959d7c71a79e593ec473e95f",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "qnkX",
+      "code_hash": "174b7070b164c32ca955f2005ccf5158",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Feeding in <code>p_ij</code> from above, we obtain the following symmetric affinities matrix:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TqIu",
+      "code_hash": "1c8e8c5f2340eb683e5455e43b90b534",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Computing Symmetric p_ij matrix....\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Completed Symmetric p_ij Matrix. \n\n"
+        }
+      ]
+    },
+    {
+      "id": "Vxnm",
+      "code_hash": "c4d0bca97c2b6638ed61306e6eef460e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='Vxnm-0' random-id='38a0ad35-0f70-b38b-7bc5-20490a1f0b9f'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11142-38845-y9GqXHoM.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "DnEU",
+      "code_hash": "90d3b65b450a71d44d3e832ef6c00e3d",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Now we have completed the first main step in t-SNE! We computed the symmetric affinity matrix in the original high-dimensional space. Before we dive right into the optimization stage, we will discuss the main components of the optimization problem in the next two steps and then combine them into our for loop.</span>\n<h3 id=\"3-sample-initial-solution-compute-low-dimensional-affinity-matrix\">3. Sample Initial Solution &amp; Compute Low Dimensional Affinity Matrix</h3>\n<span class=\"paragraph\">Now we want to sample a random initial solution in the lower dimensional space as follows:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ulZA",
+      "code_hash": "6456644fe21dd0733c66c67a8af29392",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ecfG",
+      "code_hash": "51e1002e45ae55c7ac3b613684381772",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Pvdt",
+      "code_hash": "b6c7a9b3c14a306ef534c94824653994",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='Pvdt-0' random-id='5ce57476-57c9-27a0-62b5-b10ffec83dc0'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/467-38845-lWyzsObl.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZBYS",
+      "code_hash": "f5f6b4ee05b4c8449e4246c36e92c352",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Now, we want to compute the affinity matrix in this lower dimensional space. However, recall that we do this utilizing a student's t-distribution w/ 1 degree of freedom:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\nq_{ij}=\\frac{(1+\\|y_i-y_j\\|^2)^{-1}}{\\sum_{k \\ne l} (1+\\|y_i-y_j\\|^2)^{-1}}\n\\tag{4}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">Again, we set <marimo-tex class=\"arithmatex\">||(q=0||)</marimo-tex> whenever <marimo-tex class=\"arithmatex\">||(i = j||)</marimo-tex>. Note this equation differs from eq. (1) in that the denominator is over all <marimo-tex class=\"arithmatex\">||(i||)</marimo-tex> and thus symmetric by construction. Putting this into code, we obtain:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "aLJB",
+      "code_hash": "21a411b9aae2f72d225478161805f681",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "nHfw",
+      "code_hash": "ab8efeff4228ca3d655d8a0a710008c2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Here we are seeking a 1000 x 1000 affinity matrix but now in the lower dimensional space:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "xXTn",
+      "code_hash": "1ce7526313c506e7828250d37bf04de9",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "AjVT",
+      "code_hash": "62060d05348d4be7e46b2121de65dfab",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='AjVT-0' random-id='c2d502fb-791c-09ae-2f90-92f271d3774c'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11358-38845-ZsQrb52v.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "pHFh",
+      "code_hash": "fc01d412d46c355cd7c20653aaa709f5",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h3 id=\"4-compute-gradient-of-the-cost-function\">4. Compute Gradient of the Cost Function</h3>\n<span class=\"paragraph\">Recall, our cost function is the Kullback-Leibler divergence between joint probability distributions in the high dimensional space and low dimensional space:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\nC=\\text{KL}(P\\|Q)=\\sum_i \\sum_j p_{ij} \\log \\frac{p_{ij}}{q_{ij}}\n\\tag{5}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">Intuitively, we want to minimize the difference in the affinity matrices <marimo-tex class=\"arithmatex\">||(p_{ij}||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(q_{ij}||)</marimo-tex> thereby best preserving the \u201cneighborhood\u201d structure of the original space. The optimization problem is solved using gradient descent, but first let\u2019s look at computing the gradient for the cost function above. The authors derive (see appendix A of the paper) the gradient of the cost function as follows:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\n\\frac{\\partial C}{\\partial y_i} = 4 \\sum_j(p_{ij}-q_{ij})(1+\\|y_i-y_j\\|^2)^{-1}(y_i-y_j)\n\\tag{6}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">In python, we have:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "NCOB",
+      "code_hash": "d78e916ca358e9226e8a77476297d4da",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "aqbW",
+      "code_hash": "9e5bd6850d7809c195f45fc4032203b7",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Feeding in the relevant arguments, we obtain the gradient as follows:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TRpd",
+      "code_hash": "60a0be60189cdfc01a86e66f1737491a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TXez",
+      "code_hash": "26c390f97624d088e6d96d42ccc03534",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='TXez-0' random-id='eaae38a9-642f-87bd-9b0f-884c1659c300'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/470-38845-bHECQOmb.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "dNNg",
+      "code_hash": "dd0506d4b7a7f69a4fca63cdcea1e2c7",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Now, we have all the pieces in order to solve the optimization problem!</span>\n<h3 id=\"5-iterate-optimize-the-low-dimensional-mapping\">5. Iterate &amp; Optimize the Low-Dimensional Mapping</h3>\n<span class=\"paragraph\">In order to update our low-dimensional mapping, we use <a href=\"https://en.wikipedia.org/wiki/Gradient_descent\" rel=\"noopener\" target=\"_blank\">gradient descent with momentum</a> as outlined by the authors:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\n\\mathcal{Y}^{(t)}=\\mathcal{Y}^{(t-1)}+\\eta\\frac{\\partial C}{\\partial \\mathcal{Y}} + \\alpha(t)(\\mathcal{Y}^{(t-1)}-\\mathcal{Y}^{(t-2)})\n\\tag{7}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">where <marimo-tex class=\"arithmatex\">||(\\eta||)</marimo-tex> is our <a href=\"https://en.wikipedia.org/wiki/Learning_rate\" rel=\"noopener\" target=\"_blank\">learning rate</a> and <marimo-tex class=\"arithmatex\">||(\\alpha(t)||)</marimo-tex> is our momentum term as a function of time. The learning rate controls the step size at each iteration and the momentum term allows the optimization algorithm to gain inertia in the smooth direction of the search space, while not being bogged down by the noisy parts of the gradient. We will set <marimo-tex class=\"arithmatex\">||(\\eta=200||)</marimo-tex> for our example and will fix <marimo-tex class=\"arithmatex\">||(\\alpha(t)=0.5||)</marimo-tex> if <marimo-tex class=\"arithmatex\">||(t &lt; 250||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(\\alpha(t)=0.8||)</marimo-tex> otherwise. We have all the components necessary above to compute to the update rule, thus we can now run our optimization over a set number of iterations <marimo-tex class=\"arithmatex\">||(T||)</marimo-tex> (we will set <marimo-tex class=\"arithmatex\">||(T=1000||)</marimo-tex>).</span>\n<span class=\"paragraph\">Before we set up for iteration scheme, let\u2019s first introduce the enhancement the authors refer to as \u201cearly exaggeration\u201d. This term is a constant that scales the original matrix of affinities <marimo-tex class=\"arithmatex\">||(p_{ij}||)</marimo-tex>. What this does is it places more emphasis on modeling the very similar points (high values in <marimo-tex class=\"arithmatex\">||(p_{ij}||)</marimo-tex> from the original space) in the new space early on and thus forming \u201cclusters\u201d of highly similar points. The early exaggeration is placed on at the beginning of the iteration scheme (<marimo-tex class=\"arithmatex\">||(T&lt;250||)</marimo-tex>) and then turned off otherwise. Early exaggeration will be set to 4 in our case. We will see this in action in our visual below following implementation.</span>\n<span class=\"paragraph\">Now, putting all of the pieces together for the algorithm, we have the following:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "yCnT",
+      "code_hash": "d7fd0514db5d6cf3779b7cc01224f928",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "wlCL",
+      "code_hash": "ecea56c33a269f03e318038f49245ce1",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Now we calling the code:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "kqZH",
+      "code_hash": "f6926ec92023f90d4d250dea80f526f8",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Computing Pairwise Affinities....\n"
+        },
+        {
+          "type": "stream",
+          "name": "stderr",
+          "text": "/tmp/marimo_38845/__marimo__cell_emfo_.py:34: RuntimeWarning: invalid value encountered in divide\n  p_new = np.maximum(p / np.sum(p), \u03b5)\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Completed Pairwise Affinities Matrix. \n\nComputing Symmetric p_ij matrix....\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Completed Symmetric p_ij Matrix. \n\nOptimizing Low Dimensional Embedding....\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 1: Value of Cost Function is 4.441886246366149\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 50: Value of Cost Function is 3.0778790601226964\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 100: Value of Cost Function is 2.7959379911053714\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 150: Value of Cost Function is 2.712898566956073\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 200: Value of Cost Function is 2.674005076952713\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 250: Value of Cost Function is 2.6522584679554395\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 300: Value of Cost Function is 1.5862144649816596\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 350: Value of Cost Function is 1.4044463860771323\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 400: Value of Cost Function is 1.3120797993427527\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 450: Value of Cost Function is 1.2534073386935127\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 500: Value of Cost Function is 1.2121373744132518\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 550: Value of Cost Function is 1.1810659450987133\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 600: Value of Cost Function is 1.1566141808026744\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 650: Value of Cost Function is 1.1367419602519508\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 700: Value of Cost Function is 1.1202020231482184\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 750: Value of Cost Function is 1.1061728839210634\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 800: Value of Cost Function is 1.0940894764218987\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 850: Value of Cost Function is 1.0835503010207388\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 900: Value of Cost Function is 1.0742614376492445\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Iteration 950: Value of Cost Function is 1.0660012763223001\n"
+        },
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Completed Low Dimensional Embedding: Final Value of Cost Function is 1.0588803939548603\n"
+        }
+      ]
+    },
+    {
+      "id": "wAgl",
+      "code_hash": "0c9a89285c42ec6f827821dfb9966ec0",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='wAgl-0' random-id='0b6b28ae-8424-be32-8bb3-cbbc7f7d35f4'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/381-38845-FxJmLpgF.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "rEll",
+      "code_hash": "c284d3c9346d53e55d688a58c7fc3d4e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">where <code>solution</code> is the final 2-D mapping and <code>Y</code> is our mapped 2-D values at each step of the iteration. Plotting the evolution of <code>Y</code> where <code>Y[-1]</code> is our final 2-D mapping, we obtain (note how the algorithm behaves with early exaggeration on and off):</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "dGlV",
+      "code_hash": "c705e2b2b56dbefd7425e55d3df10e98",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stderr",
+          "text": "/tmp/marimo_38845/__marimo__cell_dGlV_.py:56: UserWarning: Attempting to set identical low and high xlims makes transformation singular; automatically expanding.\n  ax.set_xlim(\n/tmp/marimo_38845/__marimo__cell_dGlV_.py:59: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.\n  ax.set_ylim(\n"
+        }
+      ]
+    },
+    {
+      "id": "SdmI",
+      "code_hash": "c03bddd815b14a175e397c3f811d9ea8",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<img src='./@file/4232414-38845-Ugl9D7zY.gif' />"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lgWD",
+      "code_hash": "2e50d32d384f3487810f057f1f28ef6f",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">I recommend playing around with different values of the parameters (i.e., perplexity, learning rate, early exaggeration, etc.) to see how the solution differs (See the original paper and the scikit-learn documentation for guides on using these parameters).</span>\n<h2 id=\"conclusion\">Conclusion</h2>\n<span class=\"paragraph\">And there you have it, we have coded t-SNE from scratch! I hope you have found this exercise to be illuminating into the inner workings of t-SNE and, at the very minimum, satisfying. Note that this implementation is not intended to be optimized for speed, but rather for understanding. Additions to the t-SNE algorithm have been implemented to improve computational speed and performance, such as variants of the <a href=\"https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf\" rel=\"noopener\" target=\"_blank\">Barnes-Hut algorithm</a> (tree-based approaches), using PCA as the initialization of the embedding, or using additional gradient descent extensions such as adaptive learning rates. The implementation in scikit-learn makes use of many of these enhancements.</span>\n<span class=\"paragraph\">As always, I hope you have enjoyed reading this as much as I enjoyed writing it.</span>\n<h2 id=\"references\">References</h2>\n<span class=\"paragraph\">[1] van der Maaten, L.J.P.; Hinton, G.E. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research 9:2579\u20132605, 2008.</span>\n<span class=\"paragraph\">[2] LeCun et al. (1999): The MNIST Dataset Of Handwritten Digits (Images) License: CC BY-SA 3.0</span>\n<div style=\"text-align: center; font-size: 24px;\">\u2756\u2756\u2756</div>\n\n<span class=\"paragraph\"><center>\nAccess all the code via <a href=\"https://github.com/jakepenzak/blog-posts\" rel=\"noopener\" target=\"_blank\">GitHub Repo</a></span>\n<span class=\"paragraph\">I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning \ud83d\ude01. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.\n</center></span></span>"
+          }
+        }
+      ],
+      "console": []
+    }
+  ]
+}
