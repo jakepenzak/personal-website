@@ -328,7 +328,7 @@ ARTICLES_META_DICT = {
     ),
     "DML1": ArticleMeta(
         img_src="/articles/dml1/cover.webp",
-        href="https://towardsdatascience.com/double-machine-learning-simplified-part-1-basic-causal-inference-applications-3f7afc9852ee",
+        href="/articles/dml1",
         title_src="assets/articles/dml1/title.md",
         descr_src="assets/articles/dml1/description.md",
     ),

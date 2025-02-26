@@ -53,3 +53,19 @@ def tsne() -> rx.Component:
         min_height="80vh",
         width="100%",
     )
+
+
+@template(route="/articles/dml1", title="Double Machine Learning, Simplified: Part 1")
+def dml1() -> rx.Component:
+    """Article page for 'Double Machine Learning, Simplified: Part 1'
+
+    Returns
+        The UI for the 'Double Machine Learning, Simplified: Part 1' article page
+    """
+
+    return rx.vstack(
+        rx.box(rx.html(iframe_gen("/notebooks/dml1.html")), width="100%"),
+        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        min_height="80vh",
+        width="100%",
+    )
