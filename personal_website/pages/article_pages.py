@@ -5,6 +5,15 @@ from personal_website.components.utilities.html_helpers import iframe_gen
 from assets import asset_data
 
 
+def article_page(html_path: str) -> rx.Component:
+    return rx.vstack(
+        rx.box(rx.html(iframe_gen(html_path)), width="100%"),
+        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        min_height="80vh",
+        width="100%",
+    )
+
+
 @template(route="/articles/fwl", title="Controlling for 'X'?")
 def fwl() -> rx.Component:
     """Article page for 'Controlling for 'X'?'
@@ -13,12 +22,7 @@ def fwl() -> rx.Component:
         The UI for the 'Controlling for 'X'? article page.
     """
 
-    return rx.vstack(
-        rx.box(rx.html(iframe_gen("/notebooks/fwl.html")), width="100%"),
-        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
-        min_height="80vh",
-        width="100%",
-    )
+    return article_page("/notebooks/html/fwl.html")
 
 
 @template(
@@ -31,12 +35,7 @@ def logistic() -> rx.Component:
         The UI for the 'Predictive Parameterics in a Logistic Regression' article page
     """
 
-    return rx.vstack(
-        rx.box(rx.html(iframe_gen("/notebooks/logistic.html")), width="100%"),
-        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
-        min_height="80vh",
-        width="100%",
-    )
+    return article_page("/notebooks/html/logistic.html")
 
 
 @template(route="/articles/tsne", title="t-SNE from Scratch (ft. NumPy)")
@@ -47,12 +46,7 @@ def tsne() -> rx.Component:
         The UI for the 't-SNE from Scratch (ft. NumPy)' article page
     """
 
-    return rx.vstack(
-        rx.box(rx.html(iframe_gen("/notebooks/tsne.html")), width="100%"),
-        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
-        min_height="80vh",
-        width="100%",
-    )
+    return article_page("/notebooks/html/tsne.html")
 
 
 @template(route="/articles/dml1", title="Double Machine Learning, Simplified: Part 1")
@@ -63,9 +57,15 @@ def dml1() -> rx.Component:
         The UI for the 'Double Machine Learning, Simplified: Part 1' article page
     """
 
-    return rx.vstack(
-        rx.box(rx.html(iframe_gen("/notebooks/dml1.html")), width="100%"),
-        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
-        min_height="80vh",
-        width="100%",
-    )
+    return article_page("/notebooks/html/dml1.html")
+
+
+@template(route="/articles/dml2", title="Double Machine Learning, Simplified: Part 2")
+def dml2() -> rx.Component:
+    """Article page for 'Double Machine Learning, Simplified: Part 2'
+
+    Returns
+        The UI for the 'Double Machine Learning, Simplified: Part 2' article page
+    """
+
+    return article_page("/notebooks/html/dml2.html")

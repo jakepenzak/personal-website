@@ -322,7 +322,7 @@ class ArticleMeta(NamedTuple):
 ARTICLES_META_DICT = {
     "DML2": ArticleMeta(
         img_src="/articles/dml2/cover.webp",
-        href="https://towardsdatascience.com/double-machine-learning-simplified-part-2-extensions-the-cate-99926151cac",
+        href="/articles/dml2",
         title_src="assets/articles/dml2/title.md",
         descr_src="assets/articles/dml2/description.md",
     ),

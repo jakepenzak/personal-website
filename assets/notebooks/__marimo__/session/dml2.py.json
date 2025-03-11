@@ -1,0 +1,112 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.11.8"
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "41a846fed90cb4c2a1b92e62780bb983",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "4bb4aff841c0292f7a30215e5049e4e0",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h1 id=\"double-machine-learning-simplified-part-2-targeting-the-cate\">Double Machine Learning, Simplified: Part 2 - Targeting &amp; the CATE</h1>\n<span class=\"paragraph\"><center> <strong>Learn how to utilize DML for estimating idiosyncratic treatment effects to enable personalized targeting</strong> </center></span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "ba807520d03cabbdb77d7f7261868be0",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h2 id=\"introduction\">Introduction</h2>\n<blockquote>\n<span class=\"paragraph\">This article is the <strong>2nd</strong> in a 2 part series on simplifying and democratizing Double Machine Learning. In the <a href=\"/articles/dml1\">1st part</a>, we covered the fundamentals of Double Machine Learning, along with two basic causal inference applications. Now, in pt. 2, we will extend this knowledge to turn our causal inference problem into a prediction task, wherein we predict individual level treatment effects to aid in decision making and data-driven targeting</span>\n</blockquote>\n<span class=\"paragraph\">Double Machine Learning, as we learned in <a href=\"/articles/dml1\">part 1</a> of this series, is a highly flexible partially-linear causal inference method for estimating the average treatment effect (ATE) of a treatment. Specifically, it can be utilized to model highly non-linear confounding relationships in observational data (especially when our set of controls/confounders is of extremely high dimensionality) and/or to reduce the variation in our key outcome in experimental settings. Estimating the ATE is particularly useful in understanding the average impact of a specific treatment, which can be extremely useful for future decision making. However, extrapolating this treatment effect assumes a degree homogeneity in the effect; that is, regardless of the population we roll treatment out to, we anticipate the effect to be similar to the ATE. What if we are limited in the number of individuals who we can target for future rollout and thus want to understand among which subpopulations the treatment was most effective to drive highly effective rollout?</span>\n<span class=\"paragraph\">This issue described above concerns estimating treatment effect heterogeneity. That is, how does our treatment effect impact different subsets of the population? Luckily for us, DML provides a powerful framework to do exactly this. Specifically, we can make use of DML to estimate the Conditional Average Treatment Effect (CATE). First, let\u2019s revisit our definition of the ATE, in binary and continuous cases, respectively:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\n\\text{ATE}=\\mathbb{E_n}[y(T=1)-y(T=0)]\n\\tag{1}\n\\end{equation}\n||]</marimo-tex><marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\n\\text{ATE}=\\mathbb{E_n}\\left[\\frac{\\partial y}{\\partial T}\\right]\n\\tag{2}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">Now with the CATE, we estimate the ATE conditional on a set of values for our covariates, <marimo-tex class=\"arithmatex\">||(\\mathbf{X}||)</marimo-tex>:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\n\\text{CATE}=\\mathbb{E_n}[y(T=1)-y(T=0)|\\mathbf{X}=x] \n\\tag{3}\n\\end{equation}\n||]</marimo-tex><marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\n\\text{CATE}=\\mathbb{E_n}\\left[\\frac{\\partial y}{\\partial T}\\right|\\mathbf{X}=x]\n\\tag{4}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">For example, if we wanted to know the treatment effect for males versus females, we can estimate the CATE conditional on the covariate being equal to each subgroup of interest. Note that we can estimate highly aggregated CATEs (i.e., at a male vs. female level), also known as Group Average Treatment Effects (GATEs), or we can allow <marimo-tex class=\"arithmatex\">||(\\mathbf{X}||)</marimo-tex> to take on an extremely high dimensionality and thus closely estimate each individuals treatment effect. You may immediately notice the benefits in being able to do this: we can utilize this information to make highly informed decisions in future targeting of the treatment! Even more notable, we can create a CATE function to make predictions of the treatment effect on previously unexposed individuals!</span>\n<span class=\"paragraph\">Note, that there are many models that exist for estimating CATEs, which we'll cover in a subsequent post. For now, we'll cover two techniques within the partially linear DML formulation for estimating this CATE function; namely, Linear DML and Non-Parametric DML. Er will show how to estimate the CATE mathematically and then provide examples for each case.</span>\n<blockquote>\n<span class=\"paragraph\">Note: Unbiased estimation of the CATE still requires the exogeneity/CIA/Ignorability assumption to hold as covered in part 1.</span>\n</blockquote>\n<span class=\"paragraph\"><strong>Everything demonstrated below can and should be extended to the experimental setting (RCT or A/B Testing), where exogeneity is satisfied by construction, as covered in application 2 of part 1.</strong></span>\n<h2 id=\"linear-dml\">Linear DML</h2>\n<span class=\"paragraph\">Estimating the CATE in the linear DML framework is a simple extension of DML for estimating the ATE:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\ny-\\mathcal{M}_y(\\mathbf{X})=\\beta_0+\\beta_1(T-\\mathcal{M}_T(\\mathbf{X}))+\\epsilon \n\\tag{5}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">where <marimo-tex class=\"arithmatex\">||(y||)</marimo-tex> is our outcome, <marimo-tex class=\"arithmatex\">||(T||)</marimo-tex> is our treatment, &amp; <marimo-tex class=\"arithmatex\">||(\\mathcal{M}_y||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(\\mathcal{M}_T||)</marimo-tex> are both flexible ML models (our nuisance functions) to predict <marimo-tex class=\"arithmatex\">||(y||)</marimo-tex> and <marimo-tex class=\"arithmatex\">||(T||)</marimo-tex> given confounders and/or controls, <marimo-tex class=\"arithmatex\">||(\\mathbf{X}||)</marimo-tex>, respectively. To estimate the CATE function using Linear DML, we can simply include interaction terms of the treatment residuals with our covariates. Observe:</span>\n<marimo-tex class=\"arithmatex\">||[\n\\begin{equation}\ny-\\mathcal{M}_y(\\mathbf{X})=\\beta_0+\\beta_1(T-\\mathcal{M}_T(\\mathbf{X}))+(T-\\mathcal{M}_T(\\mathbf{X}))\\mathbf{X}\\mathbf{\\Omega} + \\epsilon \n\\tag{6}\n\\end{equation}\n||]</marimo-tex><span class=\"paragraph\">where <marimo-tex class=\"arithmatex\">||(\\mathbf{\\Omega}||)</marimo-tex> is the vector of coefficients for the interaction terms. Now our CATE function, call it <marimo-tex class=\"arithmatex\">||(\\tau||)</marimo-tex>, takes the form <marimo-tex class=\"arithmatex\">||(\\tau(\\mathbf{X}) = \\beta_1 + \\mathbf{X}\\mathbf{\\Omega}||)</marimo-tex>, where we can predict each individuals CATE given <marimo-tex class=\"arithmatex\">||(\\mathbf{X}||)</marimo-tex>. If <marimo-tex class=\"arithmatex\">||(T||)</marimo-tex> is continuous, this CATE function is for a 1 unit increase in T. Note that <marimo-tex class=\"arithmatex\">||(\\tau(\\mathbf{X}) = \\beta_1||)</marimo-tex> in eq. (3) where <marimo-tex class=\"arithmatex\">||(\\tau(\\mathbf{X})||)</marimo-tex> is assumed a constant. Let\u2019s take a look at this in action!</span>\n<span class=\"paragraph\">First, let\u2019s use the same casual DAG from part 1, where we will be looking at the effect of an individuals time spent on the website on their purchase amount, or sales, in the past month (assuming we observe all confounders).:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "5f503fdef2c4c20a968094feec792a04",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<img src='./@file/216781-16338-lzHhvks8.png' />"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "4033d569c3a622509437b3b00bee76c7",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Let\u2019s then simulate this DGP using a similar process as utilized in part 1 (note that all values &amp; data are chosen and generated arbitrarily for demonstrative purposes). Observe that we now include interaction terms in the sales DGP to model the CATE, or treatment effect heterogeneity (note that the DGP in part 1 had no treatment effect heterogeneity by construction)</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "967385a6bba751b6d4177c115c4af448",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "eff7d5dba32b4da32d9a67a519434d3f",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='Xref-0' random-id='6de17422-fab5-4f52-8071-d92fc4955e01'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/732-16338-CMXar4Pb.csv&quot;' data-total-rows='100000' data-total-columns='6' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;sales&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;time_on_website&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;age&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;num_social_media_profiles&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;yr_membership&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Z&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "b05a14b9477c6bb0d16e738b485329f2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">Now, to estimate our CATE function, as outlined in eq. (4), we can run:</span></span>"
+          }
+        }
+      ],
+      "console": []
+    }
+  ]
+}

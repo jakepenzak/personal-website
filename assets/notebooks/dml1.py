@@ -48,6 +48,8 @@ def _(mo):
 def _(mo):
     mo.md(
         r"""
+        ## Introduction
+
         > This article is the **1st** in a 2 part series on simplifying and democratizing Double Machine Learning - specifically focusing on the partially linear model formulation. In the 1st part, we will be covering the fundamentals of Double Machine Learning, along with two basic causal inference applications in python. Then, in pt. 2, we will extend this knowledge to turn our Causal Inference problem into a prediction task, wherein we predict individual level treatment effects to aid in decision making and data-driven targeting.
 
         The conceptual & practical distinctions between statistical/machine learning (ML) and causal inference/econometric (CI) tasks have been established for years— ML seeks to predict, whereas CI seeks to infer a treatment effect or a "causal" relationship between variables. However, it was, and still is, common for the data scientist to draw causal conclusions from parameters of a trained machine learning model, or some other interpretable ML methodology. Despite this, there has been significant strides in industry and across many academic disciplines to push more rigorousness in making causal claims, and this has stimulated a much wider and open discourse on CI. In this stride, we have seen amazing work come out that has begun to bridge the conceptual gap between ML and CI, specifically tools in CI that take advantage of the power of ML methodologies.
@@ -629,7 +631,7 @@ def _(mo):
 
         As always, I hope you have enjoyed reading this as much as I enjoyed writing it!
 
-        ## Resources
+        ## References
         [1] V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. Double Machine Learning for Treatment and Causal Parameters. ArXiv e-prints, July 2016.
 
         <div style="text-align: center; font-size: 24px;">❖❖❖</div>
@@ -639,7 +641,6 @@ def _(mo):
 
         I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
         </center>
-
         """
     )
     return
