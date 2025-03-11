@@ -22,7 +22,7 @@ def fwl() -> rx.Component:
         The UI for the 'Controlling for 'X'? article page.
     """
 
-    return article_page("/notebooks/html/fwl.html")
+    return article_page("/articles/notebooks/html/fwl.html")
 
 
 @template(
@@ -35,7 +35,7 @@ def logistic() -> rx.Component:
         The UI for the 'Predictive Parameterics in a Logistic Regression' article page
     """
 
-    return article_page("/notebooks/html/logistic.html")
+    return article_page("/articles/notebooks/html/logistic.html")
 
 
 @template(route="/articles/tsne", title="t-SNE from Scratch (ft. NumPy)")
@@ -46,7 +46,7 @@ def tsne() -> rx.Component:
         The UI for the 't-SNE from Scratch (ft. NumPy)' article page
     """
 
-    return article_page("/notebooks/html/tsne.html")
+    return article_page("/articles/notebooks/html/tsne.html")
 
 
 @template(route="/articles/dml1", title="Double Machine Learning, Simplified: Part 1")
@@ -57,7 +57,7 @@ def dml1() -> rx.Component:
         The UI for the 'Double Machine Learning, Simplified: Part 1' article page
     """
 
-    return article_page("/notebooks/html/dml1.html")
+    return article_page("/articles/notebooks/html/dml1.html")
 
 
 @template(route="/articles/dml2", title="Double Machine Learning, Simplified: Part 2")
@@ -68,4 +68,4 @@ def dml2() -> rx.Component:
         The UI for the 'Double Machine Learning, Simplified: Part 2' article page
     """
 
-    return article_page("/notebooks/html/dml2.html")
+    return article_page("/articles/notebooks/html/dml2.html")
