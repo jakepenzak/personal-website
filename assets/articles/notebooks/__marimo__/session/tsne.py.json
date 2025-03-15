@@ -1,12 +1,12 @@
 {
   "version": "1",
   "metadata": {
-    "marimo_version": "0.11.8"
+    "marimo_version": "0.11.20"
   },
   "cells": [
     {
       "id": "Hbol",
-      "code_hash": "36001524e41bda02b2f0f102cac23da3",
+      "code_hash": "060c5b0f9860c3f5ebfce960f5a1c00d",
       "outputs": [
         {
           "type": "data",
@@ -141,7 +141,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='SFPL-0' random-id='0f228854-7e73-5227-5631-f84db72ad273'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/5746-38845-mU4N0shN.csv&quot;' data-total-rows='1000' data-total-columns='30' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='SFPL-0' random-id='28cd8e4c-4e41-71ba-4842-8e2bbcb0a962'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/5769-7135-NSBT3AlI.csv&quot;' data-total-rows='1000' data-total-columns='30' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -283,11 +283,6 @@
         },
         {
           "type": "stream",
-          "name": "stderr",
-          "text": "/tmp/marimo_38845/__marimo__cell_emfo_.py:34: RuntimeWarning: invalid value encountered in divide\n  p_new = np.maximum(p / np.sum(p), \u03b5)\n"
-        },
-        {
-          "type": "stream",
           "name": "stdout",
           "text": "Completed Pairwise Affinities Matrix. \n\n"
         }
@@ -300,7 +295,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='iLit-0' random-id='ec0e3abe-7a35-e7e6-05a4-bbce1ff95bd1'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11160-38845-7J1R746M.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='iLit-0' random-id='daa1deb7-9023-25b4-3aa2-108719c4e7e6'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11112-7135-dgOp2Y2s.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -376,7 +371,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='Vxnm-0' random-id='38a0ad35-0f70-b38b-7bc5-20490a1f0b9f'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11142-38845-y9GqXHoM.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='Vxnm-0' random-id='01954c98-647d-3c1c-fe0d-16fac97285d4'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11184-7135-kumfvoZP.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -428,7 +423,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='Pvdt-0' random-id='5ce57476-57c9-27a0-62b5-b10ffec83dc0'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/467-38845-lWyzsObl.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='Pvdt-0' random-id='c6722a62-c081-fd8d-de49-ae9b9aa4626d'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/459-7135-gYJq60z0.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -493,7 +488,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='AjVT-0' random-id='c2d502fb-791c-09ae-2f90-92f271d3774c'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11358-38845-ZsQrb52v.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='AjVT-0' random-id='9a603fff-08ec-58f0-e6db-e4dfb1901052'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/11346-7135-ts6JnfSe.csv&quot;' data-total-rows='1000' data-total-columns='1000' data-banner-text='&quot;Only showing 50 of 1000 columns.&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;2&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;3&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;4&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;5&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;6&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;7&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;8&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;9&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;10&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;11&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;12&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;13&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;14&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;15&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;16&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;17&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;18&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;19&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;20&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;21&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;22&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;23&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;24&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;25&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;26&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;27&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;28&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;29&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;30&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;31&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;32&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;33&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;34&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;35&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;36&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;37&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;38&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;39&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;40&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;41&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;42&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;43&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;44&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;45&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;46&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;47&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;48&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;49&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -558,7 +553,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='TXez-0' random-id='eaae38a9-642f-87bd-9b0f-884c1659c300'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/470-38845-bHECQOmb.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='TXez-0' random-id='0bba9975-2500-82d5-4481-b2d84fce8c1e'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/458-7135-9mEqN00F.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -622,11 +617,6 @@
         },
         {
           "type": "stream",
-          "name": "stderr",
-          "text": "/tmp/marimo_38845/__marimo__cell_emfo_.py:34: RuntimeWarning: invalid value encountered in divide\n  p_new = np.maximum(p / np.sum(p), \u03b5)\n"
-        },
-        {
-          "type": "stream",
           "name": "stdout",
           "text": "Completed Pairwise Affinities Matrix. \n\nComputing Symmetric p_ij matrix....\n"
         },
@@ -638,107 +628,107 @@
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 1: Value of Cost Function is 4.441886246366149\n"
+          "text": "Iteration 1: Value of Cost Function is 4.437041885313164\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 50: Value of Cost Function is 3.0778790601226964\n"
+          "text": "Iteration 50: Value of Cost Function is 3.114634646314674\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 100: Value of Cost Function is 2.7959379911053714\n"
+          "text": "Iteration 100: Value of Cost Function is 2.8236553475960435\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 150: Value of Cost Function is 2.712898566956073\n"
+          "text": "Iteration 150: Value of Cost Function is 2.7400862642100003\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 200: Value of Cost Function is 2.674005076952713\n"
+          "text": "Iteration 200: Value of Cost Function is 2.7082664118339714\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 250: Value of Cost Function is 2.6522584679554395\n"
+          "text": "Iteration 250: Value of Cost Function is 2.6921308563343747\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 300: Value of Cost Function is 1.5862144649816596\n"
+          "text": "Iteration 300: Value of Cost Function is 1.6094202167272764\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 350: Value of Cost Function is 1.4044463860771323\n"
+          "text": "Iteration 350: Value of Cost Function is 1.4295998292620333\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 400: Value of Cost Function is 1.3120797993427527\n"
+          "text": "Iteration 400: Value of Cost Function is 1.3376830768691483\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 450: Value of Cost Function is 1.2534073386935127\n"
+          "text": "Iteration 450: Value of Cost Function is 1.2790446676470726\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 500: Value of Cost Function is 1.2121373744132518\n"
+          "text": "Iteration 500: Value of Cost Function is 1.2374588059015241\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 550: Value of Cost Function is 1.1810659450987133\n"
+          "text": "Iteration 550: Value of Cost Function is 1.206051309665664\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 600: Value of Cost Function is 1.1566141808026744\n"
+          "text": "Iteration 600: Value of Cost Function is 1.181283688681755\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 650: Value of Cost Function is 1.1367419602519508\n"
+          "text": "Iteration 650: Value of Cost Function is 1.1609063867041403\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 700: Value of Cost Function is 1.1202020231482184\n"
+          "text": "Iteration 700: Value of Cost Function is 1.1439280933656422\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 750: Value of Cost Function is 1.1061728839210634\n"
+          "text": "Iteration 750: Value of Cost Function is 1.1296641534625476\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 800: Value of Cost Function is 1.0940894764218987\n"
+          "text": "Iteration 800: Value of Cost Function is 1.1173875750163356\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 850: Value of Cost Function is 1.0835503010207388\n"
+          "text": "Iteration 850: Value of Cost Function is 1.106683999102628\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 900: Value of Cost Function is 1.0742614376492445\n"
+          "text": "Iteration 900: Value of Cost Function is 1.0972520473449106\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Iteration 950: Value of Cost Function is 1.0660012763223001\n"
+          "text": "Iteration 950: Value of Cost Function is 1.0888614809056794\n"
         },
         {
           "type": "stream",
           "name": "stdout",
-          "text": "Completed Low Dimensional Embedding: Final Value of Cost Function is 1.0588803939548603\n"
+          "text": "Completed Low Dimensional Embedding: Final Value of Cost Function is 1.0816277807229417\n"
         }
       ]
     },
@@ -749,7 +739,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='wAgl-0' random-id='0b6b28ae-8424-be32-8bb3-cbbc7f7d35f4'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/381-38845-FxJmLpgF.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='wAgl-0' random-id='35014c0b-eaf7-f69b-5d4f-ea2b3c1d9bf5'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/382-7135-c8auNZq0.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;0&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;1&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -770,26 +760,20 @@
     },
     {
       "id": "dGlV",
-      "code_hash": "c705e2b2b56dbefd7425e55d3df10e98",
+      "code_hash": "9c992aa4ae1e96852c1cc7abf927d1bc",
       "outputs": [
         {
           "type": "data",
           "data": {
-            "text/plain": ""
+            "text/html": "<img src='./@file/3964217-7135-ja7RF1RV.gif' />"
           }
         }
       ],
-      "console": [
-        {
-          "type": "stream",
-          "name": "stderr",
-          "text": "/tmp/marimo_38845/__marimo__cell_dGlV_.py:56: UserWarning: Attempting to set identical low and high xlims makes transformation singular; automatically expanding.\n  ax.set_xlim(\n/tmp/marimo_38845/__marimo__cell_dGlV_.py:59: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.\n  ax.set_ylim(\n"
-        }
-      ]
+      "console": []
     },
     {
       "id": "SdmI",
-      "code_hash": "c03bddd815b14a175e397c3f811d9ea8",
+      "code_hash": "b6f343addbd0d0d4bd58e71e2290fde6",
       "outputs": [
         {
           "type": "data",
@@ -802,12 +786,12 @@
     },
     {
       "id": "lgWD",
-      "code_hash": "2e50d32d384f3487810f057f1f28ef6f",
+      "code_hash": null,
       "outputs": [
         {
           "type": "data",
           "data": {
-            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">I recommend playing around with different values of the parameters (i.e., perplexity, learning rate, early exaggeration, etc.) to see how the solution differs (See the original paper and the scikit-learn documentation for guides on using these parameters).</span>\n<h2 id=\"conclusion\">Conclusion</h2>\n<span class=\"paragraph\">And there you have it, we have coded t-SNE from scratch! I hope you have found this exercise to be illuminating into the inner workings of t-SNE and, at the very minimum, satisfying. Note that this implementation is not intended to be optimized for speed, but rather for understanding. Additions to the t-SNE algorithm have been implemented to improve computational speed and performance, such as variants of the <a href=\"https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf\" rel=\"noopener\" target=\"_blank\">Barnes-Hut algorithm</a> (tree-based approaches), using PCA as the initialization of the embedding, or using additional gradient descent extensions such as adaptive learning rates. The implementation in scikit-learn makes use of many of these enhancements.</span>\n<span class=\"paragraph\">As always, I hope you have enjoyed reading this as much as I enjoyed writing it.</span>\n<h2 id=\"references\">References</h2>\n<span class=\"paragraph\">[1] van der Maaten, L.J.P.; Hinton, G.E. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research 9:2579\u20132605, 2008.</span>\n<span class=\"paragraph\">[2] LeCun et al. (1999): The MNIST Dataset Of Handwritten Digits (Images) License: CC BY-SA 3.0</span>\n<div style=\"text-align: center; font-size: 24px;\">\u2756\u2756\u2756</div>\n\n<span class=\"paragraph\"><center>\nAccess all the code via <a href=\"https://github.com/jakepenzak/blog-posts\" rel=\"noopener\" target=\"_blank\">GitHub Repo</a></span>\n<span class=\"paragraph\">I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning \ud83d\ude01. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.\n</center></span></span>"
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><span class=\"paragraph\">I recommend playing around with different values of the parameters (i.e., perplexity, learning rate, early exaggeration, etc.) to see how the solution differs (See the original paper and the scikit-learn documentation for guides on using these parameters).</span>\n<h2 id=\"conclusion\">Conclusion</h2>\n<span class=\"paragraph\">And there you have it, we have coded t-SNE from scratch! I hope you have found this exercise to be illuminating into the inner workings of t-SNE and, at the very minimum, satisfying. Note that this implementation is not intended to be optimized for speed, but rather for understanding. Additions to the t-SNE algorithm have been implemented to improve computational speed and performance, such as variants of the <a href=\"https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf\" rel=\"noopener\" target=\"_blank\">Barnes-Hut algorithm</a> (tree-based approaches), using PCA as the initialization of the embedding, or using additional gradient descent extensions such as adaptive learning rates. The implementation in scikit-learn makes use of many of these enhancements.</span>\n<span class=\"paragraph\">As always, I hope you have enjoyed reading this as much as I enjoyed writing it.</span>\n<h2 id=\"references\">References</h2>\n<span class=\"paragraph\">[1] van der Maaten, L.J.P.; Hinton, G.E. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research 9:2579\u20132605, 2008.</span>\n<span class=\"paragraph\">[2] LeCun et al. (1999): The MNIST Dataset Of Handwritten Digits (Images) License: CC BY-SA 3.0</span>\n<div style=\"text-align: center; font-size: 24px;\">\u2756\u2756\u2756</div>\n\n<span class=\"paragraph\"><center>\nAccess all the code via this Marimo Notebook or my <a href=\"https://github.com/jakepenzak/blog-posts\" rel=\"noopener\" target=\"_blank\">GitHub Repo</a></span>\n<span class=\"paragraph\">I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning \ud83d\ude01. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.\n</center></span></span>"
           }
         }
       ],

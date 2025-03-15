@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.11.8"
+__generated_with = "0.11.20"
 app = marimo.App(width="medium")
 
 
@@ -18,6 +18,12 @@ def _():
     from stargazer.stargazer import Stargazer
     import graphviz
     from IPython.display import display, HTML
+    import os
+
+    try:
+        os.chdir("assets/articles/notebooks")
+    except:
+        pass
     return (
         GradientBoostingClassifier,
         GradientBoostingRegressor,
@@ -28,6 +34,7 @@ def _():
         graphviz,
         mo,
         np,
+        os,
         pd,
         smf,
     )
@@ -50,7 +57,7 @@ def _(mo):
         r"""
         ## Introduction
 
-        > This article is the **1st** in a 2 part series on simplifying and democratizing Double Machine Learning - specifically focusing on the partially linear model formulation. In the 1st part, we will be covering the fundamentals of Double Machine Learning, along with two basic causal inference applications in python. Then, in pt. 2, we will extend this knowledge to turn our Causal Inference problem into a prediction task, wherein we predict individual level treatment effects to aid in decision making and data-driven targeting.
+        > This article is the **1st** in a 2 part series on simplifying and democratizing Double Machine Learning - specifically focusing on the partially linear model formulation. In the 1st part, we will be covering the fundamentals of Double Machine Learning, along with two basic causal inference applications in python. Then, in <a href="/articles/dml2" target="_blank" rel="noopener noreferrer">pt. 2</a>, we will extend this knowledge to turn our Causal Inference problem into a prediction task, wherein we predict individual level treatment effects to aid in decision making and data-driven targeting.
 
         The conceptual & practical distinctions between statistical/machine learning (ML) and causal inference/econometric (CI) tasks have been established for years— ML seeks to predict, whereas CI seeks to infer a treatment effect or a "causal" relationship between variables. However, it was, and still is, common for the data scientist to draw causal conclusions from parameters of a trained machine learning model, or some other interpretable ML methodology. Despite this, there has been significant strides in industry and across many academic disciplines to push more rigorousness in making causal claims, and this has stimulated a much wider and open discourse on CI. In this stride, we have seen amazing work come out that has begun to bridge the conceptual gap between ML and CI, specifically tools in CI that take advantage of the power of ML methodologies.
 
@@ -60,7 +67,7 @@ def _(mo):
 
         2. Improving Precision & Statistical Power in Experimental Data (Randomized Controlled Trial’s (RCTs) or A/B Tests)
 
-        If this already all feels extremely foreign, I recommend checking out my [previous article](/articles/fwl) that covers the regression framework for causality and the Frisch-Waugh-Lovell Theorem. Nevertheless, I will cover these topic below and do my best to simplify and make this accessible to all. Let’s first dive into a quick overview of these theoretical underpinnings!
+        If this already all feels extremely foreign, I recommend checking out my <a href="/articles/fwl" target="_blank" rel="noopener noreferrer">previous article</a> that covers the regression framework for causality and the Frisch-Waugh-Lovell Theorem. Nevertheless, I will cover these topic below and do my best to simplify and make this accessible to all. Let’s first dive into a quick overview of these theoretical underpinnings!
 
         > Note: This article focuses on the partially linear model formulation of double machine learning. The theoretical underpinnings of DML are quite generalizable and extremely powerful. We will give the theory a more rigorous treatment in a future post!
 
@@ -133,7 +140,7 @@ def _(mo):
         ATE_model = smf.ols(formula='y_residual ~ 1 + T_residual', data = df).fit()
         ```
 
-        Intuitively, the FWL theorem partials out the variation in T and y that is explained by the confounders, X, and then uses the remaining variation to explain the key relationship of interest (ie, how T effects y). More specifically, it exploits a special type of orthogonal projection matrix of X known as an annihilator matrix or residual-maker matrix to residualize T and y. For a hands-on application of the FWL procedure, see my [previous post](/articles/fwl). This theorem is pivotal in understanding DML.
+        Intuitively, the FWL theorem partials out the variation in T and y that is explained by the confounders, X, and then uses the remaining variation to explain the key relationship of interest (ie, how T effects y). More specifically, it exploits a special type of orthogonal projection matrix of X known as an annihilator matrix or residual-maker matrix to residualize T and y. For a hands-on application of the FWL procedure, see my <a href="/articles/fwl" target="_blank" rel="noopener noreferrer">previous port</a>. This theorem is pivotal in understanding DML.
 
         > Note that I have (intentionally) glossed over some additional causal inference assumptions, such as Positivity/Common Support & SUTVA/Counterfactual Consistency. In general, the CIA/Ignorability assumption is the most common assumption that needs to be defended. However, it is recommended that the interested reader familiarize themselves with the additional assumptuons. In brief, Positivity ensures we have non-treated households that are similar & comparable to treated households to enable counterfactual estimation (e.g., treatment is non-deterministic and every household has a non zero probability of receiving treatment) & SUTVA ensures there is no spillover/network type effects (treatment of one individual impacts another).
 
@@ -187,41 +194,45 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(graphviz, mo):
-    # Create a directed graph
-    g_1 = graphviz.Digraph(format="png")
+    def create_dag1():
+        # Create a directed graph
+        g = graphviz.Digraph(format="png")
 
-    # Add nodes
-    nodes_1 = [
-        "Age",
-        "# Social Media Accounts",
-        "Yrs Member",
-        "Time on Website",
-        "Sales",
-        "Z",
-    ]
-    [g_1.node(n) for n in nodes_1]
+        # Add nodes
+        nodes = [
+            "Age",
+            "# Social Media Accounts",
+            "Yrs Member",
+            "Time on Website",
+            "Sales",
+            "Z",
+        ]
+        [g.node(n) for n in nodes]
 
-    g_1.edge("Age", "Time on Website")
-    g_1.edge("# Social Media Accounts", "Time on Website")
-    g_1.edge("Yrs Member", "Time on Website")
-    g_1.edge("Age", "Sales")
-    g_1.edge("# Social Media Accounts", "Sales")
-    g_1.edge("Yrs Member", "Sales")
-    g_1.edge("Time on Website", "Sales", color="red")
-    g_1.edge("Z", "Sales")
+        g.edge("Age", "Time on Website")
+        g.edge("# Social Media Accounts", "Time on Website")
+        g.edge("Yrs Member", "Time on Website")
+        g.edge("Age", "Sales")
+        g.edge("# Social Media Accounts", "Sales")
+        g.edge("Yrs Member", "Sales")
+        g.edge("Time on Website", "Sales", color="red")
+        g.edge("Z", "Sales")
 
-    g_1.graph_attr['dpi'] = '400'
+        g.graph_attr["dpi"] = "400"
 
-    # Render for print
-    g_1.render('assets/notebooks/data/dag1')
+        # Render for print
+        g.render("data/dag1")
 
-    mo.image('assets/notebooks/data/dag1.png')
-    return g_1, nodes_1
+    create_dag1()
+    mo.image("data/dag1.png")
+    return (create_dag1,)
 
 
 @app.cell
 def _(mo):
-    mo.md("""Let the data generating process be as follows (_note that all values & data are chosen and generated arbitrarily for demonstrative purposes, and thus should not necessarily represent a large degree of real world intuition per se outside of our estimates of the ATE_):""")
+    mo.md(
+        """Let the data generating process be as follows (_note that all values & data are chosen and generated arbitrarily for demonstrative purposes, and thus should not necessarily represent a large degree of real world intuition per se outside of our estimates of the ATE_):"""
+    )
     return
 
 
@@ -231,7 +242,9 @@ def _(np, pd):
 
     # Confounders
     age = np.random.randint(low=18, high=75, size=N)
-    num_social_media_profiles = np.random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size=N)
+    num_social_media_profiles = np.random.choice(
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size=N
+    )
     yr_membership = np.random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size=N)
 
     # Additional Covariates (Arbitrary Z)
@@ -253,7 +266,8 @@ def _(np, pd):
         + 0.001 * yr_membership**2
         - 0.01 * (age * yr_membership)
         + 0.2 * (num_social_media_profiles * yr_membership)
-        + 0.01 * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
+        + 0.01
+        * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
         + ε1,
         0,
     )
@@ -271,13 +285,16 @@ def _(np, pd):
         + 0.1 * yr_membership**2
         - 0.01 * (age * yr_membership)
         + 3 * (num_social_media_profiles * yr_membership)
-        + 0.1 * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
+        + 0.1
+        * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
         + 0.5 * Z
         + ε2,
         0,
     )
 
-    collider = np.random.normal(loc=100, scale=50, size=N) + 2 * sales + 7 * time_on_website
+    collider = (
+        np.random.normal(loc=100, scale=50, size=N) + 2 * sales + 7 * time_on_website
+    )
 
     df = pd.DataFrame(
         np.array(
@@ -344,28 +361,55 @@ def _(mo):
 @app.cell
 def _(GradientBoostingRegressor, cross_val_predict, df, smf):
     # 1 - Naive OLS
-    naive_regression = smf.ols(formula='sales ~ 1 + time_on_website',data=df).fit()
+    naive_regression = smf.ols(formula="sales ~ 1 + time_on_website", data=df).fit()
 
     # 2 - Multiple OLS
-    multiple_regression = smf.ols(formula='sales ~ 1 + time_on_website + age + num_social_media_profiles + yr_membership',data=df).fit()
+    multiple_regression = smf.ols(
+        formula="sales ~ 1 + time_on_website + age + num_social_media_profiles + yr_membership",
+        data=df,
+    ).fit()
 
     # 3 - DML Procedure
     M_sales = GradientBoostingRegressor()
     M_time_on_website = GradientBoostingRegressor()
 
-    df['residualized_sales'] = df["sales"] - cross_val_predict(M_sales, df[["age","num_social_media_profiles","yr_membership"]], df['sales'], cv=3)
-    df['residualized_time_on_website'] = df['time_on_website'] - cross_val_predict(M_time_on_website, df[["age","num_social_media_profiles","yr_membership"]], df['time_on_website'], cv=3)
+    df["residualized_sales"] = df["sales"] - cross_val_predict(
+        M_sales,
+        df[["age", "num_social_media_profiles", "yr_membership"]],
+        df["sales"],
+        cv=3,
+    )
+    df["residualized_time_on_website"] = df["time_on_website"] - cross_val_predict(
+        M_time_on_website,
+        df[["age", "num_social_media_profiles", "yr_membership"]],
+        df["time_on_website"],
+        cv=3,
+    )
 
-    DML_model = smf.ols(formula='residualized_sales ~ 1 + residualized_time_on_website', data = df).fit()
+    DML_model = smf.ols(
+        formula="residualized_sales ~ 1 + residualized_time_on_website", data=df
+    ).fit()
 
     # 4 - DML Procedure w/ Collider
     M_sales = GradientBoostingRegressor()
     M_time_on_website = GradientBoostingRegressor()
 
-    df['residualized_sales'] = df["sales"] - cross_val_predict(M_sales, df[["age","num_social_media_profiles","yr_membership","collider"]], df['sales'], cv=3)
-    df['residualized_time_on_website'] = df['time_on_website'] - cross_val_predict(M_time_on_website, df[["age","num_social_media_profiles","yr_membership", "collider"]], df['time_on_website'], cv=3)
+    df["residualized_sales"] = df["sales"] - cross_val_predict(
+        M_sales,
+        df[["age", "num_social_media_profiles", "yr_membership", "collider"]],
+        df["sales"],
+        cv=3,
+    )
+    df["residualized_time_on_website"] = df["time_on_website"] - cross_val_predict(
+        M_time_on_website,
+        df[["age", "num_social_media_profiles", "yr_membership", "collider"]],
+        df["time_on_website"],
+        cv=3,
+    )
 
-    DML_model_collider = smf.ols(formula='residualized_sales ~ 1 + residualized_time_on_website', data = df).fit()
+    DML_model_collider = smf.ols(
+        formula="residualized_sales ~ 1 + residualized_time_on_website", data=df
+    ).fit()
     return (
         DML_model,
         DML_model_collider,
@@ -385,20 +429,38 @@ def _(
     multiple_regression,
     naive_regression,
 ):
-    order = ['time_on_website','residualized_time_on_website','age','num_social_media_profiles','yr_membership','Intercept']
-    rename = {'time_on_website':'Treatment: Hours on Website','residualized_time_on_website':'Residualized Treatment: Hours on Website','age':'Age',
-              'num_social_media_profiles':"# of Social Media Profiles", "yr_membership":"Years of Membership"}
-    columns = ['Naive OLS','Multiple OLS','DML','DML w/ Collider']
+    def prettify_ols_results1():
+        order = [
+            "time_on_website",
+            "residualized_time_on_website",
+            "age",
+            "num_social_media_profiles",
+            "yr_membership",
+            "Intercept",
+        ]
+        rename = {
+            "time_on_website": "Treatment: Hours on Website",
+            "residualized_time_on_website": "Residualized Treatment: Hours on Website",
+            "age": "Age",
+            "num_social_media_profiles": "# of Social Media Profiles",
+            "yr_membership": "Years of Membership",
+        }
+        columns = ["Naive OLS", "Multiple OLS", "DML", "DML w/ Collider"]
 
-    regtable = Stargazer([naive_regression, multiple_regression, DML_model, DML_model_collider])
-    regtable.covariate_order(order)
-    regtable.custom_columns(columns,[1,1,1,1])
-    regtable.rename_covariates(rename)
-    regtable.show_degrees_of_freedom(False)
-    regtable.title('Example 1: Obtaining Exogeneity w/ DML')
+        regtable = Stargazer(
+            [naive_regression, multiple_regression, DML_model, DML_model_collider]
+        )
+        regtable.covariate_order(order)
+        regtable.custom_columns(columns, [1, 1, 1, 1])
+        regtable.rename_covariates(rename)
+        regtable.show_degrees_of_freedom(False)
+        regtable.title("Example 1: Obtaining Exogeneity w/ DML")
 
-    HTML(f'<center>{regtable.render_html()}</center>')
-    return columns, order, regtable, rename
+        return regtable
+
+    regtable = prettify_ols_results1()
+    HTML(f"<center>{regtable.render_html()}</center>")
+    return prettify_ols_results1, regtable
 
 
 @app.cell
@@ -439,31 +501,32 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(graphviz, mo):
-    # Create a directed graph
-    g_2 = graphviz.Digraph(format="png")
+    def create_dag2():
+        # Create a directed graph
+        g = graphviz.Digraph(format="png")
 
-    # Add nodes
-    nodes_2 = [
-        "Age",
-        "# Social Media Accounts",
-        "Yrs Member",
-        "Advertisement Exposure",
-        "Sales",
-        "Z",
-    ]
-    [g_2.node(n) for n in nodes_2]
+        # Add nodes
+        nodes = [
+            "Age",
+            "# Social Media Accounts",
+            "Yrs Member",
+            "Advertisement Exposure",
+            "Sales",
+            "Z",
+        ]
+        [g.node(n) for n in nodes]
 
-    g_2.edge("Age", "Sales")
-    g_2.edge("# Social Media Accounts", "Sales")
-    g_2.edge("Yrs Member", "Sales")
-    g_2.edge("Z", "Sales")
-    g_2.edge("Advertisement Exposure", "Sales", color="red")
-    g_2.graph_attr['dpi'] = '400'
+        g.edge("Age", "Sales")
+        g.edge("# Social Media Accounts", "Sales")
+        g.edge("Yrs Member", "Sales")
+        g.edge("Z", "Sales")
+        g.edge("Advertisement Exposure", "Sales", color="red")
+        g.graph_attr["dpi"] = "400"
 
-    g_2.render('assets/notebooks/data/dag2')
+        g.render("data/dag2")
 
-    mo.image('assets/notebooks/data/dag2.png')
-    return g_2, nodes_2
+    mo.image("data/dag2.png")
+    return (create_dag2,)
 
 
 @app.cell
@@ -475,15 +538,15 @@ def _(mo):
 @app.cell
 def _(N, Z, age, np, num_social_media_profiles, pd, yr_membership):
     # Error Term
-    ε = np.random.normal(loc=40, scale=15, size=N)
+    ε = np.random.normal(loc=150, scale=25, size=N)
 
     # Randomized Treatment (T) - Advertisement Exposure
     advertisement_exposure = np.random.choice([0, 1], size=N, p=[0.5, 0.5])
 
     # Outcome (y = f(T,X,Z) + ε) - Sales in past month
     sales_rct = np.maximum(
-        np.random.normal(loc=500, scale=25, size=N)
-        + 5 * advertisement_exposure # Ground Truth ATE of $5
+        50
+        + 5 * advertisement_exposure  # Ground Truth ATE of $5
         - 10 * age
         - 0.05 * age**2
         + 15 * num_social_media_profiles
@@ -493,15 +556,15 @@ def _(N, Z, age, np, num_social_media_profiles, pd, yr_membership):
         + 0.5 * yr_membership**2
         - 0.8 * (age * yr_membership)
         + 5 * (num_social_media_profiles * yr_membership)
-        + 0.8 * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
+        + 0.8
+        * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
         + 15 * Z
         + 2 * Z**2
         + ε,
         0,
     )
 
-
-    df2 = pd.DataFrame(
+    df_rct = pd.DataFrame(
         np.array(
             [
                 sales_rct,
@@ -521,12 +584,12 @@ def _(N, Z, age, np, num_social_media_profiles, pd, yr_membership):
             "Z",
         ],
     )
-    return advertisement_exposure, df2, sales_rct, ε
+    return advertisement_exposure, df_rct, sales_rct, ε
 
 
 @app.cell(hide_code=True)
-def _(df2):
-    df2
+def _(df_rct):
+    df_rct
     return
 
 
@@ -553,24 +616,45 @@ def _(
     GradientBoostingClassifier,
     GradientBoostingRegressor,
     cross_val_predict,
-    df,
-    df2,
+    df_rct,
     smf,
 ):
     # 1 - Naive OLS
-    naive_regression_rct = smf.ols(formula='sales ~ 1 + advertisement_exposure',data=df2).fit()
+    naive_regression_rct = smf.ols(
+        formula="sales ~ 1 + advertisement_exposure", data=df_rct
+    ).fit()
 
     # 2 - Multiple OLS
-    multiple_regression_rct = smf.ols(formula='sales ~ 1 + advertisement_exposure + age + num_social_media_profiles + yr_membership + Z',data=df2).fit()
+    multiple_regression_rct = smf.ols(
+        formula="sales ~ 1 + advertisement_exposure + age + num_social_media_profiles + yr_membership + Z",
+        data=df_rct,
+    ).fit()
 
     # 3 - DML Procedure
     M_sales_rct = GradientBoostingRegressor()
-    M_advertisement_exposure_rct = GradientBoostingClassifier() # Note binary treatment 
+    M_advertisement_exposure_rct = GradientBoostingClassifier()  # Note binary treatment
 
-    df2['residualized_sales'] = df2["sales"] - cross_val_predict(M_sales_rct, df2[["age","num_social_media_profiles","yr_membership","Z"]], df2['sales'], cv=3)
-    df2['residualized_advertisement_exposure'] = df2['advertisement_exposure'] - cross_val_predict(M_advertisement_exposure_rct, df[["age","num_social_media_profiles","yr_membership", "Z"]], df2['advertisement_exposure'], cv=3, method = 'predict_proba')[:,0]
+    df_rct["residualized_sales"] = df_rct["sales"] - cross_val_predict(
+        M_sales_rct,
+        df_rct[["age", "num_social_media_profiles", "yr_membership", "Z"]],
+        df_rct["sales"],
+        cv=3,
+    )
+    df_rct["residualized_advertisement_exposure"] = (
+        df_rct["advertisement_exposure"]
+        - cross_val_predict(
+            M_advertisement_exposure_rct,
+            df_rct[["age", "num_social_media_profiles", "yr_membership", "Z"]],
+            df_rct["advertisement_exposure"],
+            cv=3,
+            method="predict_proba",
+        )[:, 0]
+    )
 
-    DML_model_rct = smf.ols(formula='residualized_sales ~ 1 + residualized_advertisement_exposure', data = df2).fit()
+    DML_model_rct = smf.ols(
+        formula="residualized_sales ~ 1 + residualized_advertisement_exposure",
+        data=df_rct,
+    ).fit()
     return (
         DML_model_rct,
         M_advertisement_exposure_rct,
@@ -600,20 +684,38 @@ def _(
     multiple_regression_rct,
     naive_regression_rct,
 ):
-    order_rct = ['advertisement_exposure','residualized_advertisement_exposure','age','num_social_media_profiles','yr_membership','Intercept']
-    rename_rct = {'advertisement_exposure':'Treatment: Exposure to Advertisement','residualized_advertisement_exposure':'Residualized Treatment: Exposure to Advertisement','age':'Age',
-              'num_social_media_profiles':"# of Social Media Profiles", "yr_membership":"Years of Membership"}
-    columns_rct = ['Naive OLS','Multiple OLS','DML']
+    def prettify_ols_results2():
+        order = [
+            "advertisement_exposure",
+            "residualized_advertisement_exposure",
+            "age",
+            "num_social_media_profiles",
+            "yr_membership",
+            "Intercept",
+        ]
+        rename = {
+            "advertisement_exposure": "Treatment: Exposure to Advertisement",
+            "residualized_advertisement_exposure": "Residualized Treatment: Exposure to Advertisement",
+            "age": "Age",
+            "num_social_media_profiles": "# of Social Media Profiles",
+            "yr_membership": "Years of Membership",
+        }
+        columns = ["Naive OLS", "Multiple OLS", "DML"]
 
-    regtable_rct = Stargazer([naive_regression_rct, multiple_regression_rct, DML_model_rct])
-    regtable_rct.covariate_order(order_rct)
-    regtable_rct.custom_columns(columns_rct,[1,1,1])
-    regtable_rct.rename_covariates(rename_rct)
-    regtable_rct.show_degrees_of_freedom(False)
-    regtable_rct.title('Example 2: Improving Statistical Power in RCT')
+        regtable = Stargazer(
+            [naive_regression_rct, multiple_regression_rct, DML_model_rct]
+        )
+        regtable.covariate_order(order)
+        regtable.custom_columns(columns, [1, 1, 1])
+        regtable.rename_covariates(rename)
+        regtable.show_degrees_of_freedom(False)
+        regtable.title("Example 2: Improving Statistical Power in RCT")
 
-    HTML(f'<center>{regtable_rct.render_html()}</center>')
-    return columns_rct, order_rct, regtable_rct, rename_rct
+        return regtable
+
+    regtable_rct = prettify_ols_results2()
+    HTML(f"<center>{regtable_rct.render_html()}</center>")
+    return prettify_ols_results2, regtable_rct
 
 
 @app.cell
@@ -637,7 +739,7 @@ def _(mo):
         <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
         <center>
-        Access all the code via [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+        Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
 
         I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
         </center>

@@ -69,3 +69,45 @@ def dml2() -> rx.Component:
     """
 
     return article_page("/articles/notebooks/html/dml2.html")
+
+
+@template(
+    route="/articles/nm1",
+    title="Optimization, Newton's Method, & Profit Maximization: Part 1",
+)
+def nm1() -> rx.Component:
+    """Article page for 'Optimization, Newton's Method, & Profit Maximization: Part 1'
+
+    Returns
+        The UI for the 'Optimization, Newton's Method, & Profit Maximization: Part 1' article page
+    """
+
+    return article_page("/articles/notebooks/html/nm1.html")
+
+
+@template(
+    route="/articles/nm2",
+    title="Optimization, Newton's Method, & Profit Maximization: Part 2",
+)
+def nm2() -> rx.Component:
+    """Article page for 'Optimization, Newton's Method, & Profit Maximization: Part 2'
+
+    Returns
+        The UI for the 'Optimization, Newton's Method, & Profit Maximization: Part 2' article page
+    """
+
+    return article_page("/articles/notebooks/html/nm2.html")
+
+
+@template(
+    route="/articles/nm3",
+    title="Optimization, Newton's Method, & Profit Maximization: Part 3",
+)
+def nm3() -> rx.Component:
+    """Article page for 'Optimization, Newton's Method, & Profit Maximization: Part 3'
+
+    Returns
+        The UI for the 'Optimization, Newton's Method, & Profit Maximization: Part 3' article page
+    """
+
+    return article_page("/articles/notebooks/html/nm3.html")

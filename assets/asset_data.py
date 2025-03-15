@@ -340,19 +340,19 @@ ARTICLES_META_DICT = {
     ),
     "NM3": ArticleMeta(
         img_src="/articles/nm3/cover.webp",
-        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-3-applied-profit-maximization-23a8c16167cd",
+        href="/articles/nm3",
         title_src="assets/articles/nm3/title.md",
         descr_src="assets/articles/nm3/description.md",
     ),
     "NM2": ArticleMeta(
         img_src="/articles/nm2/cover.webp",
-        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-2-constrained-optimization-theory-dc18613c5770",
+        href="/articles/nm2",
         title_src="assets/articles/nm2/title.md",
         descr_src="assets/articles/nm2/description.md",
     ),
     "NM1": ArticleMeta(
         img_src="/articles/nm1/cover.gif",
-        href="https://towardsdatascience.com/optimization-newtons-method-profit-maximization-part-1-basic-optimization-theory-ff7c5f966565",
+        href="/articles/nm1",
         title_src="assets/articles/nm1/title.md",
         descr_src="assets/articles/nm1/description.md",
     ),

@@ -1,12 +1,12 @@
 {
   "version": "1",
   "metadata": {
-    "marimo_version": "0.11.8"
+    "marimo_version": "0.11.20"
   },
   "cells": [
     {
       "id": "Hbol",
-      "code_hash": "12ce43d50b319d88f73ec1852c0a5073",
+      "code_hash": "6d3dffb18275a5cae32790adcc9c4016",
       "outputs": [
         {
           "type": "data",
@@ -45,7 +45,7 @@
     },
     {
       "id": "bkHC",
-      "code_hash": "fe4aabcc72b31432d2159ba2a6aa25b7",
+      "code_hash": "013afdb2b54561cc21a2cb24ce54ea3e",
       "outputs": [
         {
           "type": "data",
@@ -82,7 +82,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='PKri-0' random-id='0f228854-7e73-5227-5631-f84db72ad273'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/515-26135-K1qHHVxm.csv&quot;' data-total-rows='8' data-total-columns='8' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;distance_from_home&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;distance_from_last_transaction&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;ratio_to_median_purchase_price&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;repeat_retailer&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;used_chip&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;used_pin_number&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;online_order&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;fraud&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[&quot;&quot;]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='PKri-0' random-id='28cd8e4c-4e41-71ba-4842-8e2bbcb0a962'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/515-8297-1Ik8fgFD.csv&quot;' data-total-rows='8' data-total-columns='8' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;distance_from_home&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;distance_from_last_transaction&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;ratio_to_median_purchase_price&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;repeat_retailer&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;used_chip&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;used_pin_number&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;online_order&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;fraud&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[&quot;&quot;]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -160,7 +160,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='emfo-0' random-id='ec0e3abe-7a35-e7e6-05a4-bbce1ff95bd1'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/218-26135-6EaaHNGa.csv&quot;' data-total-rows='7' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;features&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;marginal_effects_probability&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='emfo-0' random-id='daa1deb7-9023-25b4-3aa2-108719c4e7e6'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/218-8297-XwxjAXAt.csv&quot;' data-total-rows='7' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;features&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;marginal_effects_probability&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -186,7 +186,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='nWHF-0' random-id='38a0ad35-0f70-b38b-7bc5-20490a1f0b9f'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/210-26135-SUA5Tkxm.csv&quot;' data-total-rows='7' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;features&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;marginal_effects_odds&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+            "text/html": "<marimo-ui-element object-id='nWHF-0' random-id='01954c98-647d-3c1c-fe0d-16fac97285d4'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/210-8297-6tM0qKNY.csv&quot;' data-total-rows='7' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;features&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;marginal_effects_odds&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
           }
         }
       ],
@@ -194,12 +194,12 @@
     },
     {
       "id": "iLit",
-      "code_hash": "94566f2c4e8db4d8ec332f1c67f9cbc8",
+      "code_hash": "36dee9056946333a2fc10e1e57af2d7e",
       "outputs": [
         {
           "type": "data",
           "data": {
-            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h2 id=\"discussion\">Discussion</h2>\n<span class=\"paragraph\">I hope this post has helped you learn how to extract <strong>meaningful insights</strong> from logit model parameters. It is clear that marginal effect interpretations in terms of probabilities provide an immense amount of intuition and explainability of the predictive mechanics under a logit model framework. Generally speaking, these parameters explain how the model makes predictions as well as explain associations between the target and features. However, under additional identifying assumptions, we can make more powerful statements towards interpreting model parameters as a causal relationship between certain features and targets. I hope this post has increased your knowledge and appreciation for logistic regressions!</span>\n<h2 id=\"references\">References</h2>\n<span class=\"paragraph\">Dataset available on Kaggle: <a href=\"https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download\" rel=\"noopener\" target=\"_blank\">Credit Card Fraud</a> (License: CC0: Public Domain)</span>\n<div style=\"text-align: center; font-size: 24px;\">\u2756\u2756\u2756</div>\n\n<span class=\"paragraph\"><center>\nAccess all the code via <a href=\"https://github.com/jakepenzak/blog-posts\" rel=\"noopener\" target=\"_blank\">GitHub Repo</a></span>\n<span class=\"paragraph\">I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning \ud83d\ude01. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.\n</center></span></span>"
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h2 id=\"conclusion\">Conclusion</h2>\n<span class=\"paragraph\">I hope this post has helped you learn how to extract <strong>meaningful insights</strong> from logit model parameters. It is clear that marginal effect interpretations in terms of probabilities provide an immense amount of intuition and explainability of the predictive mechanics under a logit model framework. Generally speaking, these parameters explain how the model makes predictions as well as explain associations between the target and features. However, under additional identifying assumptions, we can make more powerful statements towards interpreting model parameters as a causal relationship between certain features and targets. I hope this post has increased your knowledge and appreciation for logistic regressions!</span>\n<h2 id=\"references\">References</h2>\n<span class=\"paragraph\">Dataset available on Kaggle: <a href=\"https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download\" rel=\"noopener\" target=\"_blank\">Credit Card Fraud</a> (License: CC0: Public Domain)</span>\n<div style=\"text-align: center; font-size: 24px;\">\u2756\u2756\u2756</div>\n\n<span class=\"paragraph\"><center>\nAccess all the code via this Marimo Notebook or my <a href=\"https://github.com/jakepenzak/blog-posts\" rel=\"noopener\" target=\"_blank\">GitHub Repo</a></span>\n<span class=\"paragraph\">I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning \ud83d\ude01. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.\n</center></span></span>"
           }
         }
       ],

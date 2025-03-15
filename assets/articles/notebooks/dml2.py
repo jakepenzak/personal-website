@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.11.8"
+__generated_with = "0.11.20"
 app = marimo.App(width="medium")
 
 
@@ -19,6 +19,13 @@ def _():
     import matplotlib.pyplot as plt
     from IPython.display import display, HTML
 
+    import os
+
+    try:
+        os.chdir("assets/articles/notebooks")
+    except:
+        pass
+
     np.random.seed(00)
 
     ## Helper Plots
@@ -27,7 +34,7 @@ def _():
 
     def plot_effect(effect_true, effect_pred, figsize=(8, 5), ylim=(-10, 100)):
         plt.figure(figsize=figsize)
-        plt.scatter(effect_true, effect_pred, color=COLORS[0])
+        plt.scatter(effect_true, effect_pred, color=COLORS[0], s=10)
         plt.plot(
             np.sort(effect_true),
             np.sort(effect_true),
@@ -40,8 +47,7 @@ def _():
         plt.legend()
         plt.show()
 
-
-    def hist_effect(effect_true, effect_pred, figsize=(8,5)):
+    def hist_effect(effect_true, effect_pred, figsize=(8, 5)):
         plt.figure(figsize=figsize)
 
         plt.hist(
@@ -63,6 +69,7 @@ def _():
 
         plt.legend()
         plt.show()
+
     return (
         COLORS,
         GradientBoostingClassifier,
@@ -76,6 +83,7 @@ def _():
         mean_squared_error,
         mo,
         np,
+        os,
         pd,
         plot_effect,
         plt,
@@ -101,7 +109,7 @@ def _(mo):
         r"""
         ## Introduction
 
-        > This article is the **2nd** in a 2 part series on simplifying and democratizing Double Machine Learning. In the [1st part](/articles/dml1), we covered the fundamentals of Double Machine Learning, along with two basic causal inference applications. Now, in pt. 2, we will extend this knowledge to turn our causal inference problem into a prediction task, wherein we predict individual level treatment effects to aid in decision making and data-driven targeting
+        > This article is the **2nd** in a 2 part series on simplifying and democratizing Double Machine Learning. In the <a href="/articles/dml1" target="_blank" rel="noopener noreferrer">1st part</a>, we covered the fundamentals of Double Machine Learning, along with two basic causal inference applications. Now, in pt. 2, we will extend this knowledge to turn our causal inference problem into a prediction task, wherein we predict individual level treatment effects to aid in decision making and data-driven targeting
 
         Double Machine Learning, as we learned in [part 1](/articles/dml1) of this series, is a highly flexible partially-linear causal inference method for estimating the average treatment effect (ATE) of a treatment. Specifically, it can be utilized to model highly non-linear confounding relationships in observational data (especially when our set of controls/confounders is of extremely high dimensionality) and/or to reduce the variation in our key outcome in experimental settings. Estimating the ATE is particularly useful in understanding the average impact of a specific treatment, which can be extremely useful for future decision making. However, extrapolating this treatment effect assumes a degree homogeneity in the effect; that is, regardless of the population we roll treatment out to, we anticipate the effect to be similar to the ATE. What if we are limited in the number of individuals who we can target for future rollout and thus want to understand among which subpopulations the treatment was most effective to drive highly effective rollout?
 
@@ -175,41 +183,44 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(graphviz, mo):
-    # Create a directed graph
-    g_1 = graphviz.Digraph(format="png")
+    def create_dag():
+        # Create a directed graph
+        g = graphviz.Digraph(format="png")
 
-    # Add nodes
-    nodes_1 = [
-        "Age",
-        "# Social Media Accounts",
-        "Yrs Member",
-        "Time on Website",
-        "Sales",
-        "Z",
-    ]
-    [g_1.node(n) for n in nodes_1]
+        # Add nodes
+        nodes = [
+            "Age",
+            "# Social Media Accounts",
+            "Yrs Member",
+            "Time on Website",
+            "Sales",
+            "Z",
+        ]
+        [g.node(n) for n in nodes]
 
-    g_1.edge("Age", "Time on Website")
-    g_1.edge("# Social Media Accounts", "Time on Website")
-    g_1.edge("Yrs Member", "Time on Website")
-    g_1.edge("Age", "Sales")
-    g_1.edge("# Social Media Accounts", "Sales")
-    g_1.edge("Yrs Member", "Sales")
-    g_1.edge("Time on Website", "Sales", color="red")
-    g_1.edge("Z", "Sales")
+        g.edge("Age", "Time on Website")
+        g.edge("# Social Media Accounts", "Time on Website")
+        g.edge("Yrs Member", "Time on Website")
+        g.edge("Age", "Sales")
+        g.edge("# Social Media Accounts", "Sales")
+        g.edge("Yrs Member", "Sales")
+        g.edge("Time on Website", "Sales", color="red")
+        g.edge("Z", "Sales")
 
-    g_1.graph_attr['dpi'] = '400'
+        g.graph_attr["dpi"] = "400"
 
-    # Render for print
-    g_1.render('assets/notebooks/data/dag1')
+        # Render for print
+        g.render("data/dag1")
 
-    mo.image('assets/notebooks/data/dag1.png')
-    return g_1, nodes_1
+    mo.image("data/dag1.png")
+    return (create_dag,)
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""Let’s then simulate this DGP using a similar process as utilized in part 1 (note that all values & data are chosen and generated arbitrarily for demonstrative purposes). Observe that we now include interaction terms in the sales DGP to model the CATE, or treatment effect heterogeneity (note that the DGP in part 1 had no treatment effect heterogeneity by construction)""")
+    mo.md(
+        r"""Let’s then simulate this DGP using a similar process as utilized in part 1 (note that all values & data are chosen and generated arbitrarily for demonstrative purposes). Observe that we now include interaction terms in the sales DGP to model the CATE, or treatment effect heterogeneity (note that the DGP in part 1 had no treatment effect heterogeneity by construction)"""
+    )
     return
 
 
@@ -219,64 +230,81 @@ def _(np, pd):
     N = 100_000
 
     # Confounders (X)
-    age = np.random.randint(low=18,high=75,size=N)
-    num_social_media_profiles = np.random.choice([0,1,2,3,4,5,6,7,8,9,10], size = N)
-    yr_membership = np.random.choice([0,1,2,3,4,5,6,7,8,9,10], size = N)
+    age = np.random.randint(low=18, high=75, size=N)
+    num_social_media_profiles = np.random.choice(
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size=N
+    )
+    yr_membership = np.random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size=N)
 
     # Arbitrary Covariates (Z)
-    Z = np.random.normal(loc=50, scale = 25, size = N)
+    Z = np.random.normal(loc=50, scale=25, size=N)
 
     # Error Terms
-    ε1 = np.random.normal(loc=20,scale=5,size=N)
-    ε2 = np.random.normal(loc=40,scale=15,size=N)
+    ε1 = np.random.normal(loc=20, scale=5, size=N)
+    ε2 = np.random.normal(loc=40, scale=15, size=N)
 
     # Treatment (T = g(X) + ε1)
     def T(age, num_social_media_profiles, yr_membership, ε1):
-        time_on_website = np.maximum(10
-                                     - 0.01*age 
-                                     - 0.001*age**2 
-                                     + num_social_media_profiles 
-                                     - 0.01 * num_social_media_profiles**2
-                                     - 0.01*(age * num_social_media_profiles)
-                                     + 0.2 * yr_membership
-                                     + 0.001 * yr_membership**2
-                                     - 0.01 * (age * yr_membership)
-                                     + 0.2 * (num_social_media_profiles * yr_membership)
-                                     + 0.01 * (num_social_media_profiles * np.log(age) * age * yr_membership**(1/2))
-                                     + ε1
-                                       ,0)
+        time_on_website = np.maximum(
+            10
+            - 0.01 * age
+            - 0.001 * age**2
+            + num_social_media_profiles
+            - 0.01 * num_social_media_profiles**2
+            - 0.01 * (age * num_social_media_profiles)
+            + 0.2 * yr_membership
+            + 0.001 * yr_membership**2
+            - 0.01 * (age * yr_membership)
+            + 0.2 * (num_social_media_profiles * yr_membership)
+            + 0.01
+            * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
+            + ε1,
+            0,
+        )
         return time_on_website
 
     time_on_website = T(age, num_social_media_profiles, yr_membership, ε1)
 
     # Outcome (y = f(T,X,Z) + ε2)
     def y(time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2):
-    
-        sales = np.maximum(25
-                           +  5 * time_on_website # Baseline Treatment Effect
-                           -  0.2 * time_on_website * age # Heterogeneity
-                           + 2 * time_on_website * num_social_media_profiles # Heterogeneity
-                           + 2 * time_on_website * yr_membership # Heterogeneity
-                           - 0.1*age 
-                           - 0.001*age**2 
-                           + 8 * num_social_media_profiles 
-                           - 0.1 * num_social_media_profiles**2
-                           - 0.01*(age * num_social_media_profiles)
-                           + 2 * yr_membership
-                           + 0.1 * yr_membership**2
-                           - 0.01 * (age * yr_membership)
-                           + 3 * (num_social_media_profiles * yr_membership)
-                           + 0.1 * (num_social_media_profiles * np.log(age) * age * yr_membership**(1/2))
-                           + 0.5 * Z
-                           + ε2
-                             ,0)
+        sales = np.maximum(
+            25
+            + 5 * time_on_website  # Baseline Treatment Effect
+            - 0.2 * time_on_website * age  # Heterogeneity
+            + 2 * time_on_website * num_social_media_profiles  # Heterogeneity
+            + 2 * time_on_website * yr_membership  # Heterogeneity
+            - 0.1 * age
+            - 0.001 * age**2
+            + 8 * num_social_media_profiles
+            - 0.1 * num_social_media_profiles**2
+            - 0.01 * (age * num_social_media_profiles)
+            + 2 * yr_membership
+            + 0.1 * yr_membership**2
+            - 0.01 * (age * yr_membership)
+            + 3 * (num_social_media_profiles * yr_membership)
+            + 0.1
+            * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
+            + 0.5 * Z
+            + ε2,
+            0,
+        )
         return sales
 
     sales = y(time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2)
 
-
-    df = pd.DataFrame(np.array([sales,time_on_website,age,num_social_media_profiles,yr_membership,Z]).T
-                      ,columns=["sales","time_on_website","age","num_social_media_profiles","yr_membership","Z"])
+    df = pd.DataFrame(
+        np.array(
+            [sales, time_on_website, age, num_social_media_profiles, yr_membership, Z]
+        ).T,
+        columns=[
+            "sales",
+            "time_on_website",
+            "age",
+            "num_social_media_profiles",
+            "yr_membership",
+            "Z",
+        ],
+    )
     return (
         N,
         T,
@@ -301,7 +329,9 @@ def _(df):
 
 @app.cell
 def _(mo):
-    mo.md(r"""Now, to estimate our CATE function, as outlined in eq. (4), we can run:""")
+    mo.md(
+        r"""Now, to estimate our CATE function, as outlined in eq. (4), we can run:"""
+    )
     return
 
 
@@ -311,11 +341,24 @@ def _(GradientBoostingRegressor, cross_val_predict, df, smf):
     M_sales = GradientBoostingRegressor()
     M_time_on_website = GradientBoostingRegressor()
 
-    df["residualized_sales"] = df["sales"] - cross_val_predict(M_sales, df[["age","num_social_media_profiles","yr_membership"]], df["sales"], cv=3)
+    df["residualized_sales"] = df["sales"] - cross_val_predict(
+        M_sales,
+        df[["age", "num_social_media_profiles", "yr_membership"]],
+        df["sales"],
+        cv=3,
+    )
 
-    df["residualized_time_on_website"] = df["time_on_website"] - cross_val_predict(M_time_on_website, df[["age","num_social_media_profiles","yr_membership"]], df["time_on_website"], cv=3)
+    df["residualized_time_on_website"] = df["time_on_website"] - cross_val_predict(
+        M_time_on_website,
+        df[["age", "num_social_media_profiles", "yr_membership"]],
+        df["time_on_website"],
+        cv=3,
+    )
 
-    DML_model = smf.ols(formula='residualized_sales ~ 1 + residualized_time_on_website + residualized_time_on_website:age + residualized_time_on_website:num_social_media_profiles + residualized_time_on_website:yr_membership', data = df).fit()
+    DML_model = smf.ols(
+        formula="residualized_sales ~ 1 + residualized_time_on_website + residualized_time_on_website:age + residualized_time_on_website:num_social_media_profiles + residualized_time_on_website:yr_membership",
+        data=df,
+    ).fit()
 
     print(DML_model.summary())
     return DML_model, M_sales, M_time_on_website
@@ -323,7 +366,9 @@ def _(GradientBoostingRegressor, cross_val_predict, df, smf):
 
 @app.cell
 def _(mo):
-    mo.md(r"""Here we can see that linear DML closely modeled the true DGP for the CATE (see coefficients on interaction terms in sales DGP). Let’s evaluate the performance of our CATE function by comparing the linear DML predictions to the true CATE for a 1 hour increase in time on the spent on the website:""")
+    mo.md(
+        r"""Here we can see that linear DML closely modeled the true DGP for the CATE (see coefficients on interaction terms in sales DGP). Let’s evaluate the performance of our CATE function by comparing the linear DML predictions to the true CATE for a 1 hour increase in time on the spent on the website:"""
+    )
     return
 
 
@@ -342,12 +387,16 @@ def _(
     yr_membership,
     ε2,
 ):
-    # Predict CATE of 1 hour increase 
-    linear_dml_cates = (DML_model.predict(df.assign(residualized_time_on_website= lambda x : x.residualized_time_on_website + 1)) - DML_model.predict(df))
+    # Predict CATE of 1 hour increase
+    linear_dml_cates = DML_model.predict(
+        df.assign(
+            residualized_time_on_website=lambda x: x.residualized_time_on_website + 1
+        )
+    ) - DML_model.predict(df)
 
     # True CATE of 1 hour increase
     X = [age, num_social_media_profiles, yr_membership, Z, ε2]
-    true_cates = y(time_on_website+1, *X) - y(time_on_website, *X)
+    true_cates = y(time_on_website + 1, *X) - y(time_on_website, *X)
 
     print(f"Mean Squared Error: {mean_squared_error(true_cates, linear_dml_cates)}")
     print(f"Mean Absolute Error: {mean_absolute_error(true_cates, linear_dml_cates)}")
@@ -357,31 +406,37 @@ def _(
 
 @app.cell
 def _(mo):
-    mo.md(r"""Plotting the distributions of the predicted CATE and true CATE, we obtain:""")
+    mo.md(
+        r"""Plotting the distributions of the predicted CATE and true CATE, we obtain:"""
+    )
     return
 
 
 @app.cell(hide_code=True)
 def _(hist_effect, linear_dml_cates, true_cates):
-    hist_effect(true_cates,linear_dml_cates)
+    hist_effect(true_cates, linear_dml_cates)
     return
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""Additionally, plotting the predicted values versus the true values we obtain:""")
+    mo.md(
+        r"""Additionally, plotting the predicted values versus the true values we obtain:"""
+    )
     return
 
 
 @app.cell(hide_code=True)
 def _(linear_dml_cates, plot_effect, true_cates):
-    plot_effect(true_cates,linear_dml_cates)
+    plot_effect(true_cates, linear_dml_cates)
     return
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""Overall, we have pretty impressive performance! However, the primary limitation in this approach is that we must manually specify the functional form of the CATE function, thus if we are only including linear interaction terms we may not capture the true CATE function. In our example, we simulated the DGP to only have these linear interaction terms and thus the performance is strong by construction, but let’s see what happens when we tweak the DGP for the CATE to be arbitrarily non-linear:""")
+    mo.md(
+        r"""Overall, we have pretty impressive performance! However, the primary limitation in this approach is that we must manually specify the functional form of the CATE function, thus if we are only including linear interaction terms we may not capture the true CATE function. In our example, we simulated the DGP to only have these linear interaction terms and thus the performance is strong by construction, but let’s see what happens when we tweak the DGP for the CATE to be arbitrarily non-linear:"""
+    )
     return
 
 
@@ -397,37 +452,68 @@ def _(
     ε2,
 ):
     # Outcome (y = f(T,X,Z) + ε2)
-    def y_fn_nonlinear(time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2):
-        sales = np.maximum( 25
-                           +  5 * time_on_website # Baseline Treatment Effect
-                           -  0.2 * time_on_website * age # Heterogeneity
-                           - 0.0005 * time_on_website * age**2 # Heterogeneity
-                           + 0.8 * time_on_website * num_social_media_profiles # Heterogeneity
-                           + 0.001 * time_on_website * num_social_media_profiles**2 # Heterogeneity
-                           + 0.8 * time_on_website * yr_membership # Heterogeneity
-                           + 0.001 * time_on_website * yr_membership**2 # Heterogeneity
-                           + 0.005 * time_on_website * yr_membership * num_social_media_profiles * age # Heterogeneity
-                           + 0.005 * time_on_website * (yr_membership**3 / (1 + num_social_media_profiles**2)) * 
-                            np.log(age) ** 2
-                           - 0.1*age 
-                           - 0.001*age**2 
-                           + 8 * num_social_media_profiles 
-                           - 0.1 * num_social_media_profiles**2
-                           - 0.01*(age * num_social_media_profiles)
-                           + 2 * yr_membership
-                           + 0.1 * yr_membership**2
-                           - 0.01 * (age * yr_membership)
-                           + 3 * (num_social_media_profiles * yr_membership)
-                           + 0.1 * (num_social_media_profiles * np.log(age) * age * yr_membership**(1/2))
-                           + 0.5 * Z
-                           + ε2
-                             ,0)
+    def y_fn_nonlinear(
+        time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2
+    ):
+        sales = np.maximum(
+            25
+            + 5 * time_on_website  # Baseline Treatment Effect
+            - 0.2 * time_on_website * age  # Heterogeneity
+            - 0.0005 * time_on_website * age**2  # Heterogeneity
+            + 0.8 * time_on_website * num_social_media_profiles  # Heterogeneity
+            + 0.001 * time_on_website * num_social_media_profiles**2  # Heterogeneity
+            + 0.8 * time_on_website * yr_membership  # Heterogeneity
+            + 0.001 * time_on_website * yr_membership**2  # Heterogeneity
+            + 0.005
+            * time_on_website
+            * yr_membership
+            * num_social_media_profiles
+            * age  # Heterogeneity
+            + 0.005
+            * time_on_website
+            * (yr_membership**3 / (1 + num_social_media_profiles**2))
+            * np.log(age) ** 2
+            - 0.1 * age
+            - 0.001 * age**2
+            + 8 * num_social_media_profiles
+            - 0.1 * num_social_media_profiles**2
+            - 0.01 * (age * num_social_media_profiles)
+            + 2 * yr_membership
+            + 0.1 * yr_membership**2
+            - 0.01 * (age * yr_membership)
+            + 3 * (num_social_media_profiles * yr_membership)
+            + 0.1
+            * (num_social_media_profiles * np.log(age) * age * yr_membership ** (1 / 2))
+            + 0.5 * Z
+            + ε2,
+            0,
+        )
         return sales
 
-    sales_nonlinear = y_fn_nonlinear(time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2)
+    sales_nonlinear = y_fn_nonlinear(
+        time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2
+    )
 
-    df_nonlinear = pd.DataFrame(np.array([sales_nonlinear,time_on_website,age,num_social_media_profiles,yr_membership,Z]).T
-                      ,columns=["sales","time_on_website","age","num_social_media_profiles","yr_membership","Z"])
+    df_nonlinear = pd.DataFrame(
+        np.array(
+            [
+                sales_nonlinear,
+                time_on_website,
+                age,
+                num_social_media_profiles,
+                yr_membership,
+                Z,
+            ]
+        ).T,
+        columns=[
+            "sales",
+            "time_on_website",
+            "age",
+            "num_social_media_profiles",
+            "yr_membership",
+            "Z",
+        ],
+    )
     return df_nonlinear, sales_nonlinear, y_fn_nonlinear
 
 
@@ -440,14 +526,29 @@ def _(mo):
 @app.cell
 def _(GradientBoostingRegressor, cross_val_predict, df_nonlinear, smf):
     # DML Procedure
-    M_sales2= GradientBoostingRegressor()
+    M_sales2 = GradientBoostingRegressor()
     M_time_on_website2 = GradientBoostingRegressor()
 
-    df_nonlinear['residualized_sales'] = df_nonlinear["sales"] - cross_val_predict(M_sales2, df_nonlinear[["age","num_social_media_profiles","yr_membership"]], df_nonlinear['sales'], cv=3)
+    df_nonlinear["residualized_sales"] = df_nonlinear["sales"] - cross_val_predict(
+        M_sales2,
+        df_nonlinear[["age", "num_social_media_profiles", "yr_membership"]],
+        df_nonlinear["sales"],
+        cv=3,
+    )
 
-    df_nonlinear['residualized_time_on_website'] = df_nonlinear['time_on_website'] - cross_val_predict(M_time_on_website2, df_nonlinear[["age","num_social_media_profiles","yr_membership"]], df_nonlinear['time_on_website'], cv=3)
+    df_nonlinear["residualized_time_on_website"] = df_nonlinear[
+        "time_on_website"
+    ] - cross_val_predict(
+        M_time_on_website2,
+        df_nonlinear[["age", "num_social_media_profiles", "yr_membership"]],
+        df_nonlinear["time_on_website"],
+        cv=3,
+    )
 
-    DML_model_nonlinear = smf.ols(formula='residualized_sales ~ 1 + residualized_time_on_website + residualized_time_on_website:age + residualized_time_on_website:num_social_media_profiles + residualized_time_on_website:yr_membership', data = df_nonlinear).fit()
+    DML_model_nonlinear = smf.ols(
+        formula="residualized_sales ~ 1 + residualized_time_on_website + residualized_time_on_website:age + residualized_time_on_website:num_social_media_profiles + residualized_time_on_website:yr_membership",
+        data=df_nonlinear,
+    ).fit()
 
     print(DML_model_nonlinear.summary())
     return DML_model_nonlinear, M_sales2, M_time_on_website2
@@ -470,27 +571,37 @@ def _(
     time_on_website,
     y_fn_nonlinear,
 ):
-    # Predict CATE of 1 hour increase 
-    linear_dml_cates_nonlinear = (DML_model_nonlinear.predict(df_nonlinear.assign(residualized_time_on_website= lambda x : x.residualized_time_on_website + 1)) - DML_model_nonlinear.predict(df_nonlinear))
+    # Predict CATE of 1 hour increase
+    linear_dml_cates_nonlinear = DML_model_nonlinear.predict(
+        df_nonlinear.assign(
+            residualized_time_on_website=lambda x: x.residualized_time_on_website + 1
+        )
+    ) - DML_model_nonlinear.predict(df_nonlinear)
 
     # True CATE of 1 hour increase
-    true_cates_nonlinear = y_fn_nonlinear(time_on_website+1, *X) - y_fn_nonlinear(time_on_website, *X)
+    true_cates_nonlinear = y_fn_nonlinear(time_on_website + 1, *X) - y_fn_nonlinear(
+        time_on_website, *X
+    )
 
-    print(f"Mean Squared Error: {mean_squared_error(true_cates_nonlinear, linear_dml_cates_nonlinear)}")
-    print(f"Mean Absolute Error: {mean_absolute_error(true_cates_nonlinear, linear_dml_cates_nonlinear)}")
+    print(
+        f"Mean Squared Error: {mean_squared_error(true_cates_nonlinear, linear_dml_cates_nonlinear)}"
+    )
+    print(
+        f"Mean Absolute Error: {mean_absolute_error(true_cates_nonlinear, linear_dml_cates_nonlinear)}"
+    )
     print(f"R-Squared: {r2_score(true_cates_nonlinear, linear_dml_cates_nonlinear)}")
     return linear_dml_cates_nonlinear, true_cates_nonlinear
 
 
 @app.cell(hide_code=True)
 def _(hist_effect, linear_dml_cates_nonlinear, true_cates_nonlinear):
-    hist_effect(true_cates_nonlinear,linear_dml_cates_nonlinear)
+    hist_effect(true_cates_nonlinear, linear_dml_cates_nonlinear)
     return
 
 
 @app.cell(hide_code=True)
 def _(linear_dml_cates_nonlinear, plot_effect, true_cates_nonlinear):
-    plot_effect(true_cates_nonlinear,linear_dml_cates_nonlinear)
+    plot_effect(true_cates_nonlinear, linear_dml_cates_nonlinear)
     return
 
 
@@ -542,19 +653,28 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    mo.md(r"""Then define the causal loss function as such (note this is just the MSE!):""")
+    mo.md(
+        r"""Then define the causal loss function as such (note this is just the MSE!):"""
+    )
     return
 
 
 @app.cell
 def _(GradientBoostingRegressor, df_nonlinear):
     # Define Target & Weights
-    df_nonlinear['target'] = df_nonlinear['residualized_sales'] / df_nonlinear['residualized_time_on_website']
-    df_nonlinear['weights'] = df_nonlinear['residualized_time_on_website']**2
+    df_nonlinear["target"] = (
+        df_nonlinear["residualized_sales"]
+        / df_nonlinear["residualized_time_on_website"]
+    )
+    df_nonlinear["weights"] = df_nonlinear["residualized_time_on_website"] ** 2
 
     # Non-Parametric CATE Model
     CATE_model = GradientBoostingRegressor()
-    CATE_model.fit(df_nonlinear[["age","num_social_media_profiles","yr_membership"]], df_nonlinear['target'], sample_weight=df_nonlinear['weights'])
+    CATE_model.fit(
+        df_nonlinear[["age", "num_social_media_profiles", "yr_membership"]],
+        df_nonlinear["target"],
+        sample_weight=df_nonlinear["weights"],
+    )
     return (CATE_model,)
 
 
@@ -573,24 +693,30 @@ def _(
     r2_score,
     true_cates_nonlinear,
 ):
-    # Predict CATE of 1 hour increase 
-    nonparam_dml_cates_nonlinear = (CATE_model.predict(df_nonlinear[["age","num_social_media_profiles","yr_membership"]]))
+    # Predict CATE of 1 hour increase
+    nonparam_dml_cates_nonlinear = CATE_model.predict(
+        df_nonlinear[["age", "num_social_media_profiles", "yr_membership"]]
+    )
 
-    print(f"Mean Squared Error: {mean_squared_error(true_cates_nonlinear, nonparam_dml_cates_nonlinear)}")
-    print(f"Mean Absolute Error: {mean_absolute_error(true_cates_nonlinear, nonparam_dml_cates_nonlinear)}")
+    print(
+        f"Mean Squared Error: {mean_squared_error(true_cates_nonlinear, nonparam_dml_cates_nonlinear)}"
+    )
+    print(
+        f"Mean Absolute Error: {mean_absolute_error(true_cates_nonlinear, nonparam_dml_cates_nonlinear)}"
+    )
     print(f"R-Squared: {r2_score(true_cates_nonlinear, nonparam_dml_cates_nonlinear)}")
     return (nonparam_dml_cates_nonlinear,)
 
 
 @app.cell(hide_code=True)
 def _(hist_effect, nonparam_dml_cates_nonlinear, true_cates_nonlinear):
-    hist_effect(true_cates_nonlinear,nonparam_dml_cates_nonlinear)
+    hist_effect(true_cates_nonlinear, nonparam_dml_cates_nonlinear)
     return
 
 
 @app.cell(hide_code=True)
 def _(nonparam_dml_cates_nonlinear, plot_effect, true_cates_nonlinear):
-    plot_effect(true_cates_nonlinear,nonparam_dml_cates_nonlinear)
+    plot_effect(true_cates_nonlinear, nonparam_dml_cates_nonlinear)
     return
 
 
@@ -612,7 +738,7 @@ def _(mo):
         <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
         <center>
-        Access all the code via [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+        Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
 
         I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
         </center>

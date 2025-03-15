@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.11.8"
+__generated_with = "0.11.20"
 app = marimo.App(width="medium")
 
 
@@ -21,7 +21,7 @@ def _():
     import os
 
     try:
-        os.chdir("assets/notebooks")
+        os.chdir("assets/articles/notebooks")
     except:
         pass
 
@@ -78,30 +78,34 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(np, plt):
-    x = np.arange(-0.25, 1.25, 0.001)
-    z = 1 / (1 + np.exp(-((x - 0.5) / 0.1)))
-    y = x
-    dz = (1 / 0.1) * (np.exp(-((x - 0.5) / 0.1)) / (1 + np.exp(-((x - 0.5) / 0.1))) ** 2)
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ax.plot(x, y, color="black", label="Linear Probability Model", zorder=1)
-    ax.plot(x, z, color="#b30000", label="Logit Model", zorder=2)
-    ax.legend()
-    ax.axhline(y=0, color="black", linestyle="--")
-    ax.axhline(y=1, color="black", linestyle="--")
-    # ax.grid(True)
-    ax.set_ylabel("Predicted Probability", size=15)
-    ax.set_xlabel("X \n \n Figure 1", size=15)
-    ax.set_yticks([0, 1])
-    ax.tick_params(axis="both", which="both", labelbottom=False, bottom=False, top=False)
-    ax.set_title("Linear Probability vs. Logit Model", size=20)
-    fig.gca().spines["top"].set_visible(False)
-    fig.gca().spines["right"].set_visible(False)
-    fig.gca().spines["bottom"].set_visible(False)
-    fig.gca().spines["left"].set_visible(False)
-    ax.axhspan(0, -0.25, alpha=0.2, color="black")
-    ax.axhspan(1, 1.25, alpha=0.2, color="black")
-    plt.show()
-    return ax, dz, fig, x, y, z
+    def lin_prob_vs_logistic_viz():
+        x = np.arange(-0.25, 1.25, 0.001)
+        z = 1 / (1 + np.exp(-((x - 0.5) / 0.1)))
+        y = x
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.plot(x, y, color="black", label="Linear Probability Model", zorder=1)
+        ax.plot(x, z, color="#b30000", label="Logit Model", zorder=2)
+        ax.legend()
+        ax.axhline(y=0, color="black", linestyle="--")
+        ax.axhline(y=1, color="black", linestyle="--")
+        # ax.grid(True)
+        ax.set_ylabel("Predicted Probability", size=15)
+        ax.set_xlabel("X \n \n Figure 1", size=15)
+        ax.set_yticks([0, 1])
+        ax.tick_params(
+            axis="both", which="both", labelbottom=False, bottom=False, top=False
+        )
+        ax.set_title("Linear Probability vs. Logit Model", size=20)
+        fig.gca().spines["top"].set_visible(False)
+        fig.gca().spines["right"].set_visible(False)
+        fig.gca().spines["bottom"].set_visible(False)
+        fig.gca().spines["left"].set_visible(False)
+        ax.axhspan(0, -0.25, alpha=0.2, color="black")
+        ax.axhspan(1, 1.25, alpha=0.2, color="black")
+        plt.show()
+
+    lin_prob_vs_logistic_viz()
+    return (lin_prob_vs_logistic_viz,)
 
 
 @app.cell
@@ -270,7 +274,9 @@ def _(pd):
 
 @app.cell
 def _(mo):
-    mo.md(r"""We will now build a logistic regression model using scikit-learn. Suppose we have already gone through the proper steps in training and validating the model and have determined the appropriate model. Our final model is as follows:""")
+    mo.md(
+        r"""We will now build a logistic regression model using scikit-learn. Suppose we have already gone through the proper steps in training and validating the model and have determined the appropriate model. Our final model is as follows:"""
+    )
     return
 
 
@@ -297,7 +303,9 @@ def _(ColumnTransformer, LogisticRegression, Pipeline, StandardScaler, fraud):
 
 @app.cell
 def _(mo):
-    mo.md("""We have built our logit model to predict if a credit card transaction is fraudulent. Now let's pivot into explaining the model parameters to understand the inner workings of the model and the subsequent role each feature plays in driving predictions. We will define a function to compute the marginal effects of the logistic regression both in terms of probabilities and odds:""")
+    mo.md(
+        """We have built our logit model to predict if a credit card transaction is fraudulent. Now let's pivot into explaining the model parameters to understand the inner workings of the model and the subsequent role each feature plays in driving predictions. We will define a function to compute the marginal effects of the logistic regression both in terms of probabilities and odds:"""
+    )
     return
 
 
@@ -315,8 +323,8 @@ def _(LogisticRegression, np, pd):
             The trained logistic regression model.
         X_features
             The input features used for prediction.
-        kind 
-            The type of marginal effects to calculate. Can be "probability" or "odds". 
+        kind
+            The type of marginal effects to calculate. Can be "probability" or "odds".
             Default is "probability".
 
         Returns
@@ -354,6 +362,7 @@ def _(LogisticRegression, np, pd):
         df = pd.DataFrame(marginal_effects)
 
         return df
+
     return (logit_margeff,)
 
 
@@ -371,7 +380,7 @@ def _(mo):
 
 @app.cell
 def _(features, final_mod, fraud, logit_margeff):
-    logit_margeff(final_mod,fraud[features],kind='probability')
+    logit_margeff(final_mod, fraud[features], kind="probability")
     return
 
 
@@ -393,7 +402,7 @@ def _(mo):
 
 @app.cell
 def _(features, final_mod, fraud, logit_margeff):
-    logit_margeff(final_mod,fraud[features],kind='odds')
+    logit_margeff(final_mod, fraud[features], kind="odds")
     return
 
 
@@ -401,7 +410,7 @@ def _(features, final_mod, fraud, logit_margeff):
 def _(mo):
     mo.md(
         r"""
-        ## Discussion
+        ## Conclusion
 
         I hope this post has helped you learn how to extract **meaningful insights** from logit model parameters. It is clear that marginal effect interpretations in terms of probabilities provide an immense amount of intuition and explainability of the predictive mechanics under a logit model framework. Generally speaking, these parameters explain how the model makes predictions as well as explain associations between the target and features. However, under additional identifying assumptions, we can make more powerful statements towards interpreting model parameters as a causal relationship between certain features and targets. I hope this post has increased your knowledge and appreciation for logistic regressions!
 
@@ -413,7 +422,7 @@ def _(mo):
         <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
         <center>
-        Access all the code via [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+        Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
 
         I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
         </center>

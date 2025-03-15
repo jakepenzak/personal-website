@@ -20,7 +20,7 @@ def _():
     import matplotlib.pyplot as plt
 
     try:
-        os.chdir("assets/notebooks")
+        os.chdir("assets/articles/notebooks")
     except:
         pass
 
@@ -131,7 +131,7 @@ def _(mo):
 @app.cell
 def _(PCA, fetch_openml, np, pd):
     # Fetch MNIST data
-    mnist = fetch_openml('mnist_784', version=1, as_frame=False)
+    mnist = fetch_openml("mnist_784", version=1, as_frame=False)
     mnist.target = mnist.target.astype(np.uint8)
 
     X_total = pd.DataFrame(mnist["data"])
@@ -147,7 +147,9 @@ def _(PCA, fetch_openml, np, pd):
 
 @app.cell
 def _(mo):
-    mo.md(r"""This will be our X dataset with each row being an image and each column being a feature, or principal component in this case (i.e. linear combinations of the original pixels):""")
+    mo.md(
+        r"""This will be our X dataset with each row being an image and each column being a feature, or principal component in this case (i.e. linear combinations of the original pixels):"""
+    )
     return
 
 
@@ -187,7 +189,9 @@ def _(mo):
 
 @app.cell
 def _(grid_search, np):
-    def get_original_pairwise_affinities(X: np.ndarray, perplexity: int = 10) -> np.ndarray:
+    def get_original_pairwise_affinities(
+        X: np.ndarray, perplexity: int = 10
+    ) -> np.ndarray:
         """
         Function to obtain affinities matrix.
 
@@ -229,6 +233,7 @@ def _(grid_search, np):
         print("Completed Pairwise Affinities Matrix. \n")
 
         return p_ij
+
     return (get_original_pairwise_affinities,)
 
 
@@ -284,7 +289,9 @@ def _(np):
         result = np.inf  # Set first result to be infinity
 
         norm = np.linalg.norm(diff_i, axis=1)
-        std_norm = np.std(norm)  # Use standard deviation of norms to define search space
+        std_norm = np.std(
+            norm
+        )  # Use standard deviation of norms to define search space
 
         for σ_search in np.linspace(0.01 * std_norm, 5 * std_norm, 200):
             # Equation 1 Numerator
@@ -306,6 +313,7 @@ def _(np):
                 σ = σ_search
 
         return σ
+
     return (grid_search,)
 
 
@@ -325,7 +333,7 @@ def _(X, get_original_pairwise_affinities):
 def _(p_ij, pd):
     # To make it look pretty in marimo
     df_p_ij = pd.DataFrame(p_ij)
-    df_p_ij.columns = df_p_ij.columns.astype('str')
+    df_p_ij.columns = df_p_ij.columns.astype("str")
     df_p_ij
     return (df_p_ij,)
 
@@ -357,7 +365,7 @@ def _(np):
 
         Parameters
         ----------
-        p_ij 
+        p_ij
             The input affinity matrix.
 
         Returns
@@ -379,12 +387,15 @@ def _(np):
         print("Completed Symmetric p_ij Matrix. \n")
 
         return p_ij_symmetric
+
     return (get_symmetric_p_ij,)
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""Feeding in `p_ij` from above, we obtain the following symmetric affinities matrix:""")
+    mo.md(
+        r"""Feeding in `p_ij` from above, we obtain the following symmetric affinities matrix:"""
+    )
     return
 
 
@@ -398,7 +409,7 @@ def _(get_symmetric_p_ij, p_ij):
 def _(p_ij_symmetric, pd):
     # To make it look pretty in marimo
     df_p_ij_symmetric = pd.DataFrame(p_ij_symmetric)
-    df_p_ij_symmetric.columns = df_p_ij_symmetric.columns.astype('str')
+    df_p_ij_symmetric.columns = df_p_ij_symmetric.columns.astype("str")
     df_p_ij_symmetric
     return (df_p_ij_symmetric,)
 
@@ -427,7 +438,7 @@ def _(np):
 
         Parameters
         ----------
-        X 
+        X
             The input data array.
         n_dimensions
             The number of dimensions for the output solution. Default is 2.
@@ -456,6 +467,7 @@ def _(np):
             raise ValueError("Initialization must be 'random' or 'PCA'")
 
         return y0
+
     return (initialization,)
 
 
@@ -468,7 +480,7 @@ def _(X, initialization):
 @app.cell(hide_code=True)
 def _(pd, y0):
     df_y0 = pd.DataFrame(y0)
-    df_y0.columns = df_y0.columns.astype('str')
+    df_y0.columns = df_y0.columns.astype("str")
     df_y0
     return (df_y0,)
 
@@ -529,12 +541,15 @@ def _(np):
         q_ij = np.maximum(q_ij, ε)
 
         return q_ij
+
     return (get_low_dimensional_affinities,)
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""Here we are seeking a 1000 x 1000 affinity matrix but now in the lower dimensional space:""")
+    mo.md(
+        r"""Here we are seeking a 1000 x 1000 affinity matrix but now in the lower dimensional space:"""
+    )
     return
 
 
@@ -548,7 +563,7 @@ def _(get_low_dimensional_affinities, y0):
 def _(pd, q_ij):
     # To make it look pretty in marimo
     df_q_ij = pd.DataFrame(q_ij)
-    df_q_ij.columns = df_q_ij.columns.astype('str')
+    df_q_ij.columns = df_q_ij.columns.astype("str")
     df_q_ij
     return (df_q_ij,)
 
@@ -617,6 +632,7 @@ def _(np):
             gradient[i] = 4 * np.sum((A * B).T * C, axis=0)
 
         return gradient
+
     return (get_gradient,)
 
 
@@ -628,7 +644,7 @@ def _(mo):
 
 @app.cell
 def _(get_gradient, p_ij_symmetric, q_ij, y0):
-    gradient = get_gradient(p_ij_symmetric,q_ij,y0)
+    gradient = get_gradient(p_ij_symmetric, q_ij, y0)
     return (gradient,)
 
 
@@ -636,7 +652,7 @@ def _(get_gradient, p_ij_symmetric, q_ij, y0):
 def _(gradient, pd):
     # Make pretty in marimo
     df_gradient = pd.DataFrame(gradient)
-    df_gradient.columns = df_gradient.columns.astype('str')
+    df_gradient.columns = df_gradient.columns.astype("str")
     df_gradient
     return (df_gradient,)
 
@@ -699,10 +715,10 @@ def _(
         η
             The learning rate for updating the low-dimensional embeddings. Default is 200.
         early_exaggeration
-            The factor by which the pairwise affinities are exaggerated during the early iterations of optimization. 
+            The factor by which the pairwise affinities are exaggerated during the early iterations of optimization.
             Default is 4.
         n_dimensions
-            The number of dimensions of the low-dimensional embeddings. 
+            The number of dimensions of the low-dimensional embeddings.
             Default is 2.
 
         Returns
@@ -741,7 +757,9 @@ def _(
             gradient = get_gradient(early_exaggeration * p_ij_symmetric, q_ij, Y[t])
 
             # Update Rule
-            Y[t + 1] = Y[t] - η * gradient + α * (Y[t] - Y[t - 1])  # Use negative gradient
+            Y[t + 1] = (
+                Y[t] - η * gradient + α * (Y[t] - Y[t - 1])
+            )  # Use negative gradient
 
             # Compute current value of cost function
             if t % 50 == 0 or t == 1:
@@ -754,6 +772,7 @@ def _(
         solution = Y[-1]
 
         return solution, Y
+
     return (tsne,)
 
 
@@ -773,109 +792,97 @@ def _(X, tsne):
 def _(pd, solution):
     # To make pretty for marimo
     df_solution = pd.DataFrame(solution)
-    df_solution.columns = df_solution.columns.astype('str')
+    df_solution.columns = df_solution.columns.astype("str")
     df_solution
     return (df_solution,)
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""where `solution` is the final 2-D mapping and `Y` is our mapped 2-D values at each step of the iteration. Plotting the evolution of `Y` where `Y[-1]` is our final 2-D mapping, we obtain (note how the algorithm behaves with early exaggeration on and off):""")
+    mo.md(
+        r"""where `solution` is the final 2-D mapping and `Y` is our mapped 2-D values at each step of the iteration. Plotting the evolution of `Y` where `Y[-1]` is our final 2-D mapping, we obtain (note how the algorithm behaves with early exaggeration on and off):"""
+    )
     return
 
 
 @app.cell(hide_code=True)
-def _(Y, animation, np, plt, y_reduced):
-    fig, ax = plt.subplots()
-    ax.axis("off")
-    ax.set_title("MNIST t-SNE")
-    scat = ax.scatter(Y[1][:, 0], Y[1][:, 1], c=y_reduced, cmap="tab10")
-    plt.colorbar(scat, ax=ax)
+def _(Y, animation, mo, np, plt, y_reduced):
+    def tsne_evolution_fig():
+        fig, ax = plt.subplots()
+        ax.axis("off")
+        ax.set_title("MNIST t-SNE")
+        scat = ax.scatter(Y[1][:, 0], Y[1][:, 1], c=y_reduced, cmap="tab10")
+        plt.colorbar(scat, ax=ax)
 
-    # t-SNE Descent Animation
-    ys = []
-    prelims = list(range(0, 50, 5))
-    early_range = list(range(50, 250, 10))
-    mid_range_1 = list(range(250, 300, 5))
-    mid_range_2 = list(range(300, 400, 10))
-    end_range = list(range(400, 1000, 50))
+        # t-SNE Descent Animation
+        ys = []
+        prelims = list(range(0, 50, 5))
+        early_range = list(range(50, 250, 10))
+        mid_range_1 = list(range(250, 300, 5))
+        mid_range_2 = list(range(300, 400, 10))
+        end_range = list(range(400, 1000, 50))
 
-    visual_range = (
-        prelims
-        + early_range
-        + mid_range_1
-        + mid_range_2
-        + end_range
-        + [999, 999, 999, 999, 999, 999, 999]
-    )
-
-    for i in visual_range:
-        ys.append(Y[i])
-
-
-    def strike(text):
-        result = ""
-        for c in text:
-            result = result + c + "\u0336"
-        return result
-
-
-    def animate(iterations):
-        scat.set_offsets(ys[iterations])
-        if iterations < 31:
-            ax.text(
-                0.05,
-                1,
-                "Early Exaggeration",
-                horizontalalignment="center",
-                verticalalignment="center",
-                transform=ax.transAxes,
-            )
-        else:
-            ax.text(
-                0.05,
-                1,
-                strike("                  "),
-                horizontalalignment="center",
-                verticalalignment="center",
-                transform=ax.transAxes,
-            )
-
-        ax.set_xlim(
-            [1.25 * np.min(ys[iterations][:, 0]), 1.25 * np.max(ys[iterations][:, 0])]
-        )
-        ax.set_ylim(
-            [1.25 * np.min(ys[iterations][:, 1]), 1.25 * np.max(ys[iterations][:, 1])]
+        visual_range = (
+            prelims
+            + early_range
+            + mid_range_1
+            + mid_range_2
+            + end_range
+            + [999, 999, 999, 999, 999, 999, 999]
         )
 
+        for i in visual_range:
+            ys.append(Y[i])
 
-    rot_animation = animation.FuncAnimation(
-        fig, animate, frames=len(ys) - 1, interval=350, blit=False
-    )
+        def strike(text):
+            result = ""
+            for c in text:
+                result = result + c + "\u0336"
+            return result
 
-    rot_animation.save("data/MNIST.gif", dpi=250)
-    return (
-        animate,
-        ax,
-        early_range,
-        end_range,
-        fig,
-        i,
-        mid_range_1,
-        mid_range_2,
-        prelims,
-        rot_animation,
-        scat,
-        strike,
-        visual_range,
-        ys,
-    )
+        def animate(iterations):
+            scat.set_offsets(ys[iterations])
+            if iterations < 31:
+                ax.text(
+                    0.05,
+                    1,
+                    "Early Exaggeration",
+                    horizontalalignment="center",
+                    verticalalignment="center",
+                    transform=ax.transAxes,
+                )
+            else:
+                ax.text(
+                    0.05,
+                    1,
+                    strike("                  "),
+                    horizontalalignment="center",
+                    verticalalignment="center",
+                    transform=ax.transAxes,
+                )
 
+            ax.set_xlim(
+                [
+                    1.25 * np.min(ys[iterations][:, 0]),
+                    1.25 * np.max(ys[iterations][:, 0]),
+                ]
+            )
+            ax.set_ylim(
+                [
+                    1.25 * np.min(ys[iterations][:, 1]),
+                    1.25 * np.max(ys[iterations][:, 1]),
+                ]
+            )
 
-@app.cell(hide_code=True)
-def _(mo):
+        rot_animation = animation.FuncAnimation(
+            fig, animate, frames=len(ys) - 1, interval=350, blit=False
+        )
+
+        rot_animation.save("data/MNIST.gif", dpi=200)
+
+    tsne_evolution_fig()
     mo.image("data/MNIST.gif")
-    return
+    return (tsne_evolution_fig,)
 
 
 @app.cell
@@ -899,7 +906,7 @@ def _(mo):
         <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
         <center>
-        Access all the code via [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+        Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
 
         I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
         </center>

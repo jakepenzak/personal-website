@@ -25,4 +25,8 @@ dev = [
     "seaborn>=0.13.2",
     "stargazer>=0.0.7",
     "statsmodels>=0.14.4",
+    "sympy>=1.13.3",
 ]
+
+[tool.marimo.runtime]
+output_max_bytes = 60_000_000

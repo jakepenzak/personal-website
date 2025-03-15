@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.11.8"
+__generated_with = "0.11.20"
 app = marimo.App(width="medium")
 
 
@@ -18,9 +18,15 @@ def _():
     import statsmodels.formula.api as sm
     from stargazer.stargazer import Stargazer  # noqa: F401
     from IPython.display import display, HTML
+    import os
+
+    try:
+        os.chdir("assets/articles/notebooks")
+    except:
+        pass
 
     sns.set_theme(style="darkgrid")
-    return HTML, Stargazer, display, mo, np, pd, plt, skewnorm, sm, sns
+    return HTML, Stargazer, display, mo, np, os, pd, plt, skewnorm, sm, sns
 
 
 @app.cell
@@ -244,22 +250,35 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(df, plt, sns):
-    fig, ax = plt.subplots(3, 2, figsize=(15, 15))
-    sns.histplot(df.HHinc, color="b", ax=ax[0, 0], bins=15, stat="proportion", kde=True)
-    sns.histplot(df.IQ, color="m", ax=ax[0, 1], bins=20, stat="proportion", kde=True)
-    sns.histplot(
-        df.pareduc, color="black", ax=ax[1, 0], bins=20, stat="proportion", kde=True
-    )
-    sns.histplot(df.read, color="r", ax=ax[1, 1], bins=30, stat="proportion", kde=True)
-    sns.histplot(df.educ, color="g", ax=ax[2, 0], bins=30, stat="proportion", kde=True)
-    sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax[2, 1])
-    plt.show()
-    return ax, fig
+    def data_hists():
+        fig, ax = plt.subplots(3, 2, figsize=(15, 15))
+        sns.histplot(
+            df.HHinc, color="b", ax=ax[0, 0], bins=15, stat="proportion", kde=True
+        )
+        sns.histplot(
+            df.IQ, color="m", ax=ax[0, 1], bins=20, stat="proportion", kde=True
+        )
+        sns.histplot(
+            df.pareduc, color="black", ax=ax[1, 0], bins=20, stat="proportion", kde=True
+        )
+        sns.histplot(
+            df.read, color="r", ax=ax[1, 1], bins=30, stat="proportion", kde=True
+        )
+        sns.histplot(
+            df.educ, color="g", ax=ax[2, 0], bins=30, stat="proportion", kde=True
+        )
+        sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax[2, 1])
+        plt.show()
+
+    data_hists()
+    return (data_hists,)
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""The graph in the bottom right provides the scatter plot and naïve regression line of educ on read. This relationship, on the surface, shows a very strong positive relationship between days read a month as a child and educational attainment. However, we know that by construction this is not the true relationship between educ and read because of the common confounding covariates. We can quantify this result and the bias more formally via regression analysis. Let's now go ahead and estimate the naïve regression (i.e., eq. (3) less $X$), the multiple regression with all relevant covariates (i.e., eq. (3)), and the FWL 3 step process (i.e., eqs. (8)-(12)):""")
+    mo.md(
+        r"""The graph in the bottom right provides the scatter plot and naïve regression line of educ on read. This relationship, on the surface, shows a very strong positive relationship between days read a month as a child and educational attainment. However, we know that by construction this is not the true relationship between educ and read because of the common confounding covariates. We can quantify this result and the bias more formally via regression analysis. Let's now go ahead and estimate the naïve regression (i.e., eq. (3) less $X$), the multiple regression with all relevant covariates (i.e., eq. (3)), and the FWL 3 step process (i.e., eqs. (8)-(12)):"""
+    )
     return
 
 
@@ -268,19 +287,19 @@ def _(df, sm):
     ## Regression Analysis
 
     # Naive Regression
-    naive = sm.ols('educ~read',data=df).fit(cov_type="HC3")
+    naive = sm.ols("educ~read", data=df).fit(cov_type="HC3")
 
     # Multiple Regression
-    multiple = sm.ols('educ~read+pareduc+HHinc+IQ',data=df).fit(cov_type='HC3')
+    multiple = sm.ols("educ~read+pareduc+HHinc+IQ", data=df).fit(cov_type="HC3")
 
     # FWL Theorem
-    read = sm.ols('read~pareduc+HHinc+IQ',data=df).fit(cov_type='HC3')
-    df['read_star']=read.resid
+    read = sm.ols("read~pareduc+HHinc+IQ", data=df).fit(cov_type="HC3")
+    df["read_star"] = read.resid
 
-    educ = sm.ols('educ~pareduc+HHinc+IQ',data=df).fit(cov_type='HC3')
-    df['educ_star']=educ.resid
+    educ = sm.ols("educ~pareduc+HHinc+IQ", data=df).fit(cov_type="HC3")
+    df["educ_star"] = educ.resid
 
-    FWL = sm.ols("educ_star ~ read_star",data=df).fit(cov_type='HC3')
+    FWL = sm.ols("educ_star ~ read_star", data=df).fit(cov_type="HC3")
     return FWL, educ, multiple, naive, read
 
 
@@ -292,20 +311,30 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(FWL, HTML, Stargazer, multiple, naive):
-    order = ['read','read_star','HHinc','pareduc','IQ','Intercept']
-    columns = ['Naive OLS','Multiple OLS','FWL']
-    rename = {'read':'Read (Days/Month)','read_star':'Read*','hhincome':'HH Income',
-              'pareduc':"Avg. Parents Education (Yrs)"}
+    def prettify_ols_results():
+        order = ["read", "read_star", "HHinc", "pareduc", "IQ", "Intercept"]
+        columns = ["Naive OLS", "Multiple OLS", "FWL"]
+        rename = {
+            "read": "Read (Days/Month)",
+            "read_star": "Read*",
+            "hhincome": "HH Income",
+            "pareduc": "Avg. Parents Education (Yrs)",
+        }
 
-    regtable = Stargazer([naive, multiple, FWL])
-    regtable.covariate_order(order)
-    regtable.custom_columns(columns,[1,1,1])
-    regtable.rename_covariates(rename)
-    regtable.show_degrees_of_freedom(False)
-    regtable.title('Table 1: The Effect of Childhood Reading on Educational Attainment')
+        regtable = Stargazer([naive, multiple, FWL])
+        regtable.covariate_order(order)
+        regtable.custom_columns(columns, [1, 1, 1])
+        regtable.rename_covariates(rename)
+        regtable.show_degrees_of_freedom(False)
+        regtable.title(
+            "Table 1: The Effect of Childhood Reading on Educational Attainment"
+        )
 
-    HTML(f'<center>{regtable.render_html()}</center>')
-    return columns, order, regtable, rename
+        return regtable
+
+    regtable = prettify_ols_results()
+    HTML(f"<center>{regtable.render_html()}</center>")
+    return prettify_ols_results, regtable
 
 
 @app.cell
@@ -324,13 +353,18 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(df, plt, sns):
-    fig2, ax2 = plt.subplots(1, 2, figsize=(15, 5))  # ,dpi=1000)
-    ax2[0].set_title("Naive Regression", fontsize=17)
-    ax2[1].set_title("FWL Regression", fontsize=17)
-    sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax2[0])
-    sns.regplot(data=df, x="read_star", y="educ_star", color="y", truncate=False, ax=ax2[1])
-    plt.show()
-    return ax2, fig2
+    def fwl_residual_plot():
+        fig2, ax2 = plt.subplots(1, 2, figsize=(15, 5))  # ,dpi=1000)
+        ax2[0].set_title("Naive Regression", fontsize=17)
+        ax2[1].set_title("FWL Regression", fontsize=17)
+        sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax2[0])
+        sns.regplot(
+            data=df, x="read_star", y="educ_star", color="y", truncate=False, ax=ax2[1]
+        )
+        plt.show()
+
+    fwl_residual_plot()
+    return (fwl_residual_plot,)
 
 
 @app.cell
@@ -363,7 +397,7 @@ def _(mo):
         <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
         <center>
-        Access all the code via [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+        Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
 
         I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
         </center>

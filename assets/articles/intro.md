@@ -8,8 +8,4 @@ _As a believer and beneficiary of knowledge sharing, I hope my articles make com
 
 <br>
 
-My articles are also available on [Medium](https://medium.com/@jakepenzak) and [Towards Data Science](https://towardsdatascience.com/author/jakepenzak/).
-
-<br>
-
 </center>
