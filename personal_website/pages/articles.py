@@ -129,7 +129,6 @@ def image_link_description(
             ),
         ),
         href=href,
-        target="_blank",
     )
 
 

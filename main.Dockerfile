@@ -7,7 +7,7 @@ FROM python:3.11
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
 
 # Download the latest installer
-ADD https://astral.sh/uv/0.5.21/install.sh /uv-installer.sh
+ADD https://astral.sh/uv/0.6.6/install.sh /uv-installer.sh
 
 # Run the installer then remove it
 RUN sh /uv-installer.sh && rm /uv-installer.sh
@@ -25,7 +25,10 @@ ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install app requirements and reflex inside virtualenv
-RUN uv sync
+RUN uv sync --all-extras --all-groups --frozen
+
+# Convert marimo notebooks to html
+RUN bash assets/articles/notebooks/convert_marimo_to_html.sh
 
 # Deploy templates and prepare app
 RUN reflex init
@@ -37,4 +40,4 @@ EXPOSE 3000
 EXPOSE 8000
 
 # Always apply migrations before starting the backend.
-CMD ["reflex db migrate && reflex run --env prod"]
+CMD reflex db migrate && reflex run --env prod

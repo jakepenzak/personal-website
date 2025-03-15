@@ -5,15 +5,28 @@ description = "Repository for my personal website build using Reflex."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "marimo>=0.11.7",
     "reflex==0.7.0",
 ]
 
 [dependency-groups]
 dev = [
     "anthropic>=0.46.0",
+    "graphviz>=0.20.3",
     "jupyter>=1.1.1",
+    "marimo>=0.11.8",
+    "matplotlib>=3.10.0",
+    "numpy>=2.2.3",
+    "pandas>=2.2.3",
     "pre-commit>=4.1.0",
     "pynvim>=0.5.2",
     "ruff>=0.9.7",
+    "scikit-learn>=1.6.1",
+    "scipy>=1.15.2",
+    "seaborn>=0.13.2",
+    "stargazer>=0.0.7",
+    "statsmodels>=0.14.4",
+    "sympy>=1.13.3",
 ]
+
+[tool.marimo.runtime]
+output_max_bytes = 60_000_000
