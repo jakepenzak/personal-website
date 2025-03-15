@@ -1,4 +1,4 @@
-# Code base for my [Personal Website](http://jacob-pieniazek.com)
+# Repo for my [Personal Website](http://jacob-pieniazek.com) :rocket:
 
 This website was created via [reflex](https://reflex.dev/), a python framework for web apps and websites, and is self-hosted.
 
