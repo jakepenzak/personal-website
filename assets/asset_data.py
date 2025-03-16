@@ -316,56 +316,65 @@ class ArticleMeta(NamedTuple):
     img_src: str
     href: str
     title_src: str
+    title_str: str
     descr_src: str
 
 
 ARTICLES_META_DICT = {
-    "DML2": ArticleMeta(
+    "dml2": ArticleMeta(
         img_src="/articles/dml2/cover.webp",
         href="/articles/dml2",
         title_src="assets/articles/dml2/title.md",
+        title_str="Double Machine Learning, Simplified: Part 2",
         descr_src="assets/articles/dml2/description.md",
     ),
-    "DML1": ArticleMeta(
+    "dml1": ArticleMeta(
         img_src="/articles/dml1/cover.webp",
         href="/articles/dml1",
         title_src="assets/articles/dml1/title.md",
+        title_str="Double Machine Learning, Simplified: Part 1",
         descr_src="assets/articles/dml1/description.md",
     ),
-    "TSNE": ArticleMeta(
+    "tsne": ArticleMeta(
         img_src="/articles/tsne/cover.webp",
         href="/articles/tsne",
         title_src="assets/articles/tsne/title.md",
+        title_str="t-SNE from Scratch (ft. NumPy)",
         descr_src="assets/articles/tsne/description.md",
     ),
-    "NM3": ArticleMeta(
+    "nm3": ArticleMeta(
         img_src="/articles/nm3/cover.webp",
         href="/articles/nm3",
         title_src="assets/articles/nm3/title.md",
+        title_str="Optimization, Newton's Method, & Profit Maximization: Part 3",
         descr_src="assets/articles/nm3/description.md",
     ),
-    "NM2": ArticleMeta(
+    "nm2": ArticleMeta(
         img_src="/articles/nm2/cover.webp",
         href="/articles/nm2",
         title_src="assets/articles/nm2/title.md",
+        title_str="Optimization, Newton's Method, & Profit Maximization: Part 2",
         descr_src="assets/articles/nm2/description.md",
     ),
-    "NM1": ArticleMeta(
+    "nm1": ArticleMeta(
         img_src="/articles/nm1/cover.gif",
         href="/articles/nm1",
         title_src="assets/articles/nm1/title.md",
+        title_str="Optimization, Newton's Method, & Profit Maximization: Part 1",
         descr_src="assets/articles/nm1/description.md",
     ),
-    "Logistic": ArticleMeta(
+    "logistic": ArticleMeta(
         img_src="/articles/logistic/cover.webp",
         href="/articles/logistic",
         title_src="assets/articles/logistic/title.md",
+        title_str="Predictive Parameterics in a Logistic Regression",
         descr_src="assets/articles/logistic/description.md",
     ),
-    "FWL": ArticleMeta(
+    "fwl": ArticleMeta(
         img_src="/articles/fwl/cover.webp",
         href="/articles/fwl",
         title_src="assets/articles/fwl/title.md",
+        title_str="Controlling for 'X'?",
         descr_src="assets/articles/fwl/description.md",
     ),
 }

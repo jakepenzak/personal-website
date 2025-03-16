@@ -150,12 +150,12 @@ def create_article_grid(
         rx.grid(
             *[
                 image_link_description(
-                    asset_data.ARTICLES_META_DICT[article].img_src,
-                    asset_data.ARTICLES_META_DICT[article].href,
-                    asset_data.ARTICLES_META_DICT[article].title_src,
-                    asset_data.ARTICLES_META_DICT[article].descr_src,
+                    article_meta_data.img_src,
+                    article_meta_data.href,
+                    article_meta_data.title_src,
+                    article_meta_data.descr_src,
                 )
-                for article in list(asset_data.ARTICLES_META_DICT.keys())
+                for _, article_meta_data in asset_data.ARTICLES_META_DICT.items()
             ],
             columns=columns,
             spacing="9",
