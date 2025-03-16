@@ -5,7 +5,7 @@ description = "Repository for my personal website build using Reflex."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "reflex==0.7.0",
+    "reflex==0.7.2",
 ]
 
 [dependency-groups]
@@ -29,4 +29,4 @@ dev = [
 ]
 
 [tool.marimo.runtime]
-output_max_bytes = 60_000_000
+output_max_bytes = 35_000_000
