@@ -1229,6 +1229,19 @@ wheels = [
 ]
 
 [[package]]
+name = "kaleido"
+version = "0.2.0"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0a/8e/06188d282d20584509be97fb42e8d162210bb8789e3c12cd76fde65441b7/kaleido-0.2.0-py2.py3-none-macosx_10_11_x86_64.whl", hash = "sha256:73f46490168f9af7aac3b01035ad8851457e5b0088bc61425ae3c56bf0968065", size = 85153678 },
+    { url = "https://files.pythonhosted.org/packages/d9/55/014a1a52866c3d62cdbe59c0fa1de2830ca30d4dc50695e8705d406bf232/kaleido-0.2.0-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:3af187bf6cc2b3af61f5737bf1b10f4ea75ba53391ae20e6df96784f6ca0a9a1", size = 85808191 },
+    { url = "https://files.pythonhosted.org/packages/a9/69/978291fd5da1075c4e4aca3e4a6909411609a669ef5f94332fc4f9925b0d/kaleido-0.2.0-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:9db17625f5c6ae4600762b97c1d8296d67be20f34a8854ebe5fb264acb5eed97", size = 79902474 },
+    { url = "https://files.pythonhosted.org/packages/c0/93/a8be41b9c0e0eab39ecc0424ecb5fd6e97767e3933c7e026b82f746eb231/kaleido-0.2.0-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:f264b876c7ea6622425fe25db8731e8dff4308a9e5a8753bdc78cdb4ffa1aadd", size = 83711743 },
+    { url = "https://files.pythonhosted.org/packages/6b/62/d9cc7b2c750114fad8bfaccb6bc3cca7160232edf8ba3f69a18ac330b9f3/kaleido-0.2.0-py2.py3-none-win32.whl", hash = "sha256:54f41f426d18ff3cecf42549ff122fa841f15ab75c8fa8e19b40c3b282d19e8b", size = 62260634 },
+    { url = "https://files.pythonhosted.org/packages/dc/53/173caf3d8e474d1cdcd89859f0acd4b26940ef39c5431d16276c135e7870/kaleido-0.2.0-py2.py3-none-win_amd64.whl", hash = "sha256:e083250f8a7b950fcb3978655960662aed74926629f2a278b4ad83787ce22020", size = 65882326 },
+]
+
+[[package]]
 name = "keyring"
 version = "25.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1856,10 +1869,12 @@ dev = [
     { name = "anthropic" },
     { name = "graphviz" },
     { name = "jupyter" },
+    { name = "kaleido" },
     { name = "marimo" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "pandas" },
+    { name = "plotly" },
     { name = "pre-commit" },
     { name = "pynvim" },
     { name = "ruff" },
@@ -1872,17 +1887,19 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "reflex", specifier = "==0.7.0" }]
+requires-dist = [{ name = "reflex", specifier = "==0.7.2" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "anthropic", specifier = ">=0.46.0" },
     { name = "graphviz", specifier = ">=0.20.3" },
     { name = "jupyter", specifier = ">=1.1.1" },
+    { name = "kaleido", specifier = "<0.2.1" },
     { name = "marimo", specifier = ">=0.11.8" },
     { name = "matplotlib", specifier = ">=3.10.0" },
     { name = "numpy", specifier = ">=2.2.3" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "plotly", specifier = ">=6.0.0" },
     { name = "pre-commit", specifier = ">=4.1.0" },
     { name = "pynvim", specifier = ">=0.5.2" },
     { name = "ruff", specifier = ">=0.9.7" },
@@ -1962,6 +1979,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/13/fc/128cc9cb8f03208bdbf93d3aa862e16d376844a14f9a0ce5cf4507372de4/platformdirs-4.3.6.tar.gz", hash = "sha256:357fb2acbc885b0419afd3ce3ed34564c13c9b95c89360cd9563f73aa5e2b907", size = 21302 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3c/a6/bc1012356d8ece4d66dd75c4b9fc6c1f6650ddd5991e421177d9f8f671be/platformdirs-4.3.6-py3-none-any.whl", hash = "sha256:73e575e1408ab8103900836b97580d5307456908a03e92031bab39e4554cc3fb", size = 18439 },
+]
+
+[[package]]
+name = "plotly"
+version = "6.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "narwhals" },
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9c/80/761c14012d6daf18e12b6d1e4f6b218e999bcceb694d7a9b180154f9e4db/plotly-6.0.0.tar.gz", hash = "sha256:c4aad38b8c3d65e4a5e7dd308b084143b9025c2cc9d5317fc1f1d30958db87d3", size = 8111782 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0e/77/a946f38b57fb88e736c71fbdd737a1aebd27b532bda0779c137f357cf5fc/plotly-6.0.0-py3-none-any.whl", hash = "sha256:f708871c3a9349a68791ff943a5781b1ec04de7769ea69068adcd9202e57653a", size = 14805949 },
 ]
 
 [[package]]
@@ -2437,7 +2467,7 @@ wheels = [
 
 [[package]]
 name = "reflex"
-version = "0.7.0"
+version = "0.7.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "alembic" },
@@ -2470,9 +2500,9 @@ dependencies = [
     { name = "wheel" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/2d/a86691ad81db9b43bfdc088ef260ef68058c0ad90462f42c73af3835db59/reflex-0.7.0.tar.gz", hash = "sha256:343e8d8acbd4643a72ddeee935b045a8627791847d69fe9ae4af2a600e6d5c99", size = 523622 }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/69/a8288b498bdf68e3db6df11a7506d99bd907e004fe8c650363fe206d4755/reflex-0.7.2.tar.gz", hash = "sha256:1f21965321cd1145f426414b2dad7b059c16c1b219d339defd04a158d20ede80", size = 552004 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/32/f9/5730b2f32b6f8722646ff8e1fb421c55275058de5e3b77741971457f0fb3/reflex-0.7.0-py3-none-any.whl", hash = "sha256:e18c2c888cd9a63d37eb63a8cde3e59c161463b2f724e1254a51db720c9f583e", size = 786104 },
+    { url = "https://files.pythonhosted.org/packages/94/9e/d46205ccbe4d584346d74aa3cea601f23d16c01d022af1e8a5626552d830/reflex-0.7.2-py3-none-any.whl", hash = "sha256:a08241f826ab194504177d63671107d6d9137cfe5572dd1323bd265a3e547329", size = 836935 },
 ]
 
 [[package]]

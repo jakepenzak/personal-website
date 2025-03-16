@@ -7,3 +7,4 @@ assets/external/
 .web
 .web/
 __pycache__/
+__marimo__/
