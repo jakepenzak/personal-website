@@ -367,7 +367,7 @@ ARTICLES_META_DICT = {
         img_src="/articles/logistic/cover.webp",
         href="/articles/logistic",
         title_src="assets/articles/logistic/title.md",
-        title_str="Predictive Parameterics in a Logistic Regression",
+        title_str="Predictive Parameters in a Logistic Regression",
         descr_src="assets/articles/logistic/description.md",
     ),
     "fwl": ArticleMeta(
