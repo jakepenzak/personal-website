@@ -1,12 +1,13 @@
 """The home page of the website."""
 
-import reflex as rx
 from typing import Tuple
-from personal_website.components.spline import spline_component_index_page
-from personal_website.structural import styles
-from personal_website.structural import template
-from personal_website.components.utilities.markdown import read_markdown
+
+import reflex as rx
+
 from assets import asset_data
+from personal_website.components.spline import spline_component_index_page
+from personal_website.components.utilities.markdown import read_markdown
+from personal_website.structural import styles, template
 
 
 # Create the Home page
@@ -93,13 +94,16 @@ def intro() -> rx.Component:
     """
 
     welcome = rx.center(
-        rx.heading(
-            "Welcome!",
-            size="6",
-            font_family="HackBold",
+        rx.vstack(
+            rx.heading(
+                "Welcome!",
+                size="6",
+                font_family="HackBold",
+                align="center",
+                padding_top="0.5em",
+                display="flex",
+            ),
             align="center",
-            padding_top="1em",
-            display="flex",
         )
     )
 
@@ -111,16 +115,42 @@ def intro() -> rx.Component:
         width=["100%", "100%", "100%", "100%", "75%", "75%"],
     )
 
+    avatar = rx.link(
+        rx.image(
+            src=asset_data.INDEX_AVATAR,
+            max_height="5em",
+            max_width="5em",
+            align="center",
+            border_radius="50%",
+            border="1px solid #555",
+        ),
+        href=asset_data.INDEX_AVATAR_URL,
+        target="_blank",
+    )
+
     intro = rx.box(
         rx.container(**styles.INDEX_PAGE["INTRO_CONTAINER_STYLE"]),
         rx.hstack(
-            rx.image(
-                src=asset_data.INDEX_PHOTO,
-                max_height="35em",
+            rx.vstack(
+                rx.image(
+                    src=asset_data.INDEX_PHOTO,
+                    max_height="35em",
+                    max_width="35em",
+                    align="center",
+                    border_radius="15px 50px",
+                    border="1px solid #555",
+                ),
+                read_markdown(asset_data.INDEX_SPOTIFY, padding_bottom="1em"),
+                avatar,
                 max_width="35em",
                 align="center",
             ),
-            rx.vstack(welcome, body, padding_left="1em", align="center"),
+            rx.vstack(
+                welcome,
+                body,
+                padding_left="1em",
+                align="center",
+            ),
             padding_x="3em",
             display=["none", "none", "none", "flex", "flex", "flex"],
             align_items="center",
@@ -133,7 +163,11 @@ def intro() -> rx.Component:
                 max_height="25em",
                 max_width="25em",
                 align="center",
+                border_radius="15px 50px",
+                border="1px solid #555",
             ),
+            read_markdown(asset_data.INDEX_SPOTIFY, padding_bottom="1em"),
+            avatar,
             rx.box(rx.vstack(welcome, body, align="center")),
             padding_x="3em",
             display=["flex", "flex", "flex", "none", "none", "none"],

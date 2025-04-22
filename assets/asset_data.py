@@ -20,7 +20,10 @@ MEDIUM_URL = "https://medium.com/@jakepenzak"
 
 ## Index Page
 INDEX_INTRO = "assets/index/index_intro.md"
+INDEX_SPOTIFY = "assets/index/spotify.md"
 INDEX_PHOTO = "/index/self.webp"
+INDEX_AVATAR = "/index/avatar.webp"
+INDEX_AVATAR_URL = "https://github.com/jakepenzak"
 
 SKILLS_DATA = [
     {
@@ -184,7 +187,7 @@ TECH_LOGOS_META_DICT = {
     ),
 }
 
-LIBRARY_INTRO_TXT = """Below is a non-exhaustive selection of some of the python libraries/frameworks/ecosystems 
+LIBRARY_INTRO_TXT = """Below is a non-exhaustive selection of some of the python libraries/frameworks/ecosystems
                 I use or have used in my personal & professional work."""
 
 LIBRARY_LOGOS_META_DICT = {
