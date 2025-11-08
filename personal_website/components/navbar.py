@@ -1,7 +1,7 @@
 import reflex as rx
 
-from personal_website.structural import styles
 from assets import asset_data
+from personal_website.structural import styles
 
 
 def navbar() -> rx.Component:
@@ -30,30 +30,10 @@ def navbar() -> rx.Component:
                     **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
                 ),
                 rx.link(
-                    "Research",
-                    href="/research",
+                    "Projects",
+                    href="/projects",
                     display=["none", "none", "none", "none", "flex", "flex"],
                     **styles.NAVBAR["NAVBAR_BUTTON_STYLE"],
-                ),
-                rx.menu.root(
-                    rx.menu.trigger(
-                        rx.button(
-                            rx.text("Projects", **styles.NAVBAR["NAVBAR_BUTTON_STYLE"]),
-                            rx.icon("chevron_down"),
-                            variant="ghost",
-                            radius="full",
-                        ),
-                        display=["none", "none", "none", "none", "flex", "flex"],
-                    ),
-                    rx.menu.content(
-                        rx.menu.item(navbar_link("All Projects", "/projects")),
-                        rx.divider(color_scheme="violet"),
-                        rx.menu.item(
-                            navbar_link(
-                                "CaML", "https://caml-docs.com", target="_blank"
-                            )
-                        ),
-                    ),
                 ),
                 menu_button(),
             ),
@@ -97,7 +77,7 @@ def menu_button() -> rx.Component:
     Returns:
         rx.Component: The menu button component.
     """
-    pages = ["Articles", "Resume", "Research", "Projects"]
+    pages = ["Articles", "Resume", "Projects"]
 
     menu_button = rx.box(
         rx.menu.root(

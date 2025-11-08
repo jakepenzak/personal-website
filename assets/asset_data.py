@@ -321,7 +321,33 @@ class ArticleMeta(NamedTuple):
     title_src: str
     title_str: str
     descr_src: str
+    category: str
+    types: list[str]
 
+
+article_categories = (
+    "Econometrics",
+    "Optimization",
+    "Machine Learning",
+    "General Data Science",
+    "Networking",
+    "Home Lab",
+)
+
+article_types = ("Series", "Short", "Theory", "Applied")
+
+article_badge_config = {
+    "Econometrics": {"color_scheme": "orange", "variant": "soft"},
+    "Optimization": {"color_scheme": "green", "variant": "soft"},
+    "Machine Learning": {"color_scheme": "blue", "variant": "soft"},
+    "General Data Science": {"color_scheme": "gray", "variant": "soft"},
+    "Networking": {"color_scheme": "purple", "variant": "soft"},
+    "Home Lab": {"color_scheme": "red", "variant": "soft"},
+    "Series": {"color_scheme": "gold", "variant": "soft"},
+    "Short": {"color_scheme": "jade", "variant": "soft"},
+    "Theory": {"color_scheme": "tomato", "variant": "soft"},
+    "Applied": {"color_scheme": "cyan", "variant": "soft"},
+}
 
 ARTICLES_META_DICT = {
     "dml2": ArticleMeta(
@@ -330,6 +356,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/dml2/title.md",
         title_str="Double Machine Learning, Simplified: Part 2",
         descr_src="assets/articles/dml2/description.md",
+        category="Econometrics",
+        types=["Theory", "Series"],
     ),
     "dml1": ArticleMeta(
         img_src="/articles/dml1/cover.webp",
@@ -337,6 +365,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/dml1/title.md",
         title_str="Double Machine Learning, Simplified: Part 1",
         descr_src="assets/articles/dml1/description.md",
+        category="Econometrics",
+        types=["Theory", "Series"],
     ),
     "tsne": ArticleMeta(
         img_src="/articles/tsne/cover.webp",
@@ -344,6 +374,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/tsne/title.md",
         title_str="t-SNE from Scratch (ft. NumPy)",
         descr_src="assets/articles/tsne/description.md",
+        category="Machine Learning",
+        types=["Theory"],
     ),
     "nm3": ArticleMeta(
         img_src="/articles/nm3/cover.webp",
@@ -351,6 +383,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/nm3/title.md",
         title_str="Optimization, Newton's Method, & Profit Maximization: Part 3",
         descr_src="assets/articles/nm3/description.md",
+        category="Optimization",
+        types=["Applied", "Series"],
     ),
     "nm2": ArticleMeta(
         img_src="/articles/nm2/cover.webp",
@@ -358,6 +392,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/nm2/title.md",
         title_str="Optimization, Newton's Method, & Profit Maximization: Part 2",
         descr_src="assets/articles/nm2/description.md",
+        category="Optimization",
+        types=["Theory", "Series"],
     ),
     "nm1": ArticleMeta(
         img_src="/articles/nm1/cover.gif",
@@ -365,6 +401,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/nm1/title.md",
         title_str="Optimization, Newton's Method, & Profit Maximization: Part 1",
         descr_src="assets/articles/nm1/description.md",
+        category="Optimization",
+        types=["Theory", "Series"],
     ),
     "logistic": ArticleMeta(
         img_src="/articles/logistic/cover.webp",
@@ -372,6 +410,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/logistic/title.md",
         title_str="Predictive Parameters in a Logistic Regression",
         descr_src="assets/articles/logistic/description.md",
+        category="Econometrics",
+        types=["Theory", "Applied"],
     ),
     "fwl": ArticleMeta(
         img_src="/articles/fwl/cover.webp",
@@ -379,6 +419,8 @@ ARTICLES_META_DICT = {
         title_src="assets/articles/fwl/title.md",
         title_str="Controlling for 'X'?",
         descr_src="assets/articles/fwl/description.md",
+        category="Econometrics",
+        types=["Theory", "Applied"],
     ),
 }
 

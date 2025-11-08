@@ -2,8 +2,8 @@
 
 import reflex as rx
 
-from personal_website.structural import template
 from assets import asset_data
+from personal_website.structural import template
 
 
 # Create the resume page
@@ -30,15 +30,9 @@ def heading() -> rx.Component:
     """The heading section of the resume page."""
 
     heading = rx.heading("Professional Resume")
-    heading_mobile = rx.heading(
-        "Professional Resume",
-        font_size="2em",
-        display=["flex", "flex", "none", "none", "none", "none"],
-    )
 
     header = rx.vstack(
         heading,
-        heading_mobile,
         align_items="center",
         padding_top="2em",
         padding_x="2em",
