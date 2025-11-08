@@ -258,7 +258,7 @@ def research_card(
 def open_source_and_personal_projects() -> rx.Component:
     title = rx.heading(
         "Open Source & Personal Projects",
-        font_size=rx.breakpoints(initial="1.2em", md="1.5em"),
+        font_size=rx.breakpoints(initial="1.5em", md="1.8em"),
     )
 
     description = rx.text(
@@ -270,6 +270,7 @@ def open_source_and_personal_projects() -> rx.Component:
     )
 
     # Project cards in a grid
+    # TODO: Move metadata to asset_data like articles.
     projects_grid = rx.box(
         rx.grid(
             project_card(
@@ -318,7 +319,7 @@ def open_source_and_personal_projects() -> rx.Component:
 def research_and_presentations() -> rx.Component:
     title = rx.heading(
         "Research & Formal Presentations",
-        text_size=rx.breakpoints(initial="1.2em", md="1.5em"),
+        font_size=rx.breakpoints(initial="1.5em", md="1.8em"),
     )
 
     description = rx.text(
