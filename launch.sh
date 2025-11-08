@@ -7,4 +7,4 @@ source .venv/bin/activate
 git pull
 
 # Build and run docker stack
-sudo docker compose up -d --force-recreate --build personal-website
+sudo docker compose -f ../external-docker-compose.yml -f ../internal-docker-compose.yml up -d --force-recreate --build personal-website
