@@ -5,7 +5,7 @@ description = "Repository for my personal website build using Reflex."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "reflex==0.7.2",
+    "reflex==0.8.18",
 ]
 
 [dependency-groups]

@@ -101,7 +101,6 @@ def intro() -> rx.Component:
                 font_family="HackBold",
                 align="center",
                 padding_top="0.5em",
-                display="flex",
             ),
             align="center",
         )

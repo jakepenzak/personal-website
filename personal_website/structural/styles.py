@@ -13,12 +13,11 @@ BASE_STYLE = {
     rx.menu.content: {"bg": "white"},
     rx.container: {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"]},
     rx.heading: {
-        "font_size": "3em",
+        "font_size": rx.breakpoints(initial="2em", md="3em"),
         "font_family": "HackBold",
         "text_align": "center",
         "color": "#522181",
         "padding_bottom": "0.5em",
-        "display": ["none", "none", "flex", "flex", "flex", "flex"],
         "height": "100%",
     },
     rx.vstack: {"width": "100%", "max_width": "100%", "overflow_x": "hidden"},
