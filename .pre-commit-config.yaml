@@ -19,5 +19,13 @@ repos:
 
       - id: ruff-format
         types_or: [python, pyi, jupyter]
+  - repo: local
+    hooks:
+      - id: lintquarto-ruff
+        name: lintquarto ruff on qmd
+        entry: lintquarto
+        language: system
+        types: [file]
+        args: [-l, ruff, -p, assets/articles/]
 
 exclude: ^assets/

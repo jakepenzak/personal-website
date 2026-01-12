@@ -11,7 +11,7 @@ def generate_article_page(abbreviation: str, article_name: str):
     def article_page() -> rx.Component:
         return rx.vstack(
             rx.box(
-                rx.html(iframe_gen(f"/articles/notebooks/html/{abbreviation}.html")),
+                rx.html(iframe_gen(f"/articles/{abbreviation}/{abbreviation}.html")),
                 width="100%",
             ),
             rx.center(
