@@ -9,7 +9,6 @@ assets/external/
 __pycache__/
 __marimo__/
 .jupyter_cache/
-_extensions/
 
 /.quarto/
 **/*.quarto_ipynb

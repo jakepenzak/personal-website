@@ -2,32 +2,37 @@
 title: 'Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Applications'
 jupyter: python3
 toc: true
+format:
+  live-html:
+    theme: journal
+    include-in-header:
+      - text: |
+          <style>
+          .quarto-title-block, .quarto-title-banner {
+            display: none !important;
+          }
+          </style
+execute:
+  cache: true
+highlight-style: github
 ---
 
+
+<center> <h1> Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Applications </h1> </center>
+<center> **Learn how to utilize DML in causal inference tasks** </center>
+
 ```{python}
-#| marimo: {config: {hide_code: true}}
-# Relevant Imports
-
-import marimo as mo
-
+#| code-fold: true
+#| code-summary: "Imports and Settings"
+import graphviz
 import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
-from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
+from IPython.display import HTML
+from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.model_selection import cross_val_predict
 from stargazer.stargazer import Stargazer
-import graphviz
-from IPython.display import display, HTML
-import os
-
-try:
-    os.chdir("assets/articles/notebooks")
-except:
-    pass
 ```
-
-<center> **Learn how to utilize DML in causal inference tasks** </center>
-
 
 ## Introduction
 
@@ -35,7 +40,7 @@ except:
 
 The conceptual & practical distinctions between statistical/machine learning (ML) and causal inference/econometric (CI) tasks have been established for years— ML seeks to predict, whereas CI seeks to infer a treatment effect or a "causal" relationship between variables. However, it was, and still is, common for the data scientist to draw causal conclusions from parameters of a trained machine learning model, or some other interpretable ML methodology. Despite this, there has been significant strides in industry and across many academic disciplines to push more rigorousness in making causal claims, and this has stimulated a much wider and open discourse on CI. In this stride, we have seen amazing work come out that has begun to bridge the conceptual gap between ML and CI, specifically tools in CI that take advantage of the power of ML methodologies.
 
-The primary motivation for this series is to democratize the usage of & applications of Double Machine Learning (DML), first introduced by _Chernozhukov et al._ in their pioneering paper "Double Machine Learning for Treatment and Causal Parameters", and to enable the data scientist to utilize DML in their daily causal inference tasks.[1] In doing so, we will first dive into the fundamentals of DML. Specifically, we will cover some of the conceptual/theoretical underpinnings, including the regression framework for causality & the Frisch-Waugh-Lovell Theorem, and then we will use this framework to develop DML. Lastly, we will demonstrate two notable applications of Double Machine Learning:
+The primary motivation for this series is to democratize the usage of & applications of Double Machine Learning (DML), first introduced by _Chernozhukov et al._ in their pioneering paper "Double Machine Learning for Treatment and Causal Parameters", and to enable the data scientist to utilize DML in their daily causal inference tasks.[^1] In doing so, we will first dive into the fundamentals of DML. Specifically, we will cover some of the conceptual/theoretical underpinnings, including the regression framework for causality & the Frisch-Waugh-Lovell Theorem, and then we will use this framework to develop DML. Lastly, we will demonstrate two notable applications of Double Machine Learning:
 
 1. Converging towards Exogeneity/CIA/Ignorability in our Treatment given Non-Experimental/Observational Data (particularly when our set of covariates is of high dimensionality), and
 
@@ -163,42 +168,41 @@ Recall that we discussed how in the absence of randomized experimental data we m
 Suppose, as a highly stylized example, we work for an e-commerce company and we are tasked with estimating the ATE of an individuals time spent on the website on their purchase amount, or sales, in the past month. However, further assume we only have observational data to work with, but we have measured all potential confounders (those variables that influence both time spent on the website and sales). Let this causal process be outlined via the following Directed Acyclic Graph (DAG):
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def create_dag1():
-    # Create a directed graph
-    g = graphviz.Digraph(format="png")
+#| code-fold: true
+#| output: false
+# Create a directed graph
+g = graphviz.Digraph(format="png")
 
-    # Add nodes
-    nodes = [
-        "Age",
-        "# Social Media Accounts",
-        "Yrs Member",
-        "Time on Website",
-        "Sales",
-        "Z",
-    ]
-    [g.node(n) for n in nodes]
+# Add nodes
+nodes = [
+    "Age",
+    "# Social Media Accounts",
+    "Yrs Member",
+    "Time on Website",
+    "Sales",
+    "Z",
+]
+[g.node(n) for n in nodes]
 
-    g.edge("Age", "Time on Website")
-    g.edge("# Social Media Accounts", "Time on Website")
-    g.edge("Yrs Member", "Time on Website")
-    g.edge("Age", "Sales")
-    g.edge("# Social Media Accounts", "Sales")
-    g.edge("Yrs Member", "Sales")
-    g.edge("Time on Website", "Sales", color="red")
-    g.edge("Z", "Sales")
+g.edge("Age", "Time on Website")
+g.edge("# Social Media Accounts", "Time on Website")
+g.edge("Yrs Member", "Time on Website")
+g.edge("Age", "Sales")
+g.edge("# Social Media Accounts", "Sales")
+g.edge("Yrs Member", "Sales")
+g.edge("Time on Website", "Sales", color="red")
+g.edge("Z", "Sales")
 
-    g.graph_attr["dpi"] = "200"
+g.graph_attr["dpi"] = "200"
 
-    g.render("data/dag1", format="webp")
-
-create_dag1()
-mo.image("data/dag1.webp").center()
+g.render("data/dag1", format="webp")
 ```
+![](data/dag1.webp)
 
 Let the data generating process be as follows (_note that all values & data are chosen and generated arbitrarily for demonstrative purposes, and thus should not necessarily represent a large degree of real world intuition per se outside of our estimates of the ATE_):
 
 ```{python}
+#| code-fold: show
 N = 100_000
 
 # Confounders
@@ -258,31 +262,13 @@ collider = (
 )
 
 df = pd.DataFrame(
-    np.array(
-        [
-            sales,
-            time_on_website,
-            age,
-            num_social_media_profiles,
-            yr_membership,
-            Z,
-            collider,
-        ]
-    ).T,
-    columns=[
-        "sales",
-        "time_on_website",
-        "age",
-        "num_social_media_profiles",
-        "yr_membership",
-        "Z",
-        "collider",
-    ],
+    np.array([sales,time_on_website,age,num_social_media_profiles,yr_membership,Z,collider]).T,
+    columns=["sales","time_on_website","age","num_social_media_profiles","yr_membership","Z","collider"]
 )
 ```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
 df
 ```
 
@@ -298,6 +284,8 @@ To demonstrate the ability of DML to flexibly partial out the highly non-linear 
 The code of this is as follows:
 
 ```{python}
+#| code-fold: show
+
 # 1 - Naive OLS
 naive_regression = smf.ols(formula="sales ~ 1 + time_on_website", data=df).fit()
 
@@ -351,38 +339,36 @@ DML_model_collider = smf.ols(
 ```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def prettify_ols_results1():
-    order = [
-        "time_on_website",
-        "residualized_time_on_website",
-        "age",
-        "num_social_media_profiles",
-        "yr_membership",
-        "Intercept",
-    ]
-    rename = {
-        "time_on_website": "Treatment: Hours on Website",
-        "residualized_time_on_website": "Residualized Treatment: Hours on Website",
-        "age": "Age",
-        "num_social_media_profiles": "# of Social Media Profiles",
-        "yr_membership": "Years of Membership",
-    }
-    columns = ["Naive OLS", "Multiple OLS", "DML", "DML w/ Collider"]
+#| code-fold: true
+#| output: asis
 
-    regtable = Stargazer(
-        [naive_regression, multiple_regression, DML_model, DML_model_collider]
-    )
-    regtable.covariate_order(order)
-    regtable.custom_columns(columns, [1, 1, 1, 1])
-    regtable.rename_covariates(rename)
-    regtable.show_degrees_of_freedom(False)
-    regtable.title("Example 1: Obtaining Exogeneity w/ DML")
+order = [
+    "time_on_website",
+    "residualized_time_on_website",
+    "age",
+    "num_social_media_profiles",
+    "yr_membership",
+    "Intercept",
+]
+rename = {
+    "time_on_website": "Treatment: Hours on Website",
+    "residualized_time_on_website": "Residualized Treatment: Hours on Website",
+    "age": "Age",
+    "num_social_media_profiles": "# of Social Media Profiles",
+    "yr_membership": "Years of Membership",
+}
+columns = ["Naive OLS", "Multiple OLS", "DML", "DML w/ Collider"]
 
-    return regtable
+regtable = Stargazer(
+    [naive_regression, multiple_regression, DML_model, DML_model_collider]
+)
+regtable.covariate_order(order)
+regtable.custom_columns(columns, [1, 1, 1, 1])
+regtable.rename_covariates(rename)
+regtable.show_degrees_of_freedom(False)
+regtable.title("Example 1: Obtaining Exogeneity w/ DML")
 
-regtable = prettify_ols_results1()
-HTML(f"<center>{regtable.render_html()}</center>")
+HTML(f"<center>{regtable.render_html()}</center><br>")
 ```
 
 Recall our simulated source of truth for the ATE is $5. Notice that the only model that is able to capture this value is the DML procedure! We can see that the naïve model has a significant positive bias in the estimate, whereas controlling only for linear terms of the confounders in the multiple regression slightly reduces this bias. Additionally, the DML procedure w/ a collider demonstrates a negative bias; this negative association between sales and our treatment that arises from controlling for the collider can be loosely demonstrated/observed by solving for sales in our collider DGP as such:
@@ -414,38 +400,38 @@ $$
 Here we observe that the standard error of our estimate is directly influenced by the size of our residuals ($\epsilon$). What does this tell us then? If our treatment is randomized, we can include covariates in a multiple OLS or DML procedure, not to obtain exogeneity, but to reduce the variation in our outcome. More specifically, we can include variables that are strong predictors of our outcome to reduce the residuals and, consequently, the standard error of our estimate. Let’s take a look at this in action. First, assume the following DAG (note treatment is randomized so there are no confounders):
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def create_dag2():
-    # Create a directed graph
-    g = graphviz.Digraph(format="png")
+#| code-fold: true
+#| output: false
+# Create a directed graph
+g = graphviz.Digraph(format="png")
 
-    # Add nodes
-    nodes = [
-        "Age",
-        "# Social Media Accounts",
-        "Yrs Member",
-        "Advertisement Exposure",
-        "Sales",
-        "Z",
-    ]
-    [g.node(n) for n in nodes]
+# Add nodes
+nodes = [
+    "Age",
+    "# Social Media Accounts",
+    "Yrs Member",
+    "Advertisement Exposure",
+    "Sales",
+    "Z",
+]
+[g.node(n) for n in nodes]
 
-    g.edge("Age", "Sales")
-    g.edge("# Social Media Accounts", "Sales")
-    g.edge("Yrs Member", "Sales")
-    g.edge("Z", "Sales")
-    g.edge("Advertisement Exposure", "Sales", color="red")
-    g.graph_attr["dpi"] = "400"
+g.edge("Age", "Sales")
+g.edge("# Social Media Accounts", "Sales")
+g.edge("Yrs Member", "Sales")
+g.edge("Z", "Sales")
+g.edge("Advertisement Exposure", "Sales", color="red")
+g.graph_attr["dpi"] = "400"
 
-    g.render("data/dag2", format="webp")
-
-create_dag2()
-mo.image("data/dag2.webp").center()
+g.render("data/dag2", format="webp")
 ```
+
+![](data/dag2.webp)
 
 Furthermore, suppose the following DGP:
 
 ```{python}
+#| code-fold: show
 # Error Term
 ε = np.random.normal(loc=150, scale=25, size=N)
 
@@ -474,29 +460,13 @@ sales_rct = np.maximum(
 )
 
 df_rct = pd.DataFrame(
-    np.array(
-        [
-            sales_rct,
-            advertisement_exposure,
-            age,
-            num_social_media_profiles,
-            yr_membership,
-            Z,
-        ]
-    ).T,
-    columns=[
-        "sales",
-        "advertisement_exposure",
-        "age",
-        "num_social_media_profiles",
-        "yr_membership",
-        "Z",
-    ],
+    np.array([sales_rct,advertisement_exposure,age,num_social_media_profiles,yr_membership,Z]).T,
+    columns=["sales","advertisement_exposure","age","num_social_media_profiles","yr_membership","Z"]
 )
 ```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
 df_rct
 ```
 
@@ -511,6 +481,7 @@ To demonstrate how the inclusion of covariates that are strong predictors of our
 The code is as follows:
 
 ```{python}
+#| code-fold: show
 # 1 - Naive OLS
 naive_regression_rct = smf.ols(
     formula="sales ~ 1 + advertisement_exposure", data=df_rct
@@ -554,38 +525,35 @@ DML_model_rct = smf.ols(
 With the corresponding results of these models:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def prettify_ols_results2():
-    order = [
-        "advertisement_exposure",
-        "residualized_advertisement_exposure",
-        "age",
-        "num_social_media_profiles",
-        "yr_membership",
-        "Intercept",
-    ]
-    rename = {
-        "advertisement_exposure": "Treatment: Exposure to Advertisement",
-        "residualized_advertisement_exposure": "Residualized Treatment: Exposure to Advertisement",
-        "age": "Age",
-        "num_social_media_profiles": "# of Social Media Profiles",
-        "yr_membership": "Years of Membership",
-    }
-    columns = ["Naive OLS", "Multiple OLS", "DML"]
+#| code-fold: true
+#| output: asis
+order = [
+    "advertisement_exposure",
+    "residualized_advertisement_exposure",
+    "age",
+    "num_social_media_profiles",
+    "yr_membership",
+    "Intercept",
+]
+rename = {
+    "advertisement_exposure": "Treatment: Exposure to Advertisement",
+    "residualized_advertisement_exposure": "Residualized Treatment: Exposure to Advertisement",
+    "age": "Age",
+    "num_social_media_profiles": "# of Social Media Profiles",
+    "yr_membership": "Years of Membership",
+}
+columns = ["Naive OLS", "Multiple OLS", "DML"]
 
-    regtable = Stargazer(
-        [naive_regression_rct, multiple_regression_rct, DML_model_rct]
-    )
-    regtable.covariate_order(order)
-    regtable.custom_columns(columns, [1, 1, 1])
-    regtable.rename_covariates(rename)
-    regtable.show_degrees_of_freedom(False)
-    regtable.title("Example 2: Improving Statistical Power in RCT")
+regtable = Stargazer(
+    [naive_regression_rct, multiple_regression_rct, DML_model_rct]
+)
+regtable.covariate_order(order)
+regtable.custom_columns(columns, [1, 1, 1])
+regtable.rename_covariates(rename)
+regtable.show_degrees_of_freedom(False)
+regtable.title("Example 2: Improving Statistical Power in RCT")
 
-    return regtable
-
-regtable_rct = prettify_ols_results2()
-HTML(f"<center>{regtable_rct.render_html()}</center>")
+HTML(f"<center>{regtable.render_html()}</center><br>")
 ```
 
 First, note that b/c treatment was randomly assigned, there is no true confounding that is occurring above. The poor estimates of the ATE in (1) and (2) are the direct result of imprecise estimates (see the large standard error’s in the parenthesis). Notice how the standard error gets smaller (precision increasing) as we move from (1)-(3), with the DML procedure having the most precise estimate. Draw your attention to the “Residual Std. Error”. We can see how the DML procedure was able to greatly reduce the variation in the ATE model residuals via partialling out the variation that was able to be learnt (non-parametrically) from the predictors in the ML model of our outcome, sales. Again, in this example, we see DML being the only model to obtain the true ATE!
@@ -599,9 +567,8 @@ Stay tuned for part 2 of this series where we will dive into some very cool exte
 
 As always, I hope you have enjoyed reading this as much as I enjoyed writing it!
 
-## References
-[1] V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. Double Machine Learning for Treatment and Causal Parameters. ArXiv e-prints, July 2016.
 
+<br>
 <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
 <center>
@@ -610,3 +577,4 @@ Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>
 
+[^1]: V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. Double Machine Learning for Treatment and Causal Parameters. ArXiv e-prints, July 2016.
