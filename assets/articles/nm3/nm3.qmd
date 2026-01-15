@@ -2,16 +2,30 @@
 title: 'Optimization, Newton''s Method, & Profit Maximization: Part 3 - Applied Profit Maximization'
 jupyter: python3
 toc: true
+format:
+  live-html:
+    theme: journal
+    include-in-header:
+      - text: |
+          <style>
+          .quarto-title-block, .quarto-title-banner {
+            display: none !important;
+          }
+          </style
+execute:
+  cache: true
+highlight-style: github
 ---
 
-```{python}
-#| marimo: {config: {hide_code: true}}
-import os
+<center> <h1> Optimization, Newton's Method, & Profit Maximization: Part 3 - Applied Profit Maximization </h1> </center>
+<center> **Learn how to apply optimization & econometric techniques to solve an applied profit maximization problem** </center>
 
-import marimo as mo
+```{python}
+#| code-fold: true
+#| code-summary: "Imports and Settings"
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
-from matplotlib.ticker import FuncFormatter
 import plotly.graph_objects as go
 import numpy as np
 import sympy as sm
@@ -20,23 +34,7 @@ import pandas as pd
 import statsmodels.api as stats
 
 np.random.seed(10)
-
-try:
-    os.chdir("assets/articles/notebooks")
-except:
-    pass
-
-def display_iframe(path:str):
-    # Read the saved Plotly HTML file
-    with open(path, "r") as f:
-        html_content = f.read()
-
-    # Display it in Jupyter Notebook
-    return mo.iframe(html_content,height='500px')
 ```
-
-<center> **Learn how to apply optimization & econometric techniques to solve an applied profit maximization problem** </center>
-
 
 ## Introduction
 
@@ -107,8 +105,8 @@ In python, utilizing [SymPy](https://www.sympy.org/en/index.html), we have 4 fun
 To solve a constrained optimization problem, we can run the following code (Make sure starting values are in the feasible range of inequality constraints!):
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-# Functions constructed in Part 1 + Part 2
+#| code-fold: true
+#| code-summary: Functions Defined in Part 1 & Part 2
 
 def get_gradient(
     function: sm.Expr,
@@ -291,26 +289,25 @@ def constrained_newtons_method(
 ```
 
 ```{python}
-def combined_rosenbrocks():
-    x, y, λ, ρ = sm.symbols("x y λ ρ")
+#| code-fold: show
 
-    # f(x): 100*(y-x**2)**2 + (1-x)**2
-    # h(x): x**2 - y = 2
-    # g_1(x): x <= 0
-    # g_2(x) y >= 3
+x, y, λ, ρ = sm.symbols("x y λ ρ")
 
-    combined_objective = (
-        100 * (y - x**2) ** 2
-        + (1 - x) ** 2
-        + λ * (x**2 - y - 2)
-        - ρ * sm.log((-x) * (y - 3))
-    )
-    Gamma = [x, y, λ, ρ]  # Function requires last symbol to be ρ!
-    Gamma0 = {x: -15, y: 15, λ: 0, ρ: 10}
+# f(x): 100*(y-x**2)**2 + (1-x)**2
+# h(x): x**2 - y = 2
+# g_1(x): x <= 0
+# g_2(x) y >= 3
 
-    return constrained_newtons_method(combined_objective, Gamma, Gamma0)
+combined_objective = (
+    100 * (y - x**2) ** 2
+    + (1 - x) ** 2
+    + λ * (x**2 - y - 2)
+    - ρ * sm.log((-x) * (y - 3))
+)
+Gamma = [x, y, λ, ρ]  # Function requires last symbol to be ρ!
+Gamma0 = {x: -15, y: 15, λ: 0, ρ: 10}
 
-_ = combined_rosenbrocks()
+constrained_newtons_method(combined_objective, Gamma, Gamma0)
 ```
 
 If the material above felt foreign or you need a more rigorous recap, then I recommend taking a look at part 1 and part 2 of this series which will provide a more in-depth survey of the material above. For the remainder of this article, we will first discuss basic profit maximization & econometric theory and then move into solving the theoretical example.
@@ -384,33 +381,31 @@ $$
 Why the natural log of digital and television ad spend you may ask? This is by no means a required nor a definitive decision in this context, but I am seeking to demonstrate how variable transformations can capture hypotheses about the relationship between our choice variables and the outcomes of interest. In our case, suppose we hypothesize that the impact on ad spend increases sharply initially, but gradually levels out (e.g., saturation effects or the law of diminishing returns). This is exactly what the logarithm transformation will allow us to model. Observe:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def saturation_plot():
-    fig, ax = plt.subplots(dpi=125)
+#| code-fold: true
+#| output: false
+fig, ax = plt.subplots(dpi=125)
 
-    x = np.linspace(5, 1000, 1000)
+x = np.linspace(5, 1000, 1000)
 
-    y = np.log(x)
+y = np.log(x)
 
-    ax.spines["right"].set_color("none")
-    ax.spines["top"].set_color("none")
+ax.spines["right"].set_color("none")
+ax.spines["top"].set_color("none")
 
-    plt.tick_params(
-        axis="x", which="both", bottom=False, top=False, labelbottom=False
-    )
-    plt.tick_params(
-        axis="y", which="both", bottom=False, top=False, left=False, labelleft=False
-    )
+plt.tick_params(
+    axis="x", which="both", bottom=False, top=False, labelbottom=False
+)
+plt.tick_params(
+    axis="y", which="both", bottom=False, top=False, left=False, labelleft=False
+)
 
-    plt.plot(x, y, color="g")
-    plt.xlabel("Digital Advertising", size="large")
-    plt.ylabel("Quantity Demanded", size="large")
+plt.plot(x, y, color="g")
+plt.xlabel("Digital Advertising", size="large")
+plt.ylabel("Quantity Demanded", size="large")
 
-    plt.savefig("data/saturation_plot.webp", format="webp", dpi=300, bbox_inches="tight")
-
-saturation_plot()
-mo.image("data/saturation_plot.webp", height=500).center()
+plt.savefig("data/saturation_plot.webp", format="webp", dpi=300, bbox_inches="tight")
 ```
+![](data/saturation_plot.webp)
 
 Note that the cost functional form is generally known in advance. Thus, let’s specify the functional form of our cost function:
 
@@ -429,9 +424,11 @@ Now that we have developed the theoretical basis for our econometric profit maxi
 
 Note this section can be skipped without any loss of the primary content.
 
-Let’s first simulate monthly data over 10 years for quantity demanded, where the following variables included are as follows :
+Let’s first simulate monthly data over 10 years for quantity demanded, where the following variables included are as follows:
 
 ```{python}
+#| code-fold: true
+#| code-summary: Data Simulation
 df = pd.DataFrame()
 
 ## Digital Advertising - ln(δ)
@@ -465,41 +462,11 @@ df["comp_price_lag1"] = df["comp_price"].shift(1)
 df["comp_price_lag2"] = df["comp_price"].shift(2)
 
 # Seasonality
-months = cycle(
-    [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "June",
-        "July",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ]
-)
+months = cycle(["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"])
 df["months"] = [next(months) for m in range(len(df))]
 
 one_hot = pd.get_dummies(df["months"], dtype=int)
-one_hot = one_hot[
-    [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "June",
-        "July",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ]
-]
+one_hot = one_hot[["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"]]
 df = df.join(one_hot).drop("months", axis=1)
 
 ## Constant
@@ -510,12 +477,16 @@ df = df.dropna()
 ```
 
 ```{python}
+#| code-fold: true
 df
 ```
 
 Note that we include lag variables because it is highly plausible that today’s quantity demanded is a function of lagged values for many of the variables. We also control for seasonality effects by incorporation dummy variables for each month (this is one of many ways to incorporate seasonality into the model). We then specify the parameters associated with each variable as (note that these parameters are specified in the same order as the columns of the dataframe!):
 
 ```{python}
+#| code-fold: true
+#| code-summary: Parameter Definition
+
 params = np.array(
     [
         10_000,  # β
@@ -549,7 +520,6 @@ params = np.array(
 
 We can then simulate our econometric specification (eq. 8) of quantity demanded by running `quantity_demanded = np.array(df) @ params`. However, note that we are missing the autoregressive components, thus we also want quantity demanded to follow an autoregressive process as mentioned above. That is, quantity demanded is also a function of its own lagged values. We include 2 lags here (AR(2) process) with respective coefficients $\phi_1$ and $\phi_2$. Note, we can simulate this with initial conditions $q_0$ and $q_{-1}$ via the following system:
 
-$$
 \begin{equation}
 \begin{aligned}
 \begin{bmatrix}
@@ -560,7 +530,7 @@ q_4 \\
 \vdots \\
 q_t
 \end{bmatrix}
-=
+&=
 \begin{bmatrix}
 1 & 0 & 0 &  0 & \dots & 0 & 0 & 0 \\
 -\phi_1 & 1 & 0 & 0 & \dots & 0 & 0 & 0 \\
@@ -568,8 +538,9 @@ q_t
 0 & -\phi_2 & -\phi_1 & 1 &  \dots & 0 & 0 & 0 \\
 \vdots & \vdots & \vdots & \vdots & \dots & \vdots & \vdots & \vdots\\
 0 & 0 & 0 & 0 & \dots & -\phi_2 & -\phi_1 & 1
-\end{bmatrix}^{-1}
-\begin{bmatrix}
+\end{bmatrix}^{-1} \\ \\
+
+&\begin{bmatrix}
 \alpha+\beta\ln(\delta_1)+\gamma\ln(\tau_1)+\mathbf{X}_1\mathbf{\Omega}+\epsilon_1 + (\phi_1q_0+\phi_2q_{-1})  \\
 \alpha+\beta\ln(\delta_2)+\gamma\ln(\tau_2)+\mathbf{X}_2\mathbf{\Omega}+\epsilon_2 + (\phi_2q_0) \\
 \alpha+\beta\ln(\delta_3)+\gamma\ln(\tau_3)+\mathbf{X}_3\mathbf{\Omega}+\epsilon_3 \\
@@ -580,9 +551,11 @@ q_t
 \end{aligned}
 \tag{11}
 \end{equation}
-$$
+
 
 ```{python}
+#| code-fold: true
+#| code-summary: AR Data Simulation
 def quantity_ar2_process(T, ϕ1, ϕ2, q0, q_1, ϵ, df, params):
     Φ = np.identity(T)  # The T x T identity matrix
 
@@ -621,6 +594,7 @@ df["quantity_demanded_lag2"] = df["quantity_demanded"].shift(2)
 ```
 
 ```{python}
+#| code-fold: true
 df
 ```
 
@@ -643,43 +617,42 @@ $$
 As discussed before, we need to estimate our quantity demanded, $\hat{q}$. Let’s take a look at what our quantity demanded looks like over the 10 years simulated:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def quantity_demanded_plot():
-    fig, ax = plt.subplots(dpi=125)
+#| code-fold: true
+#| output: false
 
-    fmt = "{x:,.0f}"
-    tick = mtick.StrMethodFormatter(fmt)
-    ax.yaxis.set_major_formatter(tick)
+fig, ax = plt.subplots(dpi=125)
 
-    ax.spines["right"].set_color("none")
-    ax.spines["top"].set_color("none")
-    # ax.spines['bottom'].set_color('none')
-    # ax.spines['bottom'].set_position(('data',avg_demand))
+fmt = "{x:,.0f}"
+tick = mtick.StrMethodFormatter(fmt)
+ax.yaxis.set_major_formatter(tick)
 
-    plt.tick_params(
-        axis="x", which="both", bottom=False, top=False, labelbottom=False
-    )
+ax.spines["right"].set_color("none")
+ax.spines["top"].set_color("none")
+# ax.spines['bottom'].set_color('none')
+# ax.spines['bottom'].set_position(('data',avg_demand))
 
-    for i in range(0, 108, 12):
-        line = 108 - i
-        ax.axvline(x=line, color="r", linestyle="--", alpha=0.2)
+plt.tick_params(
+    axis="x", which="both", bottom=False, top=False, labelbottom=False
+)
 
-    # ax.axhline(y=avg_demand, color='black', linewidth=0.2)
+for i in range(0, 108, 12):
+    line = 108 - i
+    ax.axvline(x=line, color="r", linestyle="--", alpha=0.2)
 
-    plt.plot(np.arange(T) + 1, quantity_demanded_ar, color="g")
-    plt.xlabel("Years", size="large")
-    plt.ylabel("Quantity Demanded", size="large")
+# ax.axhline(y=avg_demand, color='black', linewidth=0.2)
 
-    plt.savefig("data/quantity_demanded_plot.webp", format="webp", dpi=300, bbox_inches="tight")
+plt.plot(np.arange(T) + 1, quantity_demanded_ar, color="g")
+plt.xlabel("Years", size="large")
+plt.ylabel("Quantity Demanded", size="large")
 
-quantity_demanded_plot()
-mo.image("data/quantity_demanded_plot.webp", height=500).center()
+plt.savefig("data/quantity_demanded_plot.webp", format="webp", dpi=300, bbox_inches="tight")
 ```
+![](data/quantity_demanded_plot.webp)
 
 We can clearly see some seasonality occurring towards the end of the years and it appears we are dealing with a [stationary process](https://en.wikipedia.org/wiki/Stationary_process) (this is all by construction). Now suppose that we have the following observed variables:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
 list(df.columns)
 ```
 
@@ -692,6 +665,8 @@ Now, with this data, we seek to estimate our econometric specification in eq. 8.
 Note that we drop the first 2 observations as these are our first two lags and we drop July as a reference month:
 
 ```{python}
+#| code-fold: show
+
 ## Fit Econometric model using OLS
 df_mod = df[2:]  # Drop first two lagged values
 
@@ -716,6 +691,7 @@ Now we have our estimated econometric specification for quantity demanded! A few
 Let’s now specify our symbolic variables for our optimization problem ($\delta$, $\tau$, $\lambda$, and $\rho$), the values of our present variables at time $t$, and grab the lagged values from our data. We can then obtain $\hat{q}(\delta, \tau)$ at a point in time:
 
 ```{python}
+#| code-fold: show
 # Build Symbolic Functions with all variables in function
 δ, τ, λ, ρ = sm.symbols("δ τ λ ρ")
 
@@ -771,249 +747,255 @@ quantity_demanded = (np.array([variables]) @ np.array(results.params))[
 ]  # params from ols model
 ```
 
-$\hat{q}(\delta,\tau,\cdot) = 10071.2795746647*\log(δ) + 6219.99261508067*\log(τ) + 21336.8117838209$
+$$
+\hat{q}(\delta,\tau,\cdot) = 10071.28*\log(δ) + 6219.99*\log(τ) + 21336.81
+$$
 
 Now we can construct our revenue, cost, and put them together to construct our profit function. Here our cost to produce each unit is $140 base and is discounted by $0.0001 for each additional unit produced:
 
 ```{python}
+#| code-fold: show
 Revenue = price * quantity_demanded
 Cost = quantity_demanded * (140 - 0.0001 * quantity_demanded) + τ + δ
 profit = Revenue - Cost
 ```
 
-$\pi(\delta,\tau,\cdot) = -δ - τ - (-1.00712795746647*\log(δ) - 0.621999261508067*\log(τ) + 137.866318821618)*(10071.2795746647*\log(δ) + 6219.99261508067*\log(τ) + 21336.8117838209) + 1812830.32343965*\log(δ) + 1119598.67071452*\log(τ) + 3840626.12108775$
+$$
+\begin{aligned}
+\pi(\delta,\tau,\cdot) &= -δ - τ - (-1.01*\log(δ) \\
+&- 0.62*\log(τ) + 137.87)*(10071.28*\log(δ) \\
+&+ 6219.99*\log(τ) + 21336.81) \\
+&+ 1812830.32*\log(δ) + 1119598.67*\log(τ) \\
+&+ 3840626.12
+\end{aligned}
+$$
 
 Plotting our profit as a function of digital ad spend and television ad spend, $π(\delta, \tau)$:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def profit_function_viz_3d():
-    def log(x):
-        return np.log(x)
+#| code-fold: true
+#| output: false
+def log(x):
+    return np.log(x)
 
-    # Create meshgrid for surface
-    δ_vals = np.linspace(0.01, 100000, 100)
-    τ_vals = np.linspace(0.01, 100000, 100)
-    δ_mesh, τ_mesh = np.meshgrid(δ_vals, τ_vals)
+# Create meshgrid for surface
+δ_vals = np.linspace(0.01, 100000, 100)
+τ_vals = np.linspace(0.01, 100000, 100)
+δ_mesh, τ_mesh = np.meshgrid(δ_vals, τ_vals)
 
-    def profit_fn(δ, τ):
+def profit_fn(δ, τ):
 
-        return (-δ - τ - 
-        (-1.00712795746647 * log(δ) - 0.621999261508067 * log(τ) + 137.866318821618) * 
-        (10071.2795746647 * log(δ) + 6219.99261508067 * log(τ) + 21336.8117838209) + 
-        1812830.32343965 * log(δ) + 1119598.67071452 * log(τ) + 3840626.12108775)
+    return (-δ - τ -
+    (-1.00712795746647 * log(δ) - 0.621999261508067 * log(τ) + 137.866318821618) *
+    (10071.2795746647 * log(δ) + 6219.99261508067 * log(τ) + 21336.8117838209) +
+    1812830.32343965 * log(δ) + 1119598.67071452 * log(τ) + 3840626.12108775)
 
-    # Calculate profit values
-    profit_vals = profit_fn(δ_mesh, τ_mesh)
+# Calculate profit values
+profit_vals = profit_fn(δ_mesh, τ_mesh)
 
-    # Create surface plot
-    surface = go.Surface(
-        x=δ_mesh.tolist(),
-        y=τ_mesh.tolist(),
-        z=profit_vals.tolist(),
-        colorscale='plasma',
-        name='Profit Surface',
-        colorbar=dict(x=-0.15),
-        showlegend=True
-    )
+# Create surface plot
+surface = go.Surface(
+    x=δ_mesh.tolist(),
+    y=τ_mesh.tolist(),
+    z=profit_vals.tolist(),
+    colorscale='plasma',
+    name='Profit Surface',
+    colorbar=dict(x=-0.15),
+    showlegend=True
+)
 
-    # Create budget constraint line
-    budget_x = np.linspace(0.01, 99_999, 100)
-    budget_y = 100000 - budget_x
-    budget_z = profit_fn(budget_x, budget_y)
+# Create budget constraint line
+budget_x = np.linspace(0.01, 99_999, 100)
+budget_y = 100000 - budget_x
+budget_z = profit_fn(budget_x, budget_y)
 
-    budget_line = go.Scatter3d(
-        x=budget_x.tolist(),
-        y=budget_y.tolist(),
-        z=budget_z.tolist(),
-        mode='lines',
-        line=dict(color='green', width=5),
-        name='Budget Constraint'
-    )
+budget_line = go.Scatter3d(
+    x=budget_x.tolist(),
+    y=budget_y.tolist(),
+    z=budget_z.tolist(),
+    mode='lines',
+    line=dict(color='green', width=5),
+    name='Budget Constraint'
+)
 
-    # Create minimum constraints
-    min_δ_x = np.ones(100) * 10000
-    min_δ_y = np.linspace(0.01, 100000, 100)
-    min_δ_z = profit_fn(min_δ_x,min_δ_y)
+# Create minimum constraints
+min_δ_x = np.ones(100) * 10000
+min_δ_y = np.linspace(0.01, 100000, 100)
+min_δ_z = profit_fn(min_δ_x,min_δ_y)
 
-    min_δ_line = go.Scatter3d(
-        x=min_δ_x.tolist(),
-        y=min_δ_y.tolist(),
-        z=min_δ_z.tolist(),
-        mode='lines',
-        line=dict(color='red', width=5),
-        name='Min Digital Ad Spend'
-    )
+min_δ_line = go.Scatter3d(
+    x=min_δ_x.tolist(),
+    y=min_δ_y.tolist(),
+    z=min_δ_z.tolist(),
+    mode='lines',
+    line=dict(color='red', width=5),
+    name='Min Digital Ad Spend'
+)
 
-    min_τ_x = np.linspace(0.01, 100000, 100)
-    min_τ_y = np.ones(100) * 20000
-    min_τ_z = profit_fn(min_τ_x,min_τ_y)
+min_τ_x = np.linspace(0.01, 100000, 100)
+min_τ_y = np.ones(100) * 20000
+min_τ_z = profit_fn(min_τ_x,min_τ_y)
 
-    min_τ_line = go.Scatter3d(
-        x=min_τ_x.tolist(),
-        y=min_τ_y.tolist(),
-        z=min_τ_z.tolist(),
-        mode='lines',
-        line=dict(color='blue', width=5),
-        name='Min TV Ad Spend'
-    )
+min_τ_line = go.Scatter3d(
+    x=min_τ_x.tolist(),
+    y=min_τ_y.tolist(),
+    z=min_τ_z.tolist(),
+    mode='lines',
+    line=dict(color='blue', width=5),
+    name='Min TV Ad Spend'
+)
 
-    # Add optimal point
-    optimal_z = float(profit.evalf(subs={δ: 61820, τ: 38180}))
-    optimal_point = go.Scatter3d(
-        x=[61820],
-        y=[38180],
-        z=[optimal_z],
-        mode='markers',
-        marker=dict(size=6, color='green'),
-        name='Optimal Point'
-    )
+# Add optimal point
+optimal_z = float(profit.evalf(subs={δ: 61820, τ: 38180}))
+optimal_point = go.Scatter3d(
+    x=[61820],
+    y=[38180],
+    z=[optimal_z],
+    mode='markers',
+    marker=dict(size=6, color='green'),
+    name='Optimal Point'
+)
 
-    # Create figure
-    fig = go.Figure(data=[surface, budget_line, min_δ_line, min_τ_line, optimal_point])
+# Create figure
+fig = go.Figure(data=[surface, budget_line, min_δ_line, min_τ_line, optimal_point])
 
-    # Update layout
-    fig.update_layout(
-        title='Profit Function with Constraints',
-        scene = dict(
-            xaxis_title='Digital Ad Spend (δ)',
-            yaxis_title='TV Ad Spend (τ)',
-            zaxis_title='Profit (π)',
-            camera=dict(
-                eye=dict(x=1.5, y=1.5, z=1.5)
-            )
-        ),
-        showlegend=True
-    )
+# Update layout
+fig.update_layout(
+    title='Profit Function with Constraints',
+    scene = dict(
+        xaxis_title='Digital Ad Spend (δ)',
+        yaxis_title='TV Ad Spend (τ)',
+        zaxis_title='Profit (π)',
+        camera=dict(
+            eye=dict(x=1.5, y=1.5, z=1.5)
+        )
+    ),
+    showlegend=True
+)
 
-    # Save the figure
-    fig.write_html("data/profit_function_3d.html")
-    fig.write_image('data/profit_function_3d.webp', format='webp', scale=5)
-
-profit_function_viz_3d()
-mo.image("data/profit_function_3d.webp", height=500).center()
-# display_iframe("data/profit_function_3d.html")
+# Save the figure
+fig.write_html("data/profit_function_3d.html")
 ```
 
-[View Interactive Plotly Graph](/articles/notebooks/data/profit_function_3d.html)
+```{=html}
+<center><iframe src="data/profit_function_3d.html" width="750" height="600" frameborder="0"></iframe></center>
+```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def profit_function_viz_contour():
-    def log(x):
-        return np.log(x)
+#| code-fold: true
+#| output: false
 
-    def profit(δ, τ):
-        profit_function = (
-            -δ
-            - τ
-            - (
-                -1.00712795746647 * log(δ)
-                - 0.621999261508067 * log(τ)
-                + 138.264406731209
-            )
-            * (
-                10071.2795746647 * log(δ)
-                + 6219.99261508067 * log(τ)
-                + 17355.9326879056
-            )
-            + 1812830.32343965 * log(δ)
-            + 1119598.67071452 * log(τ)
-            + 3124067.88382301
+def log(x):
+    return np.log(x)
+
+def profit_fn(δ, τ):
+    profit_function = (
+        -δ
+        - τ
+        - (
+            -1.00712795746647 * log(δ)
+            - 0.621999261508067 * log(τ)
+            + 138.264406731209
         )
-
-        return profit_function
-
-    # Define the grid
-    δ = np.linspace(0.01, 100000, 1000)
-    τ = np.linspace(0.01, 100000, 1000)
-    X, Y = np.meshgrid(δ, τ)
-    Z = profit(X, Y)
-
-    # Define constraints
-    x_constraint = np.linspace(0, 100_000, 500)
-    y_constraint = 100_000 - x_constraint
-
-    # Plot contours of profit function
-    plt.figure(dpi=125)
-    contour = plt.contour(X, Y, Z, levels=100, cmap="plasma")
-    plt.colorbar(contour)
-
-    plt.plot(
-        x_constraint,
-        y_constraint,
-        color="green",
-        linestyle="--",
-        linewidth=1,
-        label=r"Constraint: $\delta + \tau = 100,000$",
+        * (
+            10071.2795746647 * log(δ)
+            + 6219.99261508067 * log(τ)
+            + 17355.9326879056
+        )
+        + 1812830.32343965 * log(δ)
+        + 1119598.67071452 * log(τ)
+        + 3124067.88382301
     )
 
-    # # Mark the optimization points
-    plt.scatter(
-        61819.54,
-        38180.46,
-        color="green",
-        marker="o",
-        s=100,
-        label="Constrained Optimum",
-        zorder=3,
-    )
+    return profit_function
 
-    # Plot constraint lines
-    plt.axvline(
-        10_000,
-        color="black",
-        linestyle="-",
-        linewidth=1,
-        label=r"Constraint: $\delta \geq 10,000$",
-    )
-    plt.axhline(
-        20_000,
-        color="black",
-        linestyle="--",
-        linewidth=1,
-        label=r"Constraint: $\tau \geq 20,000$",
-    )
+# Define the grid
+δ_grid = np.linspace(0.01, 100000, 1000)
+τ_grid = np.linspace(0.01, 100000, 1000)
+X, Y = np.meshgrid(δ_grid, τ_grid)
+Z = profit_fn(X, Y)
 
-    # Shade infeasible regions in gray
-    plt.fill_betweenx(
-        τ, 0, 10_000, color="gray", alpha=0.5
-    )  # Shade region where x > 0
-    plt.fill_between(
-        δ, 0, 20_000, color="gray", alpha=0.5
-    )  # Shade region where y < 3
+# Define constraints
+x_constraint = np.linspace(0, 100_000, 500)
+y_constraint = 100_000 - x_constraint
 
-    # Labels and legend
-    plt.xlabel(r"$\delta$")
-    plt.ylabel(r"$\tau$")
-    plt.title("Contour Representation")
-    plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.4))
-    plt.savefig("data/profit_function_viz_contour.webp", format="webp", dpi=300, bbox_inches='tight')
+# Plot contours of profit function
+plt.figure(dpi=125)
+contour = plt.contour(X, Y, Z, levels=100, cmap="plasma")
+plt.colorbar(contour)
 
-profit_function_viz_contour()
-mo.image("data/profit_function_viz_contour.webp", height=500).center()
+plt.plot(
+    x_constraint,
+    y_constraint,
+    color="green",
+    linestyle="--",
+    linewidth=1,
+    label=r"Constraint: $\delta + \tau = 100,000$",
+)
+
+# # Mark the optimization points
+plt.scatter(
+    61819.54,
+    38180.46,
+    color="green",
+    marker="o",
+    s=100,
+    label="Constrained Optimum",
+    zorder=3,
+)
+
+# Plot constraint lines
+plt.axvline(
+    10_000,
+    color="black",
+    linestyle="-",
+    linewidth=1,
+    label=r"Constraint: $\delta \geq 10,000$",
+)
+plt.axhline(
+    20_000,
+    color="black",
+    linestyle="--",
+    linewidth=1,
+    label=r"Constraint: $\tau \geq 20,000$",
+)
+
+# Shade infeasible regions in gray
+plt.fill_betweenx(
+    τ_grid, 0, 10_000, color="gray", alpha=0.5
+)  # Shade region where x > 0
+plt.fill_between(
+    δ_grid, 0, 20_000, color="gray", alpha=0.5
+)  # Shade region where y < 3
+
+# Labels and legend
+plt.xlabel(r"$\delta$")
+plt.ylabel(r"$\tau$")
+plt.title("Contour Representation")
+plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.4))
+plt.savefig("data/profit_function_viz_contour.webp", format="webp", dpi=300, bbox_inches='tight')
 ```
+![](data/profit_function_viz_contour.webp)
 
 Let’s now solve our optimization problem as formulated in eq. 12 via python using the optimization theory that we have learned from part 1 and part 2 of this series. _Note that the extremely high value of $\rho$ is to account for the fact that the values of our objective function are extremely large thus we need to make sure penalization is large enough to avoid “jumping” out of constraints - we could normalize values for more stability._
 
 ```{python}
-def profit_max():
-    objective = (
-        -profit + λ * (τ + δ - 100_000) - ρ * sm.log((τ - 20_000) * (δ - 10_000))
-    )
+#| code-fold: show
+symbols = [δ, τ, λ, ρ]
+x0 = {δ: 20_000, τ: 80_000, λ: 0, ρ: 100_000}
 
-    symbols = [δ, τ, λ, ρ]
-    x0 = {δ: 20_000, τ: 80_000, λ: 0, ρ: 100_000}
+objective = (
+    -profit + λ * (τ + δ - 100_000) - ρ * sm.log((τ - 20_000) * (δ - 10_000))
+)
 
-    return constrained_newtons_method(objective, symbols, x0, rho_steps=1000)
-
-optimums = profit_max()
+optimums = constrained_newtons_method(objective, symbols, x0, rho_steps=1000)
 ```
 
 Thus, our solution is to spend ~61,800 on digital ad spend and ~38,200 on television ad spend. These values correspond to:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| cold-fold: show
+
 digital_ad = optimums[δ]
 television_ad = optimums[τ]
 
@@ -1048,6 +1030,8 @@ $$
 Thus, using our Newton method function and framework, we have:
 
 ```{python}
+#| code-fold: true
+
 def ols_newtons_method(input_df: pd.DataFrame):
     # Pull all variables in X and create them as SymPy symbols
     variablez = list(input_df.drop(["quantity_demanded", "July"], axis=1).columns)
@@ -1082,6 +1066,7 @@ $$
 Coding this, we have (we also provide analytical standard errors to compare to statsmodels, see the [OLS wiki page](https://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation) if you are interested):
 
 ```{python}
+#| code-fold: true
 def ols_analytical(input_df: pd.DataFrame):
     y = np.array(input_df["quantity_demanded"])
     X = np.array(input_df.drop(["quantity_demanded", "July"], axis=1))
@@ -1105,7 +1090,7 @@ def ols_analytical(input_df: pd.DataFrame):
 Now, comparing all these results:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
 ols_results = pd.DataFrame()
 
 ols_results["variable"] = list(
@@ -1123,11 +1108,12 @@ ols_results = ols_results.set_index("variable")
 ols_results
 ```
 
+<br>
+
 <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
 <center>
-Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+Access all the code via this [GitHub Repo](https://github.com/jakepenzak/personal-website/tree/main/assets/articles).
 
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>
-

@@ -1,13 +1,29 @@
 ---
 title: 'Double Machine Learning, Simplified: Part 2 - Targeting & the CATE'
 jupyter: python3
+toc: true
+format:
+  live-html:
+    theme: journal
+    include-in-header:
+      - text: |
+          <style>
+          .quarto-title-block, .quarto-title-banner {
+            display: none !important;
+          }
+          </style
+execute:
+  cache: true
+highlight-style: github
 ---
 
-```{python}
-#| marimo: {config: {hide_code: true}}
-# Relevant Imports
+<center> <h1> Double Machine Learning, Simplified: Part 2 - Targeting & the CATE </h1> </center>
+<center> **Learn how to utilize DML for estimating idiosyncratic treatment effects to enable personalized targeting** </center>
 
-import marimo as mo
+```{python}
+#| code-fold: true
+#| code-summary: "Imports and Settings"
+
 import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
@@ -16,14 +32,6 @@ from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import graphviz
 import matplotlib.pyplot as plt
-from IPython.display import display, HTML
-
-import os
-
-try:
-    os.chdir("assets/articles/notebooks")
-except:
-    pass
 
 np.random.seed(00)
 
@@ -71,9 +79,6 @@ def hist_effect(effect_true, effect_pred, save_path, figsize=(8, 5)):
     plt.legend()
     plt.savefig(save_path, format="webp", dpi=300, bbox_inches='tight')
 ```
-
-<center> **Learn how to utilize DML for estimating idiosyncratic treatment effects to enable personalized targeting** </center>
-
 
 ## Introduction
 
@@ -146,43 +151,43 @@ where $\mathbf{\Omega}$ is the vector of coefficients for the interaction terms.
 First, let’s use the same casual DAG from part 1, where we will be looking at the effect of an individuals time spent on the website on their purchase amount, or sales, in the past month (assuming we observe all confounders).:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def create_dag():
-    # Create a directed graph
-    g = graphviz.Digraph(format="png")
+#| code-fold: true
+#| output: false
+# Create a directed graph
+g = graphviz.Digraph(format="png")
 
-    # Add nodes
-    nodes = [
-        "Age",
-        "# Social Media Accounts",
-        "Yrs Member",
-        "Time on Website",
-        "Sales",
-        "Z",
-    ]
-    [g.node(n) for n in nodes]
+# Add nodes
+nodes = [
+    "Age",
+    "# Social Media Accounts",
+    "Yrs Member",
+    "Time on Website",
+    "Sales",
+    "Z",
+]
+[g.node(n) for n in nodes]
 
-    g.edge("Age", "Time on Website")
-    g.edge("# Social Media Accounts", "Time on Website")
-    g.edge("Yrs Member", "Time on Website")
-    g.edge("Age", "Sales")
-    g.edge("# Social Media Accounts", "Sales")
-    g.edge("Yrs Member", "Sales")
-    g.edge("Time on Website", "Sales", color="red")
-    g.edge("Z", "Sales")
+g.edge("Age", "Time on Website")
+g.edge("# Social Media Accounts", "Time on Website")
+g.edge("Yrs Member", "Time on Website")
+g.edge("Age", "Sales")
+g.edge("# Social Media Accounts", "Sales")
+g.edge("Yrs Member", "Sales")
+g.edge("Time on Website", "Sales", color="red")
+g.edge("Z", "Sales")
 
-    g.graph_attr["dpi"] = "400"
+g.graph_attr["dpi"] = "200"
 
-    # Render for print
-    g.render("data/dag1", format="webp")
-
-create_dag()
-mo.image("data/dag1.webp").center()
+# Render for print
+g.render("data/dag1", format="webp")
 ```
+
+![](data/dag1.webp)
 
 Let’s then simulate this DGP using a similar process as utilized in part 1 (note that all values & data are chosen and generated arbitrarily for demonstrative purposes). Observe that we now include interaction terms in the sales DGP to model the CATE, or treatment effect heterogeneity (note that the DGP in part 1 had no treatment effect heterogeneity by construction)
 
 ```{python}
+#| code-fold: show
 # Sample Size
 N = 100_000
 
@@ -250,28 +255,20 @@ def y(time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2):
 sales = y(time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2)
 
 df = pd.DataFrame(
-    np.array(
-        [sales, time_on_website, age, num_social_media_profiles, yr_membership, Z]
-    ).T,
-    columns=[
-        "sales",
-        "time_on_website",
-        "age",
-        "num_social_media_profiles",
-        "yr_membership",
-        "Z",
-    ],
+    np.array([sales, time_on_website, age, num_social_media_profiles, yr_membership, Z]).T,
+    columns=["sales","time_on_website","age","num_social_media_profiles","yr_membership","Z"],
 )
 ```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
 df
 ```
 
 Now, to estimate our CATE function, as outlined in eq. (4), we can run:
 
 ```{python}
+#| code-fold: show
 # DML Procedure for Estimating the CATE
 M_sales = GradientBoostingRegressor()
 M_time_on_website = GradientBoostingRegressor()
@@ -301,6 +298,7 @@ print(DML_model.summary())
 Here we can see that linear DML closely modeled the true DGP for the CATE (see coefficients on interaction terms in sales DGP). Let’s evaluate the performance of our CATE function by comparing the linear DML predictions to the true CATE for a 1 hour increase in time on the spent on the website:
 
 ```{python}
+#| code-fold: show
 # Predict CATE of 1 hour increase
 linear_dml_cates = DML_model.predict(
     df.assign(
@@ -320,24 +318,25 @@ print(f"R-Squared: {r2_score(true_cates, linear_dml_cates)}")
 Plotting the distributions of the predicted CATE and true CATE, we obtain:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| output: false
 hist_effect(true_cates, linear_dml_cates, save_path="data/linear_dml_hist.webp")
-
-mo.image("data/linear_dml_hist.webp", height=500).center()
 ```
+![](data/linear_dml_hist.webp)
 
 Additionally, plotting the predicted values versus the true values we obtain:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| output: false
 plot_effect(true_cates, linear_dml_cates, save_path="data/linear_dml_line.webp")
-
-mo.image("data/linear_dml_line.webp", height=500).center()
 ```
+![](data/linear_dml_line.webp)
 
 Overall, we have pretty impressive performance! However, the primary limitation in this approach is that we must manually specify the functional form of the CATE function, thus if we are only including linear interaction terms we may not capture the true CATE function. In our example, we simulated the DGP to only have these linear interaction terms and thus the performance is strong by construction, but let’s see what happens when we tweak the DGP for the CATE to be arbitrarily non-linear:
 
 ```{python}
+#| code-fold: show
 # Outcome (y = f(T,X,Z) + ε2)
 def y_fn_nonlinear(
     time_on_website, age, num_social_media_profiles, yr_membership, Z, ε2
@@ -406,6 +405,7 @@ df_nonlinear = pd.DataFrame(
 Fitting our models:
 
 ```{python}
+#| code-fold: show
 # DML Procedure
 M_sales2 = GradientBoostingRegressor()
 M_time_on_website2 = GradientBoostingRegressor()
@@ -437,6 +437,7 @@ print(DML_model_nonlinear.summary())
 And then evaluating performance:
 
 ```{python}
+#| code-fold: show
 # Predict CATE of 1 hour increase
 linear_dml_cates_nonlinear = DML_model_nonlinear.predict(
     df_nonlinear.assign(
@@ -459,33 +460,32 @@ print(f"R-Squared: {r2_score(true_cates_nonlinear, linear_dml_cates_nonlinear)}"
 ```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| output: false
 hist_effect(
     true_cates_nonlinear,
     linear_dml_cates_nonlinear,
     save_path="data/linear_dml_nonlinear_hist.webp",
 )
-
-mo.image("data/linear_dml_nonlinear_hist.webp", height=500).center()
 ```
+![](data/linear_dml_nonlinear_hist.webp)
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| output: false
 plot_effect(
     true_cates_nonlinear,
     linear_dml_cates_nonlinear,
     save_path="data/linear_dml_nonlinear_line.webp",
 )
-
-mo.image("data/linear_dml_nonlinear_line.webp", height=500).center()
 ```
+![](data/linear_dml_nonlinear_line.webp)
 
 Here we see much degradation in performance. This non-linearity in the CATE function is precisely where Non-Parametric DML can shine!
 
 ## Non-Parametric DML for Estimating the CATE
 
 Non-Parametric DML goes one step further and allows for another flexible non-parametric ML model to be utilized for learning the CATE function! Let’s take a look at how we can, mathematically, do exactly this. Let $\tau(\mathbf{X})$ continue to denote our CATE function. Let’s start with defining our error term relative to eq. 3 (note we drop the intercept $\beta_0$ as this parameter is partialled out in residualization step; we could similarly drop this in the linear DML formulation, but for the sake of simplicity and consistency with part 1, we do not do this):
-
 
 $$
 \begin{align*}
@@ -521,6 +521,8 @@ Let’s take a look at this in action now. We will reuse the DGP for the non-lin
 Then define the causal loss function as such (note this is just the MSE!):
 
 ```{python}
+#| code-fold: show
+#| output: false
 # Define Target & Weights
 df_nonlinear["target"] = (
     df_nonlinear["residualized_sales"]
@@ -540,6 +542,7 @@ CATE_model.fit(
 And to make predictions + evaluate performance:
 
 ```{python}
+#| code-fold: show
 # Predict CATE of 1 hour increase
 nonparam_dml_cates_nonlinear = CATE_model.predict(
     df_nonlinear[["age", "num_social_media_profiles", "yr_membership"]]
@@ -555,26 +558,26 @@ print(f"R-Squared: {r2_score(true_cates_nonlinear, nonparam_dml_cates_nonlinear)
 ```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| output: false
 hist_effect(
     true_cates_nonlinear,
     nonparam_dml_cates_nonlinear,
     save_path="data/nonparam_dml_nonlinear_hist.webp",
 )
-
-mo.image("data/nonparam_dml_nonlinear_hist.webp", height=500).center()
 ```
+![](data/nonparam_dml_nonlinear_hist.webp)
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| output: false
 plot_effect(
     true_cates_nonlinear,
     nonparam_dml_cates_nonlinear,
     save_path="data/nonparam_dml_nonlinear_line.webp",
 )
-
-mo.image("data/nonparam_dml_nonlinear_line.webp", height=500).center()
 ```
+![](data/nonparam_dml_nonlinear_line.webp)
 
 Here we can see that, although not perfect, the non-parametric DML approach was able to model the non-linearities in the CATE function much better than the linear DML approach. We can of course further improve the performance via tuning our model. Note that we can use explainable AI tools, such as [SHAP values](https://shap.readthedocs.io/en/latest/index.html), to understand the nature of our treatment effect heterogeneity!
 
@@ -584,15 +587,15 @@ And there you have it! Thank you for taking the time to read through my article.
 
 As always, I hope you have enjoyed reading this as much as I enjoyed writing it!
 
-## References
-[1] V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. Double Machine Learning for Treatment and Causal Parameters. ArXiv e-prints, July 2016.
+<br>
 
 <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
 <center>
-Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+Access all the code via this [GitHub Repo](https://github.com/jakepenzak/personal-website/tree/main/assets/articles).
 
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>
 
 
+[^1]: V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. Double Machine Learning for Treatment and Causal Parameters. ArXiv e-prints, July 2016.

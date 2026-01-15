@@ -1,35 +1,39 @@
 ---
 title: 'Predictive Parameters in a Logistic Regression: Making Sense of it All'
 jupyter: python3
+toc: true
+format:
+  live-html:
+    theme: journal
+    include-in-header:
+      - text: |
+          <style>
+          .quarto-title-block, .quarto-title-banner {
+            display: none !important;
+          }
+          </style
+execute:
+  cache: true
+highlight-style: github
 ---
 
-```{python}
-#| marimo: {config: {hide_code: true}}
-## Relevant Imports
+<center> <h1> Predictive Parameters in a Logistic Regression: Making Sense of it All </h1> </center>
+<center> **Acquire a robust understanding of logit model parameters beyond the canonical odds ratio interpretation** </center>
 
-import marimo as mo
+```{python}
+#| code-fold: true
+#| code-summary: "Imports and Settings"
+
 import pandas as pd
-import statsmodels.formula.api as sm
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from IPython.display import display, HTML
-import os
-
-try:
-    os.chdir("assets/articles/notebooks")
-except:
-    pass
 
 pd.set_option("display.max_columns", None)
 ```
-
-
-<center> **Acquire a robust understanding of logit model parameters beyond the canonical odds ratio interpretation** </center>
-
 
 ## Introduction
 
@@ -46,36 +50,34 @@ By the end of this article you will see logistic regression in a new light and g
 The logit model is a specific case that allows for the modeling of binary outcomes that follow a [Bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution). The logit model is particularly attractive because the link function used (logit function) is bounded between 0 and 1. And consequently, all model predictions are bounded between 0 and 1, as anticipated in the probability space. Figure 1 below provides a nice visual comparison between the model fits of linear probability model and logistic regression in a bivariate case.
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def lin_prob_vs_logistic_viz():
-    x = np.arange(-0.25, 1.25, 0.001)
-    z = 1 / (1 + np.exp(-((x - 0.5) / 0.1)))
-    y = x
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ax.plot(x, y, color="black", label="Linear Probability Model", zorder=1)
-    ax.plot(x, z, color="#b30000", label="Logit Model", zorder=2)
-    ax.legend()
-    ax.axhline(y=0, color="black", linestyle="--")
-    ax.axhline(y=1, color="black", linestyle="--")
-    # ax.grid(True)
-    ax.set_ylabel("Predicted Probability", size=15)
-    ax.set_xlabel("X \n \n Figure 1", size=15)
-    ax.set_yticks([0, 1])
-    ax.tick_params(
-        axis="both", which="both", labelbottom=False, bottom=False, top=False
-    )
-    ax.set_title("Linear Probability vs. Logit Model", size=20)
-    fig.gca().spines["top"].set_visible(False)
-    fig.gca().spines["right"].set_visible(False)
-    fig.gca().spines["bottom"].set_visible(False)
-    fig.gca().spines["left"].set_visible(False)
-    ax.axhspan(0, -0.25, alpha=0.2, color="black")
-    ax.axhspan(1, 1.25, alpha=0.2, color="black")
-    plt.savefig("data/lin_prob_vs_logistic_viz.webp", format="webp", dpi=300, bbox_inches='tight')
-
-lin_prob_vs_logistic_viz()
-mo.image("data/lin_prob_vs_logistic_viz.webp").center()
+#| code-fold: true
+#| output: false
+x = np.arange(-0.25, 1.25, 0.001)
+z = 1 / (1 + np.exp(-((x - 0.5) / 0.1)))
+y = x
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.plot(x, y, color="black", label="Linear Probability Model", zorder=1)
+ax.plot(x, z, color="#b30000", label="Logit Model", zorder=2)
+ax.legend()
+ax.axhline(y=0, color="black", linestyle="--")
+ax.axhline(y=1, color="black", linestyle="--")
+# ax.grid(True)
+ax.set_ylabel("Predicted Probability", size=15)
+ax.set_xlabel("X \n \n Figure 1", size=15)
+ax.set_yticks([0, 1])
+ax.tick_params(
+    axis="both", which="both", labelbottom=False, bottom=False, top=False
+)
+ax.set_title("Linear Probability vs. Logit Model", size=20)
+fig.gca().spines["top"].set_visible(False)
+fig.gca().spines["right"].set_visible(False)
+fig.gca().spines["bottom"].set_visible(False)
+fig.gca().spines["left"].set_visible(False)
+ax.axhspan(0, -0.25, alpha=0.2, color="black")
+ax.axhspan(1, 1.25, alpha=0.2, color="black")
+plt.savefig("data/lin_prob_vs_logistic_viz.webp", format="webp", dpi=300, bbox_inches='tight')
 ```
+![](data/lin_prob_vs_logistic_viz.webp)
 
 Mathematically, the logit model is characterized by:
 
@@ -221,12 +223,12 @@ We can now see that, due to the nonlinearities, the marginal effect will vary fu
 
 ## The Marginal Effects in Predicting Credit Card Fraud
 
-To demonstrate a concrete example of what we discussed above, we will utilize the following [Kaggle dataset](https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download) on credit card transactions with the intent of building a model to predict whether a transaction is fraudulent. The dataset has the following variables on each transaction:
+To demonstrate a concrete example of what we discussed above, we will utilize the following [Kaggle dataset](https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download) on credit card transactions with the intent of building a model to predict whether a transaction is fraudulent[^1]. The dataset has the following variables on each transaction:
 
 First, let's import the data and generate summary statistics:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: show
 fraud = pd.read_csv("data/card_transdata.csv")
 
 fraud.describe().round(2)
@@ -235,6 +237,7 @@ fraud.describe().round(2)
 We will now build a logistic regression model using scikit-learn. Suppose we have already gone through the proper steps in training and validating the model and have determined the appropriate model. Our final model is as follows:
 
 ```{python}
+#| code-fold: show
 features = list(fraud.iloc[:, 0:7].columns)
 
 cont_feat = features[:3]
@@ -256,6 +259,8 @@ final_mod = model._final_estimator
 We have built our logit model to predict if a credit card transaction is fraudulent. Now let's pivot into explaining the model parameters to understand the inner workings of the model and the subsequent role each feature plays in driving predictions. We will define a function to compute the marginal effects of the logistic regression both in terms of probabilities and odds:
 
 ```{python}
+#| code-fold: show
+
 def logit_margeff(
     model: LogisticRegression, X_features: pd.DataFrame, kind: str = "probability"
 ) -> pd.DataFrame:
@@ -314,6 +319,7 @@ def logit_margeff(
 After we have defined this function all we have to do is feed in the logit model we have built and the matrix of features. Let's first interpret the output in terms of probabilities:
 
 ```{python}
+#| code-fold: show
 logit_margeff(final_mod, fraud[features], kind="probability")
 ```
 
@@ -326,6 +332,7 @@ Recall we have standardized all continuous features and thus a one unit increase
 Now, in terms of odds:
 
 ```{python}
+#| code-fold: show
 logit_margeff(final_mod, fraud[features], kind="odds")
 ```
 
@@ -333,16 +340,14 @@ logit_margeff(final_mod, fraud[features], kind="odds")
 
 I hope this post has helped you learn how to extract **meaningful insights** from logit model parameters. It is clear that marginal effect interpretations in terms of probabilities provide an immense amount of intuition and explainability of the predictive mechanics under a logit model framework. Generally speaking, these parameters explain how the model makes predictions as well as explain associations between the target and features. However, under additional identifying assumptions, we can make more powerful statements towards interpreting model parameters as a causal relationship between certain features and targets. I hope this post has increased your knowledge and appreciation for logistic regressions!
 
-## References
-
-Dataset available on Kaggle: [Credit Card Fraud](https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download) (License: CC0: Public Domain)
-
+<br>
 
 <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
 <center>
-Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+Access all the code via this [GitHub Repo](https://github.com/jakepenzak/personal-website/tree/main/assets/articles).
 
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>
 
+[^1]: Dataset available on Kaggle: [Credit Card Fraud](https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download) (License: CC0: Public Domain)

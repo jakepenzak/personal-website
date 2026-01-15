@@ -2,14 +2,29 @@
 title: 'Controlling for "X":'
 jupyter: python3
 toc: true
+format:
+  live-html:
+    theme: journal
+    include-in-header:
+      - text: |
+          <style>
+          .quarto-title-block, .quarto-title-banner {
+            display: none !important;
+          }
+          </style
+execute:
+  cache: true
+highlight-style: github
 ---
 
+<center> <h1> Controlling for "X": </h1> </center>
+<center> **Understanding linear regression mechanics via the Frisch-Waugh-Lovell Theorem** </center>
+
+
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| code-summary: "Imports and Settings"
 # Relevant Imports
-
-import marimo as mo
-
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -17,12 +32,8 @@ import matplotlib.pyplot as plt
 from scipy.stats import skewnorm
 import statsmodels.formula.api as sm
 from stargazer.stargazer import Stargazer  # noqa: F401
-from IPython.display import display, HTML
-import os
+from IPython.display import HTML
 ```
-
-<center> **Understanding linear regression mechanics via the Frisch-Waugh-Lovell Theorem** </center>
-
 
 ## Introduction
 
@@ -62,7 +73,7 @@ $$
 \end{equation}
 $$
 
-Without the CIA, our coefficient estimates are biased and we are limited in what we can say in terms of causality. Realistically, it is often quite difficult to make the argument for the CIA and, unfortunately, this assumption is not directly testable. In fact, what I have discussed above is a fundamental motivator for an entire field of econometrics that is devoted to establishing, developing, and implementing quasi-experimental research designs to establish causality including, but most definitely not limited to, difference-in-differences, synthetic control, and instrumental variable designs. These quasi-experimental designs seek to exploit exogenous ("as good as random") sources of variation in a treatment of interest $T$ to study the causal effect of $T$ on some outcome(s) $y$. There are some excellent econometric texts that are accessible to those with little to no background in econometrics, including "The Effect" by Nick Huntington-Klein, "Causal Inference: The Mixtape" by Scott Cunningham, or "Causal Inference for the Brave and True" by Matheus Facure Alves.[1][2][3] Joshua Angrist and Jörn-Steffen Pischke provide a deeper dive in "Mostly Harmless Econometrics" for those interested.[4]
+Without the CIA, our coefficient estimates are biased and we are limited in what we can say in terms of causality. Realistically, it is often quite difficult to make the argument for the CIA and, unfortunately, this assumption is not directly testable. In fact, what I have discussed above is a fundamental motivator for an entire field of econometrics that is devoted to establishing, developing, and implementing quasi-experimental research designs to establish causality including, but most definitely not limited to, difference-in-differences, synthetic control, and instrumental variable designs. These quasi-experimental designs seek to exploit exogenous ("as good as random") sources of variation in a treatment of interest $T$ to study the causal effect of $T$ on some outcome(s) $y$. There are some excellent econometric texts that are accessible to those with little to no background in econometrics, including "The Effect" by Nick Huntington-Klein, "Causal Inference: The Mixtape" by Scott Cunningham, or "Causal Inference for the Brave and True" by Matheus Facure Alves.[^1][^2][^3] Joshua Angrist and Jörn-Steffen Pischke provide a deeper dive in "Mostly Harmless Econometrics" for those interested.[^4]
 
 Despite the fact that establishing the CIA is particularly difficult through controlling for covariates alone, there is a substantial theorem in econometrics that provides some very powerful intuition into what it really means to "control" for additional covariates. Ultimately, this not only provides a deeper understanding to the underlying mechanisms of a linear regression, but also how to conceptualize key relationships of interest (i.e., the effect of $T$ on $Y$).
 
@@ -72,7 +83,7 @@ spillover/network type effects (treatment of one individual impacts another).
 
 ## Frisch-Waugh-Lovell Theorem
 
-In the 19th century, econometricians Ragnar Frisch and Frederick V. Waugh developed, which was later generalized by Michael C. Lovell, a ~super cool~ theorem (the FWL Theorem) that allows for the estimation of any key parameter(s) in a linear regression where one first "partials out" the effects of the additional covariates.[5][6] First, a quick refresher on linear regression will be helpful.
+In the 19th century, econometricians Ragnar Frisch and Frederick V. Waugh developed, which was later generalized by Michael C. Lovell, a ~super cool~ theorem (the FWL Theorem) that allows for the estimation of any key parameter(s) in a linear regression where one first "partials out" the effects of the additional covariates.[^5][^6] First, a quick refresher on linear regression will be helpful.
 
 A linear regression solves for the best linear predictors for an outcome $y$ given a set of variables $X$, where the fitted values of $y$ are projected onto the space spanned by $X$. In matrix notation, the linear regression model we are interested in is characterized by:
 
@@ -148,7 +159,7 @@ $$
 
 And that's it!
 
-Intuitively, the FWL theorem partials out the variation in Read (the treatment/variable of interest) and Education (the outcome of interest) that is explained by the additional covariates, and then uses the remaining variation to explain the key relationship of interest. This procedure can be generalized for any number of key variables of interest. For a more formal proof of this theorem, refer to [7]. The FWL theorem has been in the spotlight recently as the theoretical underpinning for debiased/orthogonal machine learning where steps 1 and 2 are conducted using machine learning algorithms rather than OLS. There are very cool developments occurring that are bridging the gaps between econometrics and machine learning, and I hope to have future posts with some cool applications with respect to some of these new methods. However, part 2 of Matheus Facure Alves' "Causal Inference for the Brave and True" is a great place to start.
+Intuitively, the FWL theorem partials out the variation in Read (the treatment/variable of interest) and Education (the outcome of interest) that is explained by the additional covariates, and then uses the remaining variation to explain the key relationship of interest. This procedure can be generalized for any number of key variables of interest. For a more formal proof of this theorem, refer to [^7]. The FWL theorem has been in the spotlight recently as the theoretical underpinning for debiased/orthogonal machine learning where steps 1 and 2 are conducted using machine learning algorithms rather than OLS. There are very cool developments occurring that are bridging the gaps between econometrics and machine learning, and I hope to have future posts with some cool applications with respect to some of these new methods. However, part 2 of Matheus Facure Alves' "Causal Inference for the Brave and True" is a great place to start.
 
 Now you may wonder why in the world would you ever go through this process to obtain the exact same key estimate. Well for one, it provides an immense amount of intuition behind the mechanisms in a linear regression. Secondly, it allows you to visualize the remaining variation in your treatment (Read) that is being used to explain the remaining variation in your outcome (Education). Let us look at this in action!
 
@@ -158,9 +169,11 @@ In this section, we are going to simulate a highly stylized dataset to provide a
 Suppose we hypothesize a set of demographic variables that we determine to be the relevant confounders necessary to satisfy the CIA in eq. (3), and thus allowing us to obtain a causal interpretation for the education returns to childhood reading. Namely, suppose we identify the key confounders to be the average education level of both parents in years ($\text{pareduc}$), household income as a child in tens of thousands of dollars ($\text{HHinc}$), and IQ score ($\text{IQ}$). We will artificially generate our dataset and the following data generating process (DGP) for the confounders as follows:
 
 $$
-\text{pareduc}_i \sim \mathcal{N}(14, 3) \newline
-\text{HHinc}_i \sim \mathcal{SN}(3,4,5) \newline
-\text{IQ}_i \sim \mathcal{SN}(100, 10) \newline
+\begin{aligned}
+\text{pareduc}_i &\sim \mathcal{N}(14, 3) \\
+\text{HHinc}_i &\sim \mathcal{SN}(3,4,5) \\
+\text{IQ}_i &\sim \mathcal{N}(100, 10)
+\end{aligned}
 $$
 
 Furthermore, to estimate eq. (3) we must have measures for the key treatment, average number of days in a month they read as a child ($\text{read}$), and the main outcome, their total educational attainment in years ($\text{educ}$). We artificially generate these key variables with gaussian error terms and heteroskedasticity in the education error term as follows:
@@ -186,6 +199,7 @@ Because we know the true DGP, the true value for the parameter of interest is 0.
 First, let's generate the data:
 
 ```{python}
+#| code-fold: show
 df = pd.DataFrame()
 n = 10000
 
@@ -219,34 +233,33 @@ df["educ"] = (
 The data will look a little something like:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def data_hists():
-    fig, ax = plt.subplots(3, 2, figsize=(15, 15), dpi=300)
-    sns.histplot(
-        df.HHinc, color="b", ax=ax[0, 0], bins=15, stat="proportion", kde=True
-    )
-    sns.histplot(
-        df.IQ, color="m", ax=ax[0, 1], bins=20, stat="proportion", kde=True
-    )
-    sns.histplot(
-        df.pareduc, color="black", ax=ax[1, 0], bins=20, stat="proportion", kde=True
-    )
-    sns.histplot(
-        df.read, color="r", ax=ax[1, 1], bins=30, stat="proportion", kde=True
-    )
-    sns.histplot(
-        df.educ, color="g", ax=ax[2, 0], bins=30, stat="proportion", kde=True
-    )
-    sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax[2, 1])
-    plt.savefig("data/data_hists.webp", format="webp", dpi=300, bbox_inches='tight')
-
-data_hists()
-mo.image("data/data_hists.webp").center()
+#| code-fold: true
+#| output: false
+fig, ax = plt.subplots(3, 2, figsize=(15, 15), dpi=300)
+sns.histplot(
+    df.HHinc, color="b", ax=ax[0, 0], bins=15, stat="proportion", kde=True
+)
+sns.histplot(
+    df.IQ, color="m", ax=ax[0, 1], bins=20, stat="proportion", kde=True
+)
+sns.histplot(
+    df.pareduc, color="black", ax=ax[1, 0], bins=20, stat="proportion", kde=True
+)
+sns.histplot(
+    df.read, color="r", ax=ax[1, 1], bins=30, stat="proportion", kde=True
+)
+sns.histplot(
+    df.educ, color="g", ax=ax[2, 0], bins=30, stat="proportion", kde=True
+)
+sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax[2, 1])
+plt.savefig("data/data_hists.webp", format="webp", dpi=300, bbox_inches='tight')
 ```
+![](data/data_hists.webp)
 
 The graph in the bottom right provides the scatter plot and naïve regression line of educ on read. This relationship, on the surface, shows a very strong positive relationship between days read a month as a child and educational attainment. However, we know that by construction this is not the true relationship between educ and read because of the common confounding covariates. We can quantify this result and the bias more formally via regression analysis. Let's now go ahead and estimate the naïve regression (i.e., eq. (3) less $X$), the multiple regression with all relevant covariates (i.e., eq. (3)), and the FWL 3 step process (i.e., eqs. (8)-(12)):
 
 ```{python}
+#| code-fold: show
 ## Regression Analysis
 
 # Naive Regression
@@ -268,29 +281,26 @@ FWL = sm.ols("educ_star ~ read_star", data=df).fit(cov_type="HC3")
 The regression results are:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def prettify_ols_results():
-    order = ["read", "read_star", "HHinc", "pareduc", "IQ", "Intercept"]
-    columns = ["Naive OLS", "Multiple OLS", "FWL"]
-    rename = {
-        "read": "Read (Days/Month)",
-        "read_star": "Read*",
-        "hhincome": "HH Income",
-        "pareduc": "Avg. Parents Education (Yrs)",
-    }
+#| code-fold: true
 
-    regtable = Stargazer([naive, multiple, FWL])
-    regtable.covariate_order(order)
-    regtable.custom_columns(columns, [1, 1, 1])
-    regtable.rename_covariates(rename)
-    regtable.show_degrees_of_freedom(False)
-    regtable.title(
-        "Table 1: The Effect of Childhood Reading on Educational Attainment"
-    )
+order = ["read", "read_star", "HHinc", "pareduc", "IQ", "Intercept"]
+columns = ["Naive OLS", "Multiple OLS", "FWL"]
+rename = {
+    "read": "Read (Days/Month)",
+    "read_star": "Read*",
+    "hhincome": "HH Income",
+    "pareduc": "Avg. Parents Education (Yrs)",
+}
 
-    return regtable
+regtable = Stargazer([naive, multiple, FWL])
+regtable.covariate_order(order)
+regtable.custom_columns(columns, [1, 1, 1])
+regtable.rename_covariates(rename)
+regtable.show_degrees_of_freedom(False)
+regtable.title(
+    "Table 1: The Effect of Childhood Reading on Educational Attainment"
+)
 
-regtable = prettify_ols_results()
 HTML(f"<center>{regtable.render_html()}</center>")
 ```
 
@@ -301,22 +311,20 @@ Table 1 above presents the regression output results. Immediately, we can observ
 So, we have now shown the FWL being used to obtain the same estimate, but the real power in FWL lies in the ability to plot the true relationship. Figure 2 below shows the initial relationship of the naïve regression without factoring in the covariates and then the relationship of the residuals from the FWL process, where the noise is from the stochastic error term in DGP. In this case, the FWL slope is the true relationship! We can see how vastly different the slope estimates are. This is where the true power of the FWL theorem lies! It allows us to visualize the relationship between a treatment and outcome after we partial out the variation that is already explained by the additional covariates.
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def fwl_residual_plot():
-    fig, ax = plt.subplots(1, 2, figsize=(15, 5))
-    ax[0].set_title("Naive Regression", fontsize=17)
-    ax[1].set_title("FWL Regression", fontsize=17)
-    sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax[0])
-    sns.regplot(
-        data=df, x="read_star", y="educ_star", color="y", truncate=False, ax=ax[1]
-    )
-    ax[1].set_xlabel("$read^*$")
-    ax[1].set_ylabel("$educ^*$")
-    plt.savefig("data/fwl_residual_plot.webp", format="webp", dpi=300, bbox_inches='tight')
-
-fwl_residual_plot()
-mo.image("data/fwl_residual_plot.webp").center()
+#| code-fold: true
+#| output: false
+fig, ax = plt.subplots(1, 2, figsize=(15, 5))
+ax[0].set_title("Naive Regression", fontsize=17)
+ax[1].set_title("FWL Regression", fontsize=17)
+sns.regplot(data=df, x="read", y="educ", color="y", truncate=False, ax=ax[0])
+sns.regplot(
+    data=df, x="read_star", y="educ_star", color="y", truncate=False, ax=ax[1]
+)
+ax[1].set_xlabel("$read^*$")
+ax[1].set_ylabel("$educ^*$")
+plt.savefig("data/fwl_residual_plot.webp", format="webp", dpi=300, bbox_inches='tight')
 ```
+![](data/fwl_residual_plot.webp)
 
 ## Discussion
 
@@ -326,26 +334,26 @@ FWL provides a powerful mechanism by which to visualize the relationship between
 
 I hope you have gained some new knowledge from this post!
 
-## References
-[1] N. Huntington-Klein, [The Effect: An Introduction to Research Design and Causality](https://medium.com/r/?url=https%3A%2F%2Ftheeffectbook.net%2F) (2022).
-
-[2] S. Cunningham, [Causal Inference: The Mixtape](https://medium.com/r/?url=https%3A%2F%2Fmixtape.scunning.com%2F) (2021).
-
-[3] M. F. Alves, [Causal Inference for the Brave and True](https://medium.com/r/?url=https%3A%2F%2Fmatheusfacure.github.io%2Fpython-causality-handbook%2Flanding-page.html) (2021).
-
-[4] J. Angrist & J.S. Pischke, [Mostly Harmless Econometrics: An Empiricist's Companion](https://medium.com/r/?url=https%3A%2F%2Fwww.mostlyharmlesseconometrics.com%2F) (2009). Princeton University Press.
-
-[5] Frisch, Ragnar, and Waugh. Partial Time Regressions as Compared with Individual Trends (1933). Econometrica: Journal of the Econometric Society, 387–401.
-
-[6] Lovell. Seasonal Adjustment of Economic Time Series and Multiple Regression Analysis (1963). Journal of the American Statistical Association 58 (304): 993–1010.
-
-[7] Lovell. A Simple Proof of the FWL Theorem (2008). Journal of Economic Education. 39 (1): 88–91.
+<br>
 
 <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
 <center>
-Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+Access all the code via this [GitHub Repo](https://github.com/jakepenzak/personal-website/tree/main/assets/articles).
 
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>
 
+[^1]: N. Huntington-Klein, [The Effect: An Introduction to Research Design and Causality](https://medium.com/r/?url=https%3A%2F%2Ftheeffectbook.net%2F) (2022).
+
+[^2]: S. Cunningham, [Causal Inference: The Mixtape](https://medium.com/r/?url=https%3A%2F%2Fmixtape.scunning.com%2F) (2021).
+
+[^3]: M. F. Alves, [Causal Inference for the Brave and True](https://medium.com/r/?url=https%3A%2F%2Fmatheusfacure.github.io%2Fpython-causality-handbook%2Flanding-page.html) (2021).
+
+[^4]: J. Angrist & J.S. Pischke, [Mostly Harmless Econometrics: An Empiricist's Companion](https://medium.com/r/?url=https%3A%2F%2Fwww.mostlyharmlesseconometrics.com%2F) (2009). Princeton University Press.
+
+[^5]: Frisch, Ragnar, and Waugh. Partial Time Regressions as Compared with Individual Trends (1933). Econometrica: Journal of the Econometric Society, 387–401.
+
+[^6]: Lovell. Seasonal Adjustment of Economic Time Series and Multiple Regression Analysis (1963). Journal of the American Statistical Association 58 (304): 993–1010.
+
+[^7]: Lovell. A Simple Proof of the FWL Theorem (2008). Journal of Economic Education. 39 (1): 88–91.

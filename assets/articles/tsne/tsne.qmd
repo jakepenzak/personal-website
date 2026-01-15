@@ -24,11 +24,8 @@ highlight-style: github
 #| code-fold: true
 #| code-summary: "Imports and Settings"
 
-import contextlib
-import os
 import warnings
 
-import marimo as mo
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -707,7 +704,7 @@ As always, I hope you have enjoyed reading this as much as I enjoyed writing it.
 <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
 <center>
-Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+Access all the code via this [GitHub Repo](https://github.com/jakepenzak/personal-website/tree/main/assets/articles).
 
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>

@@ -162,7 +162,7 @@ Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Application
 <center>
 <strong>Learn how to utilize DML in causal inference tasks</strong>
 </center>
-<div id="8a60ca79" class="cell" data-execution_count="2">
+<div id="00f064ef" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> graphviz</span>
@@ -172,7 +172,9 @@ Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Application
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> GradientBoostingClassifier, GradientBoostingRegressor</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_predict</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stargazer.stargazer <span class="im">import</span> Stargazer</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stargazer.stargazer <span class="im">import</span> Stargazer</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">00</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="introduction" class="level2">
@@ -286,7 +288,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <li><p>If we do take manage to take care of point 1, we still have to specify the correct parametric form of confounding, including interactions and higher-order terms, when utilizing a parametric model (such as in the regression framework). Simply including linear terms in a regression may not sufficiently control for the confounding. This is where DML steps in; it can flexibly partial out the confounding in a highly non-parametric fashion. This is particularly beneficial in saving the data scientist the trouble of directly modeling the functional forms of confounding, and allows more attention to be directed towards identifying and measuring the confounders. Let’s see how this works!</p></li>
 </ol>
 <p>Suppose, as a highly stylized example, we work for an e-commerce company and we are tasked with estimating the ATE of an individuals time spent on the website on their purchase amount, or sales, in the past month. However, further assume we only have observational data to work with, but we have measured all potential confounders (those variables that influence both time spent on the website and sales). Let this causal process be outlined via the following Directed Acyclic Graph (DAG):</p>
-<div id="e49bd50c" class="cell" data-execution_count="3">
+<div id="23a2f81e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a directed graph</span></span>
@@ -319,7 +321,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 </div>
 <p><img src="data/dag1.webp" class="img-fluid"></p>
 <p>Let the data generating process be as follows (<em>note that all values &amp; data are chosen and generated arbitrarily for demonstrative purposes, and thus should not necessarily represent a large degree of real world intuition per se outside of our estimates of the ATE</em>):</p>
-<div id="b941d865" class="cell" data-execution_count="4">
+<div id="224c1923" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">100_000</span></span>
@@ -386,12 +388,12 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="692c4640" class="cell" data-execution_count="5">
+<div id="06017132" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -411,53 +413,53 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>1696.272172</td>
-<td>127.572123</td>
-<td>66.0</td>
+<td>1334.627625</td>
+<td>100.608299</td>
+<td>62.0</td>
+<td>7.0</td>
 <td>9.0</td>
-<td>8.0</td>
-<td>28.392244</td>
-<td>4543.766399</td>
+<td>43.399307</td>
+<td>3486.894274</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>729.943863</td>
-<td>59.390677</td>
-<td>29.0</td>
-<td>7.0</td>
-<td>5.0</td>
-<td>19.242455</td>
-<td>1946.250352</td>
+<td>1602.656414</td>
+<td>104.443669</td>
+<td>65.0</td>
+<td>9.0</td>
+<td>8.0</td>
+<td>60.097765</td>
+<td>3988.262434</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>235.752853</td>
-<td>25.090588</td>
-<td>20.0</td>
-<td>2.0</td>
-<td>0.0</td>
-<td>55.606345</td>
-<td>830.186726</td>
+<td>271.085581</td>
+<td>25.016924</td>
+<td>71.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>71.465249</td>
+<td>828.498706</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>216.514738</td>
-<td>24.107177</td>
-<td>64.0</td>
-<td>0.0</td>
+<td>450.432453</td>
+<td>38.830208</td>
+<td>18.0</td>
 <td>8.0</td>
-<td>73.974309</td>
-<td>769.526672</td>
+<td>2.0</td>
+<td>21.929513</td>
+<td>1330.333186</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>310.712473</td>
-<td>30.881932</td>
-<td>32.0</td>
-<td>1.0</td>
-<td>5.0</td>
-<td>83.855649</td>
-<td>920.454622</td>
+<td>679.885319</td>
+<td>53.415646</td>
+<td>21.0</td>
+<td>7.0</td>
+<td>7.0</td>
+<td>63.506492</td>
+<td>1849.659724</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -471,53 +473,53 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">99995</th>
-<td>359.904341</td>
-<td>34.469115</td>
-<td>38.0</td>
+<td>312.529542</td>
+<td>37.627474</td>
+<td>46.0</td>
 <td>1.0</td>
-<td>5.0</td>
-<td>104.435966</td>
-<td>1042.751976</td>
+<td>7.0</td>
+<td>7.327503</td>
+<td>954.002042</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">99996</th>
-<td>263.642080</td>
-<td>34.113447</td>
-<td>32.0</td>
+<td>1268.356186</td>
+<td>81.184766</td>
+<td>70.0</td>
+<td>8.0</td>
 <td>6.0</td>
-<td>0.0</td>
-<td>28.975253</td>
-<td>871.720928</td>
+<td>56.238647</td>
+<td>3256.229080</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">99997</th>
-<td>746.258033</td>
-<td>52.889292</td>
-<td>60.0</td>
-<td>7.0</td>
-<td>3.0</td>
-<td>15.676085</td>
-<td>1919.231993</td>
+<td>467.042545</td>
+<td>36.400733</td>
+<td>61.0</td>
+<td>2.0</td>
+<td>4.0</td>
+<td>84.668278</td>
+<td>1304.525389</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">99998</th>
-<td>603.607911</td>
-<td>55.303984</td>
-<td>52.0</td>
-<td>4.0</td>
+<td>1013.623860</td>
+<td>75.540555</td>
+<td>69.0</td>
 <td>5.0</td>
-<td>20.604109</td>
-<td>1665.239281</td>
+<td>8.0</td>
+<td>59.031407</td>
+<td>2618.547092</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">99999</th>
-<td>287.149173</td>
-<td>26.357397</td>
-<td>40.0</td>
-<td>8.0</td>
+<td>321.043171</td>
+<td>31.846579</td>
+<td>43.0</td>
+<td>10.0</td>
 <td>0.0</td>
-<td>53.545384</td>
-<td>786.465697</td>
+<td>58.393933</td>
+<td>949.453952</td>
 </tr>
 </tbody>
 </table>
@@ -535,7 +537,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <li>OLS utilizing DML residualization procedure, including collider variable</li>
 </ol>
 <p>The code of this is as follows:</p>
-<div id="716e2804" class="cell" data-execution_count="6">
+<div id="1af42286" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - Naive OLS</span></span>
@@ -624,21 +626,21 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <tr><td style="text-align:left"></td></tr><tr><td></td><td colspan="1">Naive OLS</td><td colspan="1">Multiple OLS</td><td colspan="1">DML</td><td colspan="1">DML w/ Collider</td></tr><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr>
 <tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr>
 
-<tr><td style="text-align:left">Treatment: Hours on Website</td><td>15.808<sup>***</sup></td><td>12.207<sup>***</sup></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Treatment: Hours on Website</td><td>15.788<sup>***</sup></td><td>12.157<sup>***</sup></td><td></td><td></td></tr>
 <tr><td style="text-align:left"></td><td>(0.012)</td><td>(0.018)</td><td></td><td></td></tr>
-<tr><td style="text-align:left">Residualized Treatment: Hours on Website</td><td></td><td></td><td>5.230<sup>***</sup></td><td>-0.968<sup>***</sup></td></tr>
+<tr><td style="text-align:left">Residualized Treatment: Hours on Website</td><td></td><td></td><td>5.272<sup>***</sup></td><td>-0.996<sup>***</sup></td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td>(0.012)</td><td>(0.017)</td></tr>
-<tr><td style="text-align:left">Age</td><td></td><td>2.528<sup>***</sup></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Age</td><td></td><td>2.537<sup>***</sup></td><td></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.014)</td><td></td><td></td></tr>
-<tr><td style="text-align:left"># of Social Media Profiles</td><td></td><td>21.288<sup>***</sup></td><td></td><td></td></tr>
+<tr><td style="text-align:left"># of Social Media Profiles</td><td></td><td>21.586<sup>***</sup></td><td></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.114)</td><td></td><td></td></tr>
-<tr><td style="text-align:left">Years of Membership</td><td></td><td>19.096<sup>***</sup></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Years of Membership</td><td></td><td>19.204<sup>***</sup></td><td></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.089)</td><td></td><td></td></tr>
-<tr><td style="text-align:left">Intercept</td><td>-170.388<sup>***</sup></td><td>-302.876<sup>***</sup></td><td>0.003<sup></sup></td><td>0.026<sup></sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.677)</td><td>(0.793)</td><td>(0.085)</td><td>(0.071)</td></tr>
+<tr><td style="text-align:left">Intercept</td><td>-169.635<sup>***</sup></td><td>-303.400<sup>***</sup></td><td>0.031<sup></sup></td><td>-0.007<sup></sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.679)</td><td>(0.796)</td><td>(0.085)</td><td>(0.070)</td></tr>
 
 <tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align: left">Observations</td><td>100000</td><td>100000</td><td>100000</td><td>100000</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.946</td><td>0.968</td><td>0.661</td><td>0.031</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.946</td><td>0.968</td><td>0.661</td><td>0.031</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>87.230</td><td>67.347</td><td>26.973</td><td>22.388</td></tr><tr><td style="text-align: left">F Statistic</td><td>1743870.191<sup>***</sup></td><td>748330.558<sup>***</sup></td><td>195113.633<sup>***</sup></td><td>3165.177<sup>***</sup></td></tr>
+<tr><td style="text-align: left">Observations</td><td>100000</td><td>100000</td><td>100000</td><td>100000</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.945</td><td>0.967</td><td>0.665</td><td>0.033</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.945</td><td>0.967</td><td>0.665</td><td>0.033</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>87.058</td><td>67.104</td><td>26.994</td><td>22.284</td></tr><tr><td style="text-align: left">F Statistic</td><td>1718332.965<sup>***</sup></td><td>740115.758<sup>***</sup></td><td>198283.107<sup>***</sup></td><td>3366.584<sup>***</sup></td></tr>
 <tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td><td colspan="4" style="text-align: right"><sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01</td></tr></tbody></table></center><br>
 <p>Recall our simulated source of truth for the ATE is $5. Notice that the only model that is able to capture this value is the DML procedure! We can see that the naïve model has a significant positive bias in the estimate, whereas controlling only for linear terms of the confounders in the multiple regression slightly reduces this bias. Additionally, the DML procedure w/ a collider demonstrates a negative bias; this negative association between sales and our treatment that arises from controlling for the collider can be loosely demonstrated/observed by solving for sales in our collider DGP as such:</p>
 <pre><code>collider = 100 + 2*sales + 7*time_on_website
@@ -661,7 +663,7 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 \end{equation}
 \]</span></p>
 <p>Here we observe that the standard error of our estimate is directly influenced by the size of our residuals (<span class="math inline">\(\epsilon\)</span>). What does this tell us then? If our treatment is randomized, we can include covariates in a multiple OLS or DML procedure, not to obtain exogeneity, but to reduce the variation in our outcome. More specifically, we can include variables that are strong predictors of our outcome to reduce the residuals and, consequently, the standard error of our estimate. Let’s take a look at this in action. First, assume the following DAG (note treatment is randomized so there are no confounders):</p>
-<div id="c4112321" class="cell" data-execution_count="8">
+<div id="d6ccbdc6" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a directed graph</span></span>
@@ -690,7 +692,7 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 </div>
 <p><img src="data/dag2.webp" class="img-fluid"></p>
 <p>Furthermore, suppose the following DGP:</p>
-<div id="11477278" class="cell" data-execution_count="9">
+<div id="95137207" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Error Term</span></span>
@@ -726,12 +728,12 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 <span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="cbb2645e" class="cell" data-execution_count="10">
+<div id="d01e5951" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_rct</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 
 
@@ -750,48 +752,48 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>6972.036764</td>
-<td>0.0</td>
-<td>66.0</td>
+<td>8107.926672</td>
+<td>1.0</td>
+<td>62.0</td>
+<td>7.0</td>
 <td>9.0</td>
-<td>8.0</td>
-<td>28.392244</td>
+<td>43.399307</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>2301.459984</td>
+<td>12985.743927</td>
 <td>0.0</td>
-<td>29.0</td>
-<td>7.0</td>
-<td>5.0</td>
-<td>19.242455</td>
+<td>65.0</td>
+<td>9.0</td>
+<td>8.0</td>
+<td>60.097765</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>7013.942425</td>
-<td>0.0</td>
-<td>20.0</td>
-<td>2.0</td>
-<td>0.0</td>
-<td>55.606345</td>
+<td>10837.093457</td>
+<td>1.0</td>
+<td>71.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>71.465249</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>11159.725725</td>
-<td>1.0</td>
-<td>64.0</td>
+<td>1899.286524</td>
 <td>0.0</td>
+<td>18.0</td>
 <td>8.0</td>
-<td>73.974309</td>
+<td>2.0</td>
+<td>21.929513</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>15356.589831</td>
-<td>1.0</td>
-<td>32.0</td>
-<td>1.0</td>
-<td>5.0</td>
-<td>83.855649</td>
+<td>10273.065606</td>
+<td>0.0</td>
+<td>21.0</td>
+<td>7.0</td>
+<td>7.0</td>
+<td>63.506492</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -804,48 +806,48 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">99995</th>
-<td>23378.653883</td>
+<td>189.528480</td>
 <td>0.0</td>
-<td>38.0</td>
+<td>46.0</td>
 <td>1.0</td>
-<td>5.0</td>
-<td>104.435966</td>
+<td>7.0</td>
+<td>7.327503</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">99996</th>
-<td>1908.470153</td>
-<td>0.0</td>
-<td>32.0</td>
+<td>10979.276711</td>
+<td>1.0</td>
+<td>70.0</td>
+<td>8.0</td>
 <td>6.0</td>
-<td>0.0</td>
-<td>28.975253</td>
+<td>56.238647</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">99997</th>
-<td>2417.172712</td>
-<td>1.0</td>
-<td>60.0</td>
-<td>7.0</td>
-<td>3.0</td>
-<td>15.676085</td>
+<td>15703.042908</td>
+<td>0.0</td>
+<td>61.0</td>
+<td>2.0</td>
+<td>4.0</td>
+<td>84.668278</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">99998</th>
-<td>2142.295119</td>
-<td>0.0</td>
-<td>52.0</td>
-<td>4.0</td>
+<td>10271.846548</td>
+<td>1.0</td>
+<td>69.0</td>
 <td>5.0</td>
-<td>20.604109</td>
+<td>8.0</td>
+<td>59.031407</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">99999</th>
-<td>6232.311529</td>
+<td>7303.507901</td>
+<td>1.0</td>
+<td>43.0</td>
+<td>10.0</td>
 <td>0.0</td>
-<td>40.0</td>
-<td>8.0</td>
-<td>0.0</td>
-<td>53.545384</td>
+<td>58.393933</td>
 </tr>
 </tbody>
 </table>
@@ -862,7 +864,7 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 <li>OLS utilizing DML residualization procedure outlined in eq. (5)</li>
 </ol>
 <p>The code is as follows:</p>
-<div id="830aea26" class="cell" data-execution_count="11">
+<div id="9c52a845" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - Naive OLS</span></span>
@@ -941,21 +943,21 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 <tr><td style="text-align:left"></td></tr><tr><td></td><td colspan="1">Naive OLS</td><td colspan="1">Multiple OLS</td><td colspan="1">DML</td></tr><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
 <tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
 
-<tr><td style="text-align:left">Treatment: Exposure to Advertisement</td><td>49.838<sup></sup></td><td>14.980<sup></sup></td><td></td></tr>
-<tr><td style="text-align:left"></td><td>(36.699)</td><td>(12.015)</td><td></td></tr>
-<tr><td style="text-align:left">Residualized Treatment: Exposure to Advertisement</td><td></td><td></td><td>3.395<sup>*</sup></td></tr>
-<tr><td style="text-align:left"></td><td></td><td></td><td>(1.770)</td></tr>
-<tr><td style="text-align:left">Age</td><td></td><td>18.083<sup>***</sup></td><td></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.366)</td><td></td></tr>
-<tr><td style="text-align:left"># of Social Media Profiles</td><td></td><td>308.343<sup>***</sup></td><td></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(1.897)</td><td></td></tr>
-<tr><td style="text-align:left">Years of Membership</td><td></td><td>211.405<sup>***</sup></td><td></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(1.902)</td><td></td></tr>
-<tr><td style="text-align:left">Intercept</td><td>8068.360<sup>***</sup></td><td>-6043.454<sup>***</sup></td><td>-0.127<sup></sup></td></tr>
-<tr><td style="text-align:left"></td><td>(25.959)</td><td>(26.079)</td><td>(0.886)</td></tr>
+<tr><td style="text-align:left">Treatment: Exposure to Advertisement</td><td>31.620<sup></sup></td><td>8.155<sup></sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td>(36.713)</td><td>(11.998)</td><td></td></tr>
+<tr><td style="text-align:left">Residualized Treatment: Exposure to Advertisement</td><td></td><td></td><td>6.667<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(1.737)</td></tr>
+<tr><td style="text-align:left">Age</td><td></td><td>18.592<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.365)</td><td></td></tr>
+<tr><td style="text-align:left"># of Social Media Profiles</td><td></td><td>312.001<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(1.900)</td><td></td></tr>
+<tr><td style="text-align:left">Years of Membership</td><td></td><td>208.223<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(1.900)</td><td></td></tr>
+<tr><td style="text-align:left">Intercept</td><td>8070.565<sup>***</sup></td><td>-6055.073<sup>***</sup></td><td>-0.566<sup></sup></td></tr>
+<tr><td style="text-align:left"></td><td>(25.934)</td><td>(26.137)</td><td>(0.869)</td></tr>
 
 <tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align: left">Observations</td><td>100000</td><td>100000</td><td>100000</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.000</td><td>0.893</td><td>0.000</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.000</td><td>0.893</td><td>0.000</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>5802.609</td><td>1899.696</td><td>280.125</td></tr><tr><td style="text-align: left">F Statistic</td><td>1.844<sup></sup></td><td>166599.486<sup>***</sup></td><td>3.677<sup>*</sup></td></tr>
+<tr><td style="text-align: left">Observations</td><td>100000</td><td>100000</td><td>100000</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.000</td><td>0.893</td><td>0.000</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>-0.000</td><td>0.893</td><td>0.000</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>5804.884</td><td>1897.013</td><td>274.838</td></tr><tr><td style="text-align: left">F Statistic</td><td>0.742<sup></sup></td><td>167272.388<sup>***</sup></td><td>14.729<sup>***</sup></td></tr>
 <tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td><td colspan="3" style="text-align: right"><sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01</td></tr></tbody></table></center><br>
 <p>First, note that b/c treatment was randomly assigned, there is no true confounding that is occurring above. The poor estimates of the ATE in (1) and (2) are the direct result of imprecise estimates (see the large standard error’s in the parenthesis). Notice how the standard error gets smaller (precision increasing) as we move from (1)-(3), with the DML procedure having the most precise estimate. Draw your attention to the “Residual Std. Error”. We can see how the DML procedure was able to greatly reduce the variation in the ATE model residuals via partialling out the variation that was able to be learnt (non-parametrically) from the predictors in the ML model of our outcome, sales. Again, in this example, we see DML being the only model to obtain the true ATE!</p>
 <p>These results demonstrate the benefit of using DML in an experimental setting to increase statistical power and precision of one’s ATE estimate. Specifically, this can be utilized in RCT or A/B testing settings where the variation in the outcome is very large and/or one is struggling with achieving precise estimates and one has access to strong predictors of the outcome of interest.</p>
@@ -971,7 +973,7 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 ❖❖❖
 </div>
 <center>
-<p>Access all the code via this Marimo Notebook or my <a href="https://github.com/jakepenzak/blog-posts">GitHub Repo</a></p>
+<p>Access all the code via this <a href="https://github.com/jakepenzak/personal-website/tree/main/assets/articles">GitHub Repo</a>.</p>
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>
 <script type="ojs-module-contents">

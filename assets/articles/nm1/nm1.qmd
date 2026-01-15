@@ -2,37 +2,35 @@
 title: 'Optimization, Newton''s Method, & Profit Maximization: Part 1 - Basic Optimization Theory'
 jupyter: python3
 toc: true
+format:
+  live-html:
+    theme: journal
+    include-in-header:
+      - text: |
+          <style>
+          .quarto-title-block, .quarto-title-banner {
+            display: none !important;
+          }
+          </style
+execute:
+  cache: true
+highlight-style: github
 ---
 
+<center> <h1> Optimization, Newton's Method, & Profit Maximization: Part 1 - Basic Optimization Theory </h1> </center>
+<center> **Learn how to solve and utilize Newton's Method for multi-dimensional optimization problems** </center>
+
 ```{python}
-#| marimo: {config: {hide_code: true}}
+#| code-fold: true
+#| code-summary: "Imports and Settings"
 # Relevant Imports
 
-import marimo as mo
 import matplotlib.pyplot as plt
 from matplotlib import animation
 import plotly.graph_objects as go
 import numpy as np
 import sympy as sm
-
-import os
-
-try:
-    os.chdir("assets/articles/notebooks")
-except:
-    pass
-
-
-def display_iframe(path:str):
-    # Read the saved Plotly HTML file
-    with open(path, "r") as f:
-        html_content = f.read()
-
-    # Display it in Jupyter Notebook
-    return mo.iframe(html_content,height='500px')
 ```
-
-<center> **Learn how to solve and utilize Newton's Method for multi-dimensional optimization problems** </center>
 
 
 ## Introduction
@@ -45,7 +43,7 @@ Many of the readers may be familiar with gradient descent, or related optimizati
 
 ## Optimization Basics - A Simple Quadratic Function
 
-Mathematical optimization can be defined “as the science of determining the best solutions to mathematically defined problems.”[1] This may be conceptualized in some real-world examples as: choosing the parameters to minimize a loss function for a machine learning algorithm, choosing price and advertising to maximize profit, choosing stocks to maximize risk-adjusted financial return, etc. Formally, any mathematical optimization problem can be formulated abstractly as such:
+Mathematical optimization can be defined “as the science of determining the best solutions to mathematically defined problems.”[^1] This may be conceptualized in some real-world examples as: choosing the parameters to minimize a loss function for a machine learning algorithm, choosing price and advertising to maximize profit, choosing stocks to maximize risk-adjusted financial return, etc. Formally, any mathematical optimization problem can be formulated abstractly as such:
 
 $$
 \begin{equation}
@@ -85,34 +83,33 @@ $$
 We can verify this graphically for (2) above:
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def parabola_viz():
-    x = np.linspace(-5.5, 5, 100)
-    y = 3 * x**2 + 2 * x - 24
+#| code-fold: true
+#| output: false
 
-    # setting the axes at the centre
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    # ax.spines['left'].set_position('zero')
-    ax.spines["bottom"].set_position("zero")
-    ax.spines["right"].set_color("none")
-    ax.spines["top"].set_color("none")
-    ax.xaxis.set_ticks_position("bottom")
-    # ax.yaxis.set_ticks_position('right')
-    ax.set_yticks([60, 45, 30, 15, 0, -15])
-    ax.set_xticks([-4, -2, 0, 2, 4])
-    ax.text(x=-1.75, y=62, s="x=-1/3")
-    ax.axvline(x=-1 / 3, linestyle=":", color="black")
+x = np.linspace(-5.5, 5, 100)
+y = 3 * x**2 + 2 * x - 24
 
-    # plot the function
-    plt.scatter(-1 / 3, 3 * (-1 / 3) ** 2 + 2 * (-1 / 3) - 24, c="black")
-    plt.plot(x, y, "r")
+# setting the axes at the centre
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+# ax.spines['left'].set_position('zero')
+ax.spines["bottom"].set_position("zero")
+ax.spines["right"].set_color("none")
+ax.spines["top"].set_color("none")
+ax.xaxis.set_ticks_position("bottom")
+# ax.yaxis.set_ticks_position('right')
+ax.set_yticks([60, 45, 30, 15, 0, -15])
+ax.set_xticks([-4, -2, 0, 2, 4])
+ax.text(x=-1.75, y=62, s="x=-1/3")
+ax.axvline(x=-1 / 3, linestyle=":", color="black")
 
-    plt.savefig("data/parabola_viz.webp", format="webp", dpi=300, bbox_inches='tight')
+# plot the function
+plt.scatter(-1 / 3, 3 * (-1 / 3) ** 2 + 2 * (-1 / 3) - 24, c="black")
+plt.plot(x, y, "r")
 
-parabola_viz()
-mo.image("data/parabola_viz.webp", height=500).center()
+plt.savefig("data/parabola_viz.webp", format="webp", dpi=300, bbox_inches='tight')
 ```
+![](data/parabola_viz.webp)
 
 7Note that when multiple extrema of a function exist (i.e., multiple minimums or maximums), care must be taken to determine which is the global extrema — we will briefly discuss this issue further in this article.
 
@@ -120,11 +117,11 @@ The analytical approach demonstrated above can be extended into higher dimension
 
 ## Iterative Optimization Schemes
 
-In general, there are three main categories of iterative optimization schemes. Namely, _zero-order_, _first-order_, and _second-order_, which make use of local information about the function from no derivatives, first derivatives, or second derivatives, respectively.[1] In order to use each iterative scheme, the function $f(x)$ must be a continuous & differentiable function to the respective degree.
+In general, there are three main categories of iterative optimization schemes. Namely, _zero-order_, _first-order_, and _second-order_, which make use of local information about the function from no derivatives, first derivatives, or second derivatives, respectively.[^1] In order to use each iterative scheme, the function $f(x)$ must be a continuous & differentiable function to the respective degree.
 
 ### Zero-order Iterative Schemes
 
-_Zero-order iterative schemes_ are closely aligned with the grid-search as mentioned above — simply, you search over a certain range possible values of the value $\mathbf{x}$ to obtain the minimum functional value. As you likely suspect, these methods tend to be much more computationally expensive than methods that utilize higher orders. Needless to say, they can be reliable and easy to program. There are methodologies out there that improve upon the simple grid-search, see [1] for more information; however, we will be focusing more-so on the higher-order schemes.
+_Zero-order iterative schemes_ are closely aligned with the grid-search as mentioned above — simply, you search over a certain range possible values of the value $\mathbf{x}$ to obtain the minimum functional value. As you likely suspect, these methods tend to be much more computationally expensive than methods that utilize higher orders. Needless to say, they can be reliable and easy to program. There are methodologies out there that improve upon the simple grid-search, see [^1] for more information; however, we will be focusing more-so on the higher-order schemes.
 
 ### First-order Iterative Schemes
 
@@ -180,6 +177,128 @@ $$
 $$
 
 And visually, with algorithmic output (functions will be discussed later in article):
+
+```{python}
+#| code-fold: true
+#| output: false
+
+def get_gradient(
+    function: sm.Expr,
+    symbols: list[sm.Symbol],
+    x0: dict[sm.Symbol, float],  # Add x0 as argument
+) -> np.ndarray:
+    """
+    Calculate the gradient of a function at a given point.
+
+    Args:
+        function (sm.Expr): The function to calculate the gradient of.
+        symbols (list[sm.Symbol]): The symbols representing the variables in the function.
+        x0 (dict[sm.Symbol, float]): The point at which to calculate the gradient.
+
+    Returns:
+        numpy.ndarray: The gradient of the function at the given point.
+    """
+    d1 = {}
+    gradient = np.array([])
+
+    for i in symbols:
+        d1[i] = sm.diff(function, i, 1).evalf(subs=x0)  # add evalf method
+        gradient = np.append(gradient, d1[i])
+
+    return gradient.astype(np.float64)  # Change data type to float
+
+def gradient_descent(
+    function: sm.Expr,
+    symbols: list[sm.Symbol],
+    x0: dict[sm.Symbol, float],
+    learning_rate: float = 0.1,
+    iterations: int = 100,
+) -> dict[sm.Symbol, float] or None:
+    """
+    Performs gradient descent optimization to find the minimum of a given function.
+
+    Args:
+        function (sm.Expr): The function to be optimized.
+        symbols (list[sm.Symbol]): The symbols used in the function.
+        x0 (dict[sm.Symbol, float]): The initial values for the symbols.
+        learning_rate (float, optional): The learning rate for the optimization. Defaults to 0.1.
+        iterations (int, optional): The maximum number of iterations. Defaults to 100.
+
+    Returns:
+        dict[sm.Symbol, float] or None: The solution found by the optimization, or None if no solution is found.
+    """
+    x_star = {}
+    x_star[0] = np.array(list(x0.values()))
+
+    x = []  ## Return x for visual!
+
+    print(f"Starting Values: {x_star[0]}")
+
+    for i in range(iterations):
+        x.append(dict(zip(x0.keys(), x_star[i])))  ## Return x for visual!
+
+        gradient = get_gradient(function, symbols, dict(zip(x0.keys(), x_star[i])))
+
+        x_star[i + 1] = x_star[i].T - learning_rate * gradient.T
+
+        if np.linalg.norm(x_star[i + 1] - x_star[i]) < 10e-5:
+            solution = dict(zip(x0.keys(), x_star[i + 1]))
+            print(
+                f"\nConvergence Achieved ({i+1} iterations): Solution = {solution}"
+            )
+            break
+        else:
+            solution = None
+
+        print(f"Step {i+1}: {x_star[i+1]}")
+
+    return solution, x
+# Gradient Descent
+x = sm.symbols("x")
+
+objective = 3 * x**2 + 2 * x - 24
+symbols = [x]
+x0 = {x: 3}
+
+_, x_iterations = gradient_descent(objective, symbols, x0, iterations=20)
+
+# Defining surface and axes
+x = np.linspace(-5.5, 5, 100)
+y = 3 * x**2 + 2 * x - 24
+
+# setting the axes at the centre
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+# ax.spines['left'].set_position('zero')
+ax.spines["bottom"].set_position("zero")
+ax.spines["right"].set_color("none")
+ax.spines["top"].set_color("none")
+ax.xaxis.set_ticks_position("bottom")
+# ax.yaxis.set_ticks_position('right')
+ax.set_yticks([60, 45, 30, 15, 0, -15])
+ax.set_xticks([-4, -2, 0, 2, 4])
+ax.text(x=-1.75, y=62, s="x=-1/3")
+ax.text(x=2.25, y=13, s="Start")
+ax.axvline(x=-1 / 3, linestyle=":", color="black")
+
+# plot the function
+plt.plot(x, y, "r")
+
+x_viz = []
+y_viz = []
+
+def animate(iterations):
+    x_viz.append(float([v for v in x_iterations[iterations].values()][0]))
+    y_viz.append(float(objective.evalf(subs=x_iterations[iterations])))
+    ax.scatter(x_viz, y_viz, c="black")
+
+rot_animation = animation.FuncAnimation(
+    fig, animate, frames=len(x_iterations), interval=500
+)
+
+rot_animation.save("data/gradient_descent.gif", dpi=300)
+```
+![](data/gradient_descent.gif)
 
 Gradient descent and first-order iterative schemes are notably reliable in their performance. In fact, gradient descent algorithms are primarily utilized for optimization of loss functions in Neural Networks and ML models, and many developments have improved the efficacy of these algorithms. Nevertheless, they are still using limited local information about the function (only the first derivative). Thus, in higher dimension and depending on the nature of the objective function & the learning rate, these schemes 1) can have a slow convergence rate as they maintain a linear convergence rate and 2) may fail entirely to converge. Because of this, it is beneficial for the data scientist to expand their optimization arsenal for more complex & custom optimization problems.
 
@@ -259,99 +378,96 @@ x \\ y
 $$
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def rosenbrocks_viz_3d():
-    x = np.linspace(-4, 4, 100)
-    y = np.linspace(-4, 4, 100)
-    X, Y = np.meshgrid(x, y)
-    Z = 100 * (Y - X**2) ** 2 + (1 - X) ** 2
+#| code-fold: true
+#| output: false
 
-    fig = go.Figure()
-    fig.add_trace(go.Surface(
-        z=Z, x=X, y=Y, colorscale="plasma",
-        colorbar=dict(x=-0.15) 
-    ))
+x = np.linspace(-4, 4, 100)
+y = np.linspace(-4, 4, 100)
+X, Y = np.meshgrid(x, y)
+Z = 100 * (Y - X**2) ** 2 + (1 - X) ** 2
 
-    # Add the optimum point
-    fig.add_trace(
-        go.Scatter3d(
-            x=[1],
-            y=[1],
-            z=[0],
-            mode='markers',
-            marker=dict(size=8, color='green', symbol='circle'),
-            name='Optimum (1,1)'
-        )
+fig = go.Figure()
+fig.add_trace(go.Surface(
+    z=Z, x=X, y=Y, colorscale="plasma",
+    colorbar=dict(x=-0.15)
+))
+
+# Add the optimum point
+fig.add_trace(
+    go.Scatter3d(
+        x=[1],
+        y=[1],
+        z=[0],
+        mode='markers',
+        marker=dict(size=8, color='green', symbol='circle'),
+        name='Optimum (1,1)'
     )
+)
 
-    fig.update_layout(
-        title="Rosenbrock's Parabolic Valley",
-        scene=dict(
-            xaxis_title="X",
-            yaxis_title="Y",
-            zaxis_title="Z",
-            xaxis=dict(tickvals=list(range(-4, 5))),
-            yaxis=dict(tickvals=list(range(-4, 5))),
-        ),
-        showlegend=True,
-        margin=dict(l=0, r=0, b=0, t=40),
-    )
+fig.update_layout(
+    title="Rosenbrock's Parabolic Valley",
+    scene=dict(
+        xaxis_title="X",
+        yaxis_title="Y",
+        zaxis_title="Z",
+        xaxis=dict(tickvals=list(range(-4, 5))),
+        yaxis=dict(tickvals=list(range(-4, 5))),
+    ),
+    showlegend=True,
+    margin=dict(l=0, r=0, b=0, t=40),
+)
 
-    fig.write_image('data/rosenbrocks_viz_3d.webp', format='webp', scale=5)
-    fig.write_html("data/rosenbrocks_viz_3d.html")
-
-rosenbrocks_viz_3d()
-mo.image("data/rosenbrocks_viz_3d.webp", height=500).center()
-# display_iframe("data/rosenbrocks_viz_3d.html")
+fig.write_html("data/rosenbrocks_viz_3d.html")
 ```
 
-[View Interactive Plotly Graph](/articles/notebooks/data/rosenbrocks_viz_3d.html)
+```{=html}
+<center><iframe src="data/rosenbrocks_viz_3d.html" width="750" height="600" frameborder="0"></iframe></center>
+```
 
 ```{python}
-#| marimo: {config: {hide_code: true}}
-def rosenbrocks_viz_contour():
-    # Define the Rosenbrock function
-    def rosenbrock(x, y):
-        return 100 * (y - x**2) ** 2 + (1 - x) ** 2
+#| code-fold: true
+#| output: false
 
-    # Compute gradient
-    def grad_rosenbrock(x, y):
-        df_dx = -400 * x * (y - x**2) - 2 * (1 - x)
-        df_dy = 200 * (y - x**2)
-        return df_dx, df_dy
+# Define the Rosenbrock function
+def rosenbrock(x, y):
+    return 100 * (y - x**2) ** 2 + (1 - x) ** 2
 
-    # Define the grid
-    x_vals = np.linspace(-4, 4, 100)
-    y_vals = np.linspace(-4, 4, 100)
-    X, Y = np.meshgrid(x_vals, y_vals)
-    Z = rosenbrock(X, Y)
+# Compute gradient
+def grad_rosenbrock(x, y):
+    df_dx = -400 * x * (y - x**2) - 2 * (1 - x)
+    df_dy = 200 * (y - x**2)
+    return df_dx, df_dy
 
-    # Compute gradients for quiver plot
-    dX, dY = grad_rosenbrock(X, Y)
+# Define the grid
+x_vals = np.linspace(-4, 4, 100)
+y_vals = np.linspace(-4, 4, 100)
+X, Y = np.meshgrid(x_vals, y_vals)
+Z = rosenbrock(X, Y)
 
-    # Plot contours of Rosenbrock function
-    plt.figure(dpi=125)
-    contour = plt.contour(X, Y, Z, levels=50, cmap="plasma")
-    plt.colorbar(contour)
+# Compute gradients for quiver plot
+dX, dY = grad_rosenbrock(X, Y)
 
-    # Overlay gradient field
-    plt.quiver(X, Y, dX, dY, color="red", alpha=0.6)
+# Plot contours of Rosenbrock function
+plt.figure(dpi=125)
+contour = plt.contour(X, Y, Z, levels=50, cmap="plasma")
+plt.colorbar(contour)
 
-    # Mark the optimization point (theoretical minimum at (1,1))
-    plt.scatter(
-        1, 1, color="green", marker="o", s=100, label="Optimum (1,1)", zorder=3
-    )
+# Overlay gradient field
+plt.quiver(X, Y, dX, dY, color="red", alpha=0.6)
 
-    # Labels and legend
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.title("Contour Representation")
-    plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.25))
-    plt.savefig("data/rosenbrocks_viz_contour.webp", format="webp", dpi=300, bbox_inches='tight')
+# Mark the optimization point (theoretical minimum at (1,1))
+plt.scatter(
+    1, 1, color="green", marker="o", s=100, label="Optimum (1,1)", zorder=3
+)
 
-rosenbrocks_viz_contour()
-mo.image("data/rosenbrocks_viz_contour.webp", height=600).center()
+# Labels and legend
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.title("Contour Representation")
+plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.25))
+plt.savefig("data/rosenbrocks_viz_contour.webp", format="webp", dpi=300, bbox_inches='tight')
 ```
+![](data/rosenbrocks_viz_contour.webp)
 
 We will first solve the above optimization problem first by hand and then in python, both utilizing Newton’s Method.
 
@@ -439,6 +555,7 @@ Thus, we successfully solve for the optimal minimum of our objective function at
 We will now turn to solving this problem, and generalizing it to any function, in python using [SymPy](https://www.sympy.org/en/index.html) — a python library for symbolic mathematics. First, let’s walk through defining Rosenbrock’s parabolic valley and calculating the gradient & Hessian of the function:
 
 ```{python}
+#| code-fold: show
 # Define symbols & objective function (Rosenbrock's Parabolic Valley)
 x, y = sm.symbols("x y")
 Gamma = [x, y]
@@ -497,36 +614,42 @@ def get_hessian_sym(
 SymPy allows us to investigate the symbolic representation of our equations. For example, if we call `objective` , we will see the corresponding output:
 
 ```{python}
+#| code-fold: show
 objective
 ```
 
 Additionally, SymPy allows us take the derivatives of the respective function utilizing the `sm.diff()` command. If we run our defined functions to obtain the gradient `get_gradient_sym(objective,Gamma)` , we obtain a numpy array representing the gradient:
 
 ```{python}
+#| code-fold: show
 get_gradient_sym(objective, Gamma)
 ```
 
 Accessing a specific element, we can see the symbolic representation `get_gradient_sym(objective, Gamma)[0]` :
 
 ```{python}
+#| code-fold: show
 get_gradient_sym(objective, Gamma)[0]
 ```
 
 Similarly, for the Hessian we can call `get_hessian_sym(objective, Gamma)`:
 
 ```{python}
+#| code-fold: show
 get_hessian_sym(objective, Gamma)
 ```
 
 Accessing a specific element `get_hessian_sym(objective,Gamma)[0][1]`:
 
 ```{python}
+#| code-fold: show
 get_hessian_sym(objective, Gamma)[0][1]
 ```
 
 One can easily verify that the gradient and Hessian are identical to the ones we solved out by hand. SymPy allows for the evaluation of any function given specified values for the symbols. For example, we can evaluate the gradient at our initial guess by tweaking the function as follows:
 
 ```{python}
+#| code-fold: show
 def get_gradient(
     function: sm.Expr,
     symbols: list[sm.Symbol],
@@ -584,18 +707,21 @@ def get_hessian(
 We can now compute our gradient given our starting point by calling `get_gradient(objective, Gamma, {x:-1.2,y:1.0})`:
 
 ```{python}
+#| code-fold: show
 get_gradient(objective, Gamma, {x: -1.2, y: 1.0})
 ```
 
 Similarly, for the Hessian `get_hessian(objective, Gamma, {x:-1.2,y:1.0})`:
 
 ```{python}
+#| code-fold: show
 get_hessian(objective, Gamma, {x: -1.2, y: 1.0})
 ```
 
 Again, we can verify that these values are correct from our work by hand above._ Now we have all the ingredients necessary to code Newton’s method (the code for gradient descent is given at the end of this article as well):
 
 ```{python}
+#| code-fold: true
 def newtons_method(
     function: sm.Expr,
     symbols: list[sm.Symbol],
@@ -650,6 +776,7 @@ def newtons_method(
 We can now run the code via `newtons_method(objective,Gamma,{x:-1.2,y:1})`:
 
 ```{python}
+#| code-fold: true
 _ = newtons_method(objective, Gamma, {x: -1.2, y: 1})
 ```
 
@@ -661,11 +788,12 @@ Stay tuned for Part 2 of this series where we will extend what we have learned h
 
 ## Bonus - The Pitfalls of Newton's Method
 
-Despite the attractiveness of Newton’s method, it is not without its own pitfalls. Notably, two main pitfalls exists — 1) NM is not always convergent even when choosing starting points near the solution & 2) NM requires the computation of the Hessian matrix at each step which can be computationally very expensive in higher dimensions. For pitfall #1), a respective solution is the Modified Newton method (MNM), which can be loosely thought of as gradient descent where the search direction is given by the Newton step, Δ. For pitfall #2), quasi-Newton methods, such as DFP or BFGS, have been proposed that approximate the inverse-Hessian used at each step to improve computational burden. For more information see, [1].
+Despite the attractiveness of Newton’s method, it is not without its own pitfalls. Notably, two main pitfalls exists — 1) NM is not always convergent even when choosing starting points near the solution & 2) NM requires the computation of the Hessian matrix at each step which can be computationally very expensive in higher dimensions. For pitfall #1), a respective solution is the Modified Newton method (MNM), which can be loosely thought of as gradient descent where the search direction is given by the Newton step, Δ. For pitfall #2), quasi-Newton methods, such as DFP or BFGS, have been proposed that approximate the inverse-Hessian used at each step to improve computational burden. For more information see, [^1].
 
 ## Supplementary Code
 
 ```{python}
+#| code-fold: show
 def gradient_descent(
     function: sm.Expr,
     symbols: list[sm.Symbol],
@@ -714,71 +842,18 @@ def gradient_descent(
     return solution, x
 ```
 
-```{python}
-#| marimo: {config: {hide_code: true}}
-def gd_visual():
-    # Gradient Descent
-    x = sm.symbols("x")
-
-    objective = 3 * x**2 + 2 * x - 24
-    symbols = [x]
-    x0 = {x: 3}
-
-    _, x_iterations = gradient_descent(objective, symbols, x0, iterations=20)
-
-    # Defining surface and axes
-    x = np.linspace(-5.5, 5, 100)
-    y = 3 * x**2 + 2 * x - 24
-
-    # setting the axes at the centre
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    # ax.spines['left'].set_position('zero')
-    ax.spines["bottom"].set_position("zero")
-    ax.spines["right"].set_color("none")
-    ax.spines["top"].set_color("none")
-    ax.xaxis.set_ticks_position("bottom")
-    # ax.yaxis.set_ticks_position('right')
-    ax.set_yticks([60, 45, 30, 15, 0, -15])
-    ax.set_xticks([-4, -2, 0, 2, 4])
-    ax.text(x=-1.75, y=62, s="x=-1/3")
-    ax.text(x=2.25, y=13, s="Start")
-    ax.axvline(x=-1 / 3, linestyle=":", color="black")
-
-    # plot the function
-    plt.plot(x, y, "r")
-
-    x_viz = []
-    y_viz = []
-
-    def animate(iterations):
-        x_viz.append(float([v for v in x_iterations[iterations].values()][0]))
-        y_viz.append(float(objective.evalf(subs=x_iterations[iterations])))
-        ax.scatter(x_viz, y_viz, c="black")
-
-    rot_animation = animation.FuncAnimation(
-        fig, animate, frames=len(x_iterations), interval=500
-    )
-
-    rot_animation.save("data/gradient_descent.gif", dpi=300)
-
-gd_visual()
-mo.image("data/gradient_descent.gif", height=500).center()
-```
-
-## References
-
-[1] Snyman, J. A., & Wilke, D. N. (2019). Practical mathematical optimization: Basic optimization theory and gradient-based algorithms (2nd ed.). Springer.
-
-[2] [Gradient Descent Wiki Page](https://en.wikipedia.org/wiki/Gradient_descent)
-
-[3] [Newton's Method Wiki Page](https://en.wikipedia.org/wiki/Newton%27s_method#:~:text=In%20numerical%20analysis%2C%20Newton%27s%20method%2C%20also%20known%20as,roots%20%28or%20zeroes%29%20of%20a%20real%20-valued%20function.)
+<br>
 
 <div style="text-align: center; font-size: 24px;">❖❖❖</div>
 
 <center>
-Access all the code via this Marimo Notebook or my [GitHub Repo](https://github.com/jakepenzak/blog-posts)
+Access all the code via this [GitHub Repo](https://github.com/jakepenzak/personal-website/tree/main/assets/articles).
 
 I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
 </center>
 
+[^1]: Snyman, J. A., & Wilke, D. N. (2019). Practical mathematical optimization: Basic optimization theory and gradient-based algorithms (2nd ed.). Springer.
+
+[^2]: [Gradient Descent Wiki Page](https://en.wikipedia.org/wiki/Gradient_descent)
+
+[^3]: [Newton's Method Wiki Page](https://en.wikipedia.org/wiki/Newton%27s_method#:~:text=In%20numerical%20analysis%2C%20Newton%27s%20method%2C%20also%20known%20as,roots%20%28or%20zeroes%29%20of%20a%20real%20-valued%20function.)

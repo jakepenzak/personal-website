@@ -43,7 +43,7 @@ while IFS= read -r -d '' file; do
     # Render the QMD to HTML inside the output directory so supporting files are colocated.
     echo "  Rendering QMD to HTML"
     cd "$output_dir"
-    rm "$base_name.html"
+    rm -f "$base_name.html"
     quarto render "$base_name.qmd"
 
     echo "Converted $file -> $output_file_html"
