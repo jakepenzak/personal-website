@@ -92,9 +92,10 @@ FOCUS_AREA_STYLE: Final[dict[str, dict[str, str]]] = {
 PROFILE_FOCUS_AREAS: Final[list[dict[str, object]]] = [
     {
         "title": "Causal Inference, Causal ML, & Econometrics",
-        "tagline": "I mostly work on program evaluation and heterogeneous effects  getting to who benefits, and by how much? (CATE), not just a single average.",
+        "tagline": "I mostly work on program evaluation and modeling heterogeneous treatment effects - getting to who benefits, and by how much, not just a single average.",
         "highlights": [
-            "CATE / uplift modeling and treatment targeting",
+            "CATE / uplift modeling, treatment targeting, and 'Causal ML'",
+            "Traditional econometrics and quasi-experimental design & methods",
             "Identification + robustness checks (sensitivity, diagnostics)",
             "Turning research-y work into reusable pipelines",
         ],
@@ -128,13 +129,13 @@ PROFILE_FOCUS_AREAS: Final[list[dict[str, object]]] = [
         "highlights": [
             "Packaging + dependency management (reproducible builds)",
             "Containerization and CI-friendly workflows",
-            "Docs, tooling, and small developer experience improvements",
+            "Docs, tooling, and small developer experience improvements",
         ],
         "tools": ["Git", "GitHub Actions", "Docker", "Linux", "uv", "ruff", "pytest"],
     },
     {
         "title": "Data Platforms & Analytics Engineering",
-        "tagline": "I build data foundations that are reliable, fast, and pleasant to use  so analysis and models dont start from chaos every time.",
+        "tagline": "I build data foundations that are reliable, fast, and pleasant to use, so analysis and models dont start from chaos every time.",
         "highlights": [
             "Lakehouse patterns + distributed compute",
             "Query performance, reproducible datasets, and data quality checks",

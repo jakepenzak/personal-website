@@ -5,20 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
-<center> <h1> Double Machine Learning, Simplified: Part 2 - Targeting & the CATE </h1> </center>
-<center> **Learn how to utilize DML for estimating idiosyncratic treatment effects to enable personalized targeting** </center>
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Causal ML • Heterogeneous Effects",
+    title='Double Machine Learning, Simplified: Part 2 - Targeting & the CATE',
+    subtitle="Learn how to utilize DML for estimating idiosyncratic treatment effects to enable personalized targeting.",
+    chips=("CATE", "Linear DML", "Non-Parametric DML"),
+    takeaways=(
+        "Move beyond the ATE: estimate treatment effect heterogeneity via the CATE.",
+        "Linear DML uses interactions with residualized treatment to model interpretable heterogeneity.",
+        "Non-parametric DML learns flexible CATE functions via a weighted regression objective.",
+    ),
+    equation_latex=r"\tilde{y}=\tau(X)\,\tilde{T}+\varepsilon",
+)
+```
 
 ```{python}
 #| code-fold: true

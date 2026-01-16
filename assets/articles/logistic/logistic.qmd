@@ -5,20 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
-<center> <h1> Predictive Parameters in a Logistic Regression: Making Sense of it All </h1> </center>
-<center> **Acquire a robust understanding of logit model parameters beyond the canonical odds ratio interpretation** </center>
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Statistics • Classification",
+    title='Predictive Parameters in a Logistic Regression: Making Sense of it All',
+    subtitle="Acquire a robust understanding of logit model parameters beyond the canonical odds ratio interpretation.",
+    chips=("Marginal Effects", "Odds Ratios", "Interpretability"),
+    takeaways=(
+        "Logit coefficients are linear in log-odds, but probability effects depend on X.",
+        "Average marginal effects translate coefficients into percentage-point probability changes.",
+        "Odds ratios (exp(β)) are convenient, but not always the most intuitive story.",
+    ),
+    equation_latex=r"\frac{\partial p(X)}{\partial x}=\beta\,\frac{e^{-X\beta}}{(1+e^{-X\beta})^2}",
+)
+```
 
 ```{python}
 #| code-fold: true

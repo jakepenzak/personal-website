@@ -5,20 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
-<center> <h1> Optimization, Newton's Method, & Profit Maximization: Part 2 - Constrained Optimization Theory </h1> </center>
-<center> **Learn how to solve constrained optimization problems** </center>
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Optimization • Constraints",
+    title='Optimization, Newton''s Method, & Profit Maximization: Part 2 - Constrained Optimization Theory',
+    subtitle="Learn how to solve constrained optimization problems.",
+    chips=("Lagrangian", "Barrier Methods", "Interior-Point"),
+    takeaways=(
+        "Equality constraints can be handled via Lagrange multipliers in a single augmented objective.",
+        "Inequality constraints can be solved with log barriers that keep iterates feasible.",
+        "Combining Lagrangians + barriers yields a practical template for mixed constraints.",
+    ),
+    equation_latex=r"\mathcal{O}(x)=f(x)+\lambda\,h(x)-\rho\,\log(c(x))",
+)
+```
 
 ```{python}
 #| code-fold: true

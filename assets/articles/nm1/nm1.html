@@ -58,7 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="nm1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="nm1_files/libs/clipboard/clipboard.min.js"></script>
 <script src="nm1_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="nm1_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="nm1_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -69,16 +69,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="nm1_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="nm1_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="nm1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="nm1_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="nm1_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="nm1_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="nm1_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="nm1_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
 <link href="nm1_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -108,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -158,15 +159,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-Optimization, Newton’s Method, &amp; Profit Maximization: Part 1 - Basic Optimization Theory
-</h1>
-</center>
-<center>
-<strong>Learn how to solve and utilize Newton’s Method for multi-dimensional optimization problems</strong>
-</center>
-<div id="51474ab8" class="cell" data-execution_count="1">
+
+<div class="fwl-cover" style="--cover-url: url('cover.gif');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Optimization • Newton's Method</div>
+      <h1 class="fwl-title">Optimization, Newtons Method, &amp; Profit Maximization: Part 1 - Basic Optimization Theory</h1>
+      <p class="fwl-subtitle"><strong>Learn how to solve and utilize Newton's Method for multi-dimensional optimization problems.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Gradients</span><span class="fwl-chip">Hessians</span><span class="fwl-chip">Second-Order Methods</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">Optimization problems combine an objective with (optional) constraints.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Gradient descent uses first-order information; Newton's method uses curvature via the Hessian.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Second-order updates can converge much faster, but require Hessian computation/inversion.</div></div>
+      <div class="fwl-eq">\[\; x_{k+1}=x_k-\mathbf{H}(x_k)^{-1}\nabla f(x_k) \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="bad4c573" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relevant Imports</span></span>
@@ -218,7 +264,7 @@ Optimization, Newton’s Method, &amp; Profit Maximization: Part 1 - Basic Optim
 \end{equation}
 \]</span></p>
 <p>We can verify this graphically for (2) above:</p>
-<div id="8f8d85f3" class="cell" data-execution_count="2">
+<div id="a2aed4f3" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="fl">5.5</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
@@ -302,7 +348,7 @@ Optimization, Newton’s Method, &amp; Profit Maximization: Part 1 - Basic Optim
 \end{equation}
 \]</span></p>
 <p>And visually, with algorithmic output (functions will be discussed later in article):</p>
-<div id="7e46240a" class="cell" data-execution_count="3">
+<div id="a202c15d" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_gradient(</span>
@@ -490,7 +536,7 @@ x \\ y
 \tag{13}
 \end{equation}
 \]</span></p>
-<div id="56909243" class="cell" data-execution_count="4">
+<div id="e2686e7d" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">100</span>)</span>
@@ -533,7 +579,7 @@ x \\ y
 </details>
 </div>
 <center><iframe src="data/rosenbrocks_viz_3d.html" width="750" height="600" frameborder="0"></iframe></center>
-<div id="c1f012c2" class="cell" data-execution_count="5">
+<div id="c07bca7c" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the Rosenbrock function</span></span>
@@ -654,7 +700,7 @@ x \\ y
 <p>Note, this is by no means meant to be an efficient implementation, but rather for demonstration. There are many optimization frameworks &amp; tools that are optimized heavily for efficient implementations, such as <a href="https://scipy.org/">SciPy</a> &amp; <a href="https://www.pyomo.org/">Pyomo</a>.</p>
 </blockquote>
 <p>We will now turn to solving this problem, and generalizing it to any function, in python using <a href="https://www.sympy.org/en/index.html">SymPy</a> — a python library for symbolic mathematics. First, let’s walk through defining Rosenbrock’s parabolic valley and calculating the gradient &amp; Hessian of the function:</p>
-<div id="0f540544" class="cell" data-execution_count="6">
+<div id="98b7b71d" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define symbols &amp; objective function (Rosenbrock's Parabolic Valley)</span></span>
@@ -713,58 +759,58 @@ x \\ y
 </details>
 </div>
 <p>SymPy allows us to investigate the symbolic representation of our equations. For example, if we call <code>objective</code> , we will see the corresponding output:</p>
-<div id="8611c40e" class="cell" data-execution_count="7">
+<div id="be46f580" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>objective</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="7">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
 <p><span class="math inline">\(\displaystyle \left(1 - x\right)^{2} + 100 \left(- x^{2} + y\right)^{2}\)</span></p>
 </div>
 </div>
 <p>Additionally, SymPy allows us take the derivatives of the respective function utilizing the <code>sm.diff()</code> command. If we run our defined functions to obtain the gradient <code>get_gradient_sym(objective,Gamma)</code> , we obtain a numpy array representing the gradient:</p>
-<div id="20f38306" class="cell" data-execution_count="8">
+<div id="9b71be98" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>get_gradient_sym(objective, Gamma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>array([-400*x*(-x**2 + y) + 2*x - 2, -200*x**2 + 200*y], dtype=object)</code></pre>
 </div>
 </div>
 <p>Accessing a specific element, we can see the symbolic representation <code>get_gradient_sym(objective, Gamma)[0]</code> :</p>
-<div id="accbcea2" class="cell" data-execution_count="9">
+<div id="d54cb976" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>get_gradient_sym(objective, Gamma)[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="9">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
 <p><span class="math inline">\(\displaystyle - 400 x \left(- x^{2} + y\right) + 2 x - 2\)</span></p>
 </div>
 </div>
 <p>Similarly, for the Hessian we can call <code>get_hessian_sym(objective, Gamma)</code>:</p>
-<div id="f286e8b5" class="cell" data-execution_count="10">
+<div id="17dbfcb6" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>get_hessian_sym(objective, Gamma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>array([[2*(600*x**2 - 200*y + 1), -400*x],
        [-400*x, 200]], dtype=object)</code></pre>
 </div>
 </div>
 <p>Accessing a specific element <code>get_hessian_sym(objective,Gamma)[0][1]</code>:</p>
-<div id="58dbe384" class="cell" data-execution_count="11">
+<div id="c1534a1e" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>get_hessian_sym(objective, Gamma)[<span class="dv">0</span>][<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="11">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="12">
 <p><span class="math inline">\(\displaystyle - 400 x\)</span></p>
 </div>
 </div>
 <p>One can easily verify that the gradient and Hessian are identical to the ones we solved out by hand. SymPy allows for the evaluation of any function given specified values for the symbols. For example, we can evaluate the gradient at our initial guess by tweaking the function as follows:</p>
-<div id="6a3fd4bb" class="cell" data-execution_count="12">
+<div id="22b8ebc0" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_gradient(</span>
@@ -822,28 +868,28 @@ x \\ y
 </details>
 </div>
 <p>We can now compute our gradient given our starting point by calling <code>get_gradient(objective, Gamma, {x:-1.2,y:1.0})</code>:</p>
-<div id="c2e3192c" class="cell" data-execution_count="13">
+<div id="dd266c6f" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>get_gradient(objective, Gamma, {x: <span class="op">-</span><span class="fl">1.2</span>, y: <span class="fl">1.0</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>array([-215.6,  -88. ])</code></pre>
 </div>
 </div>
 <p>Similarly, for the Hessian <code>get_hessian(objective, Gamma, {x:-1.2,y:1.0})</code>:</p>
-<div id="9ed2440f" class="cell" data-execution_count="14">
+<div id="8248f18e" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>get_hessian(objective, Gamma, {x: <span class="op">-</span><span class="fl">1.2</span>, y: <span class="fl">1.0</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>array([[1330.,  480.],
        [ 480.,  200.]])</code></pre>
 </div>
 </div>
 <p>Again, we can verify that these values are correct from our work by hand above._ Now we have all the ingredients necessary to code Newton’s method (the code for gradient descent is given at the end of this article as well):</p>
-<div id="639a233c" class="cell" data-execution_count="15">
+<div id="dd4ebf53" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> newtons_method(</span>
@@ -898,7 +944,7 @@ x \\ y
 </details>
 </div>
 <p>We can now run the code via <code>newtons_method(objective,Gamma,{x:-1.2,y:1})</code>:</p>
-<div id="d5aeefcb" class="cell" data-execution_count="16">
+<div id="e004bec9" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> newtons_method(objective, Gamma, {x: <span class="op">-</span><span class="fl">1.2</span>, y: <span class="dv">1</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -927,7 +973,7 @@ Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: 0.999
 </section>
 <section id="supplementary-code" class="level2">
 <h2 class="anchored" data-anchor-id="supplementary-code">Supplementary Code</h2>
-<div id="4d4ae822" class="cell" data-execution_count="17">
+<div id="2354d28e" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gradient_descent(</span>

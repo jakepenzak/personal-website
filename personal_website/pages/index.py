@@ -349,18 +349,6 @@ def skillsets_section() -> rx.Component:
             ),
             rx.badge(
                 rx.hstack(
-                    rx.icon(tag="bar-chart-2", size=16),
-                    rx.text("R"),
-                    spacing="2",
-                    align="center",
-                ),
-                radius="full",
-                variant="soft",
-                color_scheme="orange",
-                size="2",
-            ),
-            rx.badge(
-                rx.hstack(
                     rx.icon(tag="cpu", size=16),
                     rx.text("Rust"),
                     spacing="2",
@@ -369,6 +357,18 @@ def skillsets_section() -> rx.Component:
                 radius="full",
                 variant="soft",
                 color_scheme="brown",
+                size="2",
+            ),
+            rx.badge(
+                rx.hstack(
+                    rx.icon(tag="bar-chart-2", size=16),
+                    rx.text("R"),
+                    spacing="2",
+                    align="center",
+                ),
+                radius="full",
+                variant="soft",
+                color_scheme="orange",
                 size="2",
             ),
             rx.badge(

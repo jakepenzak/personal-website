@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="tsne_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="tsne_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="tsne_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="tsne_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="tsne_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="tsne_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="tsne_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="tsne_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
@@ -77,11 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -111,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -156,15 +154,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-t-SNE from Scratch (ft. NumPy):
-</h1>
-</center>
-<center>
-<strong>Acquire a deep understanding of the inner workings of t-SNE via implementation from scratch in python</strong>
-</center>
-<div id="b3f76752" class="cell" data-execution_count="1">
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Machine Learning • Manifold Learning</div>
+      <h1 class="fwl-title">t-SNE from Scratch (ft. NumPy)</h1>
+      <p class="fwl-subtitle"><strong>Acquire a deep understanding of the inner workings of t-SNE via implementation from scratch in python.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">KL Divergence</span><span class="fwl-chip">Perplexity</span><span class="fwl-chip">Neighbor Embedding</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">t-SNE preserves local neighborhood structure by matching pairwise affinities.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Perplexity controls effective neighborhood size via σ selection.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Optimization minimizes KL(P∥Q) using a Student-t kernel in low dimensions.</div></div>
+      <div class="fwl-eq">\[\; C=\sum_i\sum_j p_{ij}\log\frac{p_{ij}}{q_{ij}} \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="0dfca7ba" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
@@ -215,7 +258,7 @@ t-SNE from Scratch (ft. NumPy):
 <section id="inputs" class="level3">
 <h3 class="anchored" data-anchor-id="inputs">1. Inputs</h3>
 <p>Following the original paper, we will be using the publicly available <a href="https://www.openml.org/search?type=data&amp;status=active&amp;id=554&amp;sort=runs">MNIST dataset</a> from OpenML with images of handwritten digits from 0–9.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> We will also randomly sample 1000 images from the dataset &amp; reduce the dimensionality of the dataset using Principal Component Analysis (PCA) and keep 30 components. These are both to improve computational time of the algorithm, as the code here is not optimized for speed, but rather for interpretability &amp; learning.</p>
-<div id="a11a56f3" class="cell" data-execution_count="2">
+<div id="e03c5834" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch MNIST data</span></span>
@@ -233,12 +276,12 @@ t-SNE from Scratch (ft. NumPy):
 </details>
 </div>
 <p>This will be our X dataset with each row being an image and each column being a feature, or principal component in this case (i.e.&nbsp;linear combinations of the original pixels):</p>
-<div id="b400762c" class="cell" data-execution_count="3">
+<div id="268f623c" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -272,123 +315,123 @@ t-SNE from Scratch (ft. NumPy):
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>-5.043048</td>
-<td>-389.092245</td>
-<td>-269.203482</td>
-<td>-758.743659</td>
-<td>38.483591</td>
-<td>352.687912</td>
-<td>11.421913</td>
-<td>-121.213156</td>
-<td>-456.895545</td>
-<td>-89.411004</td>
+<td>-931.915201</td>
+<td>411.259681</td>
+<td>-66.223330</td>
+<td>-22.101824</td>
+<td>-522.071794</td>
+<td>-204.238021</td>
+<td>79.810311</td>
+<td>-151.501689</td>
+<td>-2.645304</td>
+<td>-71.409799</td>
 <td>...</td>
-<td>29.092220</td>
-<td>10.495166</td>
-<td>95.268535</td>
-<td>164.743774</td>
-<td>-46.394840</td>
-<td>-82.797688</td>
-<td>-141.840205</td>
-<td>-14.090761</td>
-<td>-306.248410</td>
-<td>24.363325</td>
+<td>48.977339</td>
+<td>64.932067</td>
+<td>82.663785</td>
+<td>81.841769</td>
+<td>113.573963</td>
+<td>-289.648157</td>
+<td>-37.536887</td>
+<td>44.385295</td>
+<td>-33.734615</td>
+<td>116.867908</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>-443.629084</td>
-<td>-415.732697</td>
-<td>-393.698410</td>
-<td>-579.510409</td>
-<td>-172.428915</td>
-<td>-142.303688</td>
-<td>-481.475444</td>
-<td>-268.929933</td>
-<td>-58.629663</td>
-<td>-355.341419</td>
+<td>-498.965271</td>
+<td>257.802505</td>
+<td>-448.205554</td>
+<td>-385.294813</td>
+<td>349.350506</td>
+<td>-672.517543</td>
+<td>-635.617347</td>
+<td>127.445850</td>
+<td>91.703337</td>
+<td>78.129701</td>
 <td>...</td>
-<td>37.986225</td>
-<td>-12.409061</td>
-<td>279.391414</td>
-<td>-48.557349</td>
-<td>-234.585230</td>
-<td>42.825185</td>
-<td>-124.283311</td>
-<td>333.819838</td>
-<td>-183.654165</td>
-<td>96.909115</td>
+<td>14.600850</td>
+<td>104.047832</td>
+<td>-61.352867</td>
+<td>79.213565</td>
+<td>40.009029</td>
+<td>-305.744439</td>
+<td>-452.102839</td>
+<td>-0.012526</td>
+<td>129.821085</td>
+<td>-51.821047</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>792.669944</td>
-<td>-821.596480</td>
-<td>326.301918</td>
-<td>-645.604074</td>
-<td>93.756397</td>
-<td>-289.921081</td>
-<td>168.581117</td>
-<td>213.262931</td>
-<td>909.498777</td>
-<td>-367.625240</td>
+<td>-653.828524</td>
+<td>180.805708</td>
+<td>-37.946817</td>
+<td>-178.391590</td>
+<td>-753.344540</td>
+<td>87.362490</td>
+<td>-273.592196</td>
+<td>141.444895</td>
+<td>-237.866486</td>
+<td>131.811097</td>
 <td>...</td>
-<td>24.502633</td>
-<td>-392.971416</td>
-<td>203.786742</td>
-<td>-192.388452</td>
-<td>309.071795</td>
-<td>26.466143</td>
-<td>-300.265807</td>
-<td>-33.097518</td>
-<td>-29.741749</td>
-<td>277.064606</td>
+<td>-48.118871</td>
+<td>-13.359654</td>
+<td>198.588208</td>
+<td>-37.209171</td>
+<td>9.447840</td>
+<td>71.514532</td>
+<td>-25.251364</td>
+<td>14.821461</td>
+<td>-139.170878</td>
+<td>-80.313444</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>-116.954827</td>
-<td>-497.465381</td>
-<td>1.522760</td>
-<td>365.439861</td>
-<td>408.668802</td>
-<td>-379.339214</td>
-<td>-43.148727</td>
-<td>-181.841823</td>
-<td>459.646781</td>
-<td>-200.006700</td>
+<td>27.990477</td>
+<td>392.334507</td>
+<td>477.493165</td>
+<td>40.194836</td>
+<td>505.795588</td>
+<td>136.666229</td>
+<td>58.409040</td>
+<td>-101.268468</td>
+<td>-179.489579</td>
+<td>-194.865054</td>
 <td>...</td>
-<td>258.769170</td>
-<td>-359.299050</td>
-<td>-296.899519</td>
-<td>-2.286376</td>
-<td>-19.969580</td>
-<td>61.929945</td>
-<td>-49.409653</td>
-<td>52.209677</td>
-<td>-141.397087</td>
-<td>-54.987093</td>
+<td>-243.163467</td>
+<td>-175.022793</td>
+<td>259.175164</td>
+<td>471.665036</td>
+<td>173.720381</td>
+<td>-21.926315</td>
+<td>40.559378</td>
+<td>121.260797</td>
+<td>-103.262280</td>
+<td>-174.272627</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>833.060362</td>
-<td>-73.983170</td>
-<td>-738.231953</td>
-<td>-535.776029</td>
-<td>634.154217</td>
-<td>863.376117</td>
-<td>461.208378</td>
-<td>-252.120377</td>
-<td>-132.765395</td>
-<td>211.401914</td>
+<td>108.686834</td>
+<td>-443.761169</td>
+<td>1047.275507</td>
+<td>-269.081714</td>
+<td>698.282492</td>
+<td>268.993661</td>
+<td>2.649905</td>
+<td>227.015596</td>
+<td>590.552236</td>
+<td>64.509176</td>
 <td>...</td>
-<td>57.338721</td>
-<td>21.061696</td>
-<td>-127.204600</td>
-<td>53.522396</td>
-<td>-82.919400</td>
-<td>121.527234</td>
-<td>-124.420362</td>
-<td>-80.028980</td>
-<td>289.204538</td>
-<td>-35.744317</td>
+<td>34.180812</td>
+<td>-14.272677</td>
+<td>-4.267202</td>
+<td>-380.389612</td>
+<td>233.763787</td>
+<td>-196.247229</td>
+<td>-21.257888</td>
+<td>-144.816963</td>
+<td>-130.726495</td>
+<td>105.042093</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -416,123 +459,123 @@ t-SNE from Scratch (ft. NumPy):
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">995</th>
-<td>-293.315852</td>
-<td>664.587586</td>
-<td>-715.029806</td>
-<td>498.224261</td>
-<td>240.358896</td>
-<td>-133.095922</td>
-<td>-13.021970</td>
-<td>2.892535</td>
-<td>-196.532143</td>
-<td>232.795568</td>
+<td>704.001866</td>
+<td>416.201728</td>
+<td>728.202071</td>
+<td>545.738046</td>
+<td>-13.182785</td>
+<td>168.897764</td>
+<td>-252.975670</td>
+<td>-3.950580</td>
+<td>-212.479052</td>
+<td>-567.985417</td>
 <td>...</td>
-<td>23.901529</td>
-<td>-148.892747</td>
-<td>-76.774058</td>
-<td>-134.080940</td>
-<td>656.039101</td>
-<td>201.762986</td>
-<td>-89.501068</td>
-<td>-25.374010</td>
-<td>197.630529</td>
-<td>33.843667</td>
+<td>327.495047</td>
+<td>44.757261</td>
+<td>11.850213</td>
+<td>-324.565843</td>
+<td>-103.983645</td>
+<td>-79.764025</td>
+<td>486.828049</td>
+<td>-174.229356</td>
+<td>-399.590480</td>
+<td>-207.753263</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">996</th>
-<td>-31.745068</td>
-<td>-718.896017</td>
-<td>913.856589</td>
-<td>-164.413806</td>
-<td>-381.172992</td>
-<td>-160.810582</td>
-<td>236.379440</td>
-<td>342.513877</td>
-<td>-310.089407</td>
-<td>472.679216</td>
+<td>-435.583186</td>
+<td>-518.925730</td>
+<td>523.326068</td>
+<td>273.215373</td>
+<td>-281.536846</td>
+<td>368.020921</td>
+<td>-30.906676</td>
+<td>-86.819580</td>
+<td>130.227015</td>
+<td>227.218531</td>
 <td>...</td>
-<td>17.083186</td>
-<td>35.055880</td>
-<td>-69.419145</td>
-<td>31.705816</td>
-<td>-18.121032</td>
-<td>-73.691207</td>
-<td>92.823086</td>
-<td>-142.457661</td>
-<td>-130.570646</td>
-<td>-85.170323</td>
+<td>4.785787</td>
+<td>-84.410557</td>
+<td>-304.009573</td>
+<td>13.309568</td>
+<td>-254.705140</td>
+<td>-115.894610</td>
+<td>96.160201</td>
+<td>97.570096</td>
+<td>-40.360102</td>
+<td>196.480744</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">997</th>
-<td>1797.529667</td>
-<td>689.607993</td>
-<td>-214.774819</td>
-<td>580.366169</td>
-<td>-742.942124</td>
-<td>542.911956</td>
-<td>36.295282</td>
-<td>-381.629891</td>
-<td>157.725845</td>
-<td>230.033906</td>
+<td>290.048713</td>
+<td>-123.651858</td>
+<td>38.271626</td>
+<td>-788.843811</td>
+<td>-219.241666</td>
+<td>547.644998</td>
+<td>-41.129062</td>
+<td>-400.736268</td>
+<td>-440.175055</td>
+<td>-339.627691</td>
 <td>...</td>
-<td>12.243112</td>
-<td>135.267187</td>
-<td>5.635666</td>
-<td>-51.272837</td>
-<td>-92.772657</td>
-<td>49.493153</td>
-<td>150.535915</td>
-<td>-2.212885</td>
-<td>-61.207713</td>
-<td>55.337679</td>
+<td>70.933713</td>
+<td>415.261998</td>
+<td>-277.123724</td>
+<td>68.509559</td>
+<td>79.043054</td>
+<td>205.682516</td>
+<td>191.826804</td>
+<td>209.089092</td>
+<td>-292.390174</td>
+<td>-24.164274</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">998</th>
-<td>-80.151477</td>
-<td>-387.128512</td>
-<td>-257.253749</td>
-<td>-801.608672</td>
-<td>-532.376165</td>
-<td>-270.963725</td>
-<td>-169.574406</td>
-<td>273.465905</td>
-<td>-208.444607</td>
-<td>-6.863850</td>
+<td>-81.494684</td>
+<td>-893.865631</td>
+<td>284.655251</td>
+<td>-193.626306</td>
+<td>208.005578</td>
+<td>108.519770</td>
+<td>-138.118422</td>
+<td>-44.223366</td>
+<td>-223.193259</td>
+<td>345.672341</td>
 <td>...</td>
-<td>339.136438</td>
-<td>300.510761</td>
-<td>88.731042</td>
-<td>-249.091872</td>
-<td>-536.127208</td>
-<td>118.506187</td>
-<td>55.194232</td>
-<td>85.359588</td>
-<td>317.181606</td>
-<td>-148.314488</td>
+<td>297.352410</td>
+<td>89.948871</td>
+<td>-19.759266</td>
+<td>-122.929192</td>
+<td>-1.523811</td>
+<td>103.019254</td>
+<td>-240.920921</td>
+<td>117.842351</td>
+<td>-171.811250</td>
+<td>-268.943841</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">999</th>
-<td>394.405316</td>
-<td>-154.427462</td>
-<td>591.924222</td>
-<td>803.875957</td>
-<td>-64.196290</td>
-<td>238.284480</td>
-<td>-590.105916</td>
-<td>-301.595080</td>
-<td>291.978800</td>
-<td>205.535451</td>
+<td>-237.792154</td>
+<td>-449.364853</td>
+<td>993.977356</td>
+<td>-20.240607</td>
+<td>-83.963739</td>
+<td>197.301905</td>
+<td>198.658445</td>
+<td>404.901898</td>
+<td>526.368305</td>
+<td>368.054294</td>
 <td>...</td>
-<td>-399.908353</td>
-<td>97.045763</td>
-<td>-84.214473</td>
-<td>85.809964</td>
-<td>43.388622</td>
-<td>-64.011562</td>
-<td>-269.374013</td>
-<td>-122.461681</td>
-<td>49.774984</td>
-<td>-50.105061</td>
+<td>-76.226814</td>
+<td>-66.050405</td>
+<td>-62.809371</td>
+<td>43.364113</td>
+<td>-449.005920</td>
+<td>-266.624174</td>
+<td>211.255202</td>
+<td>74.683071</td>
+<td>147.336721</td>
+<td>343.400059</td>
 </tr>
 </tbody>
 </table>
@@ -554,7 +597,7 @@ p_{j|i}=\frac{\exp{(-\|x_i-x_j\|^2/2\sigma_i^2)}}{\sum_{k\ne i}\exp{(-\|x_i-x_j\
 \end{equation}
 \]</span></p>
 <p>Note that, in our case with n = 1000, these computations will result in a 1000 x 1000 matrix of similarity scores. Note we set <span class="math inline">\(p\)</span> = 0 whenever <span class="math inline">\(i\)</span> = <span class="math inline">\(j\)</span> b/c we are modeling pairwise similarities. However, you may notice that we have not mentioned how <span class="math inline">\(\sigma\)</span> is determined. This value is determined for each observation <span class="math inline">\(i\)</span> via a grid search based on the user-specified desired <a href="https://en.wikipedia.org/wiki/Perplexity">perplexity</a> of the distributions. We will talk about this immediately below, but let’s first look at how we would code eq. (1) above:</p>
-<div id="41c9daa9" class="cell" data-execution_count="4">
+<div id="b9fab41f" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_original_pairwise_affinities(</span>
@@ -618,7 +661,7 @@ H(P_i) = - \sum_jp_{j|i}\log_2p_{j|i}
 \end{equation}
 \]</span></p>
 <p>In our case, we will set perplexity = 10 and set the search space to be defined by [0.01 * standard deviation of the norms for the difference between images <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, 5 * standard deviation of the norms for the difference between images <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>] divided into 200 equal steps. Knowing this, we can define our <code>grid_search()</code> function as follows:</p>
-<div id="0c3d8958" class="cell" data-execution_count="5">
+<div id="a341ef96" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> grid_search(diff_i: np.ndarray, i: <span class="bu">int</span>, perplexity: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
@@ -670,7 +713,7 @@ H(P_i) = - \sum_jp_{j|i}\log_2p_{j|i}
 </details>
 </div>
 <p>Given these functions, we can compute the affinity matrix via:</p>
-<div id="3e03c91d" class="cell" data-execution_count="6">
+<div id="21013aad" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>p_ij <span class="op">=</span> get_original_pairwise_affinities(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -681,12 +724,12 @@ Completed Pairwise Affinities Matrix.
 </code></pre>
 </div>
 </div>
-<div id="a613dbf0" class="cell" data-execution_count="7">
+<div id="30e1a59c" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(p_ij)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 
@@ -721,122 +764,122 @@ Completed Pairwise Affinities Matrix.
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>4.940656e-324</td>
-<td>8.717681e-04</td>
-<td>1.253578e-11</td>
-<td>1.537936e-07</td>
-<td>3.102997e-06</td>
-<td>7.189652e-09</td>
-<td>1.747029e-08</td>
-<td>1.485792e-06</td>
-<td>8.981325e-13</td>
-<td>1.029919e-09</td>
+<td>3.553563e-25</td>
+<td>4.537423e-09</td>
+<td>6.174442e-25</td>
+<td>4.241161e-39</td>
+<td>1.868486e-13</td>
+<td>5.931357e-12</td>
+<td>1.012538e-48</td>
+<td>2.593082e-20</td>
+<td>3.568851e-31</td>
 <td>...</td>
-<td>3.154509e-10</td>
-<td>7.573586e-09</td>
-<td>1.014940e-10</td>
-<td>3.983640e-08</td>
-<td>3.925919e-02</td>
-<td>2.640224e-11</td>
-<td>8.355639e-08</td>
-<td>1.274200e-14</td>
-<td>2.115915e-05</td>
-<td>5.181049e-10</td>
+<td>2.456403e-30</td>
+<td>6.269366e-36</td>
+<td>4.431148e-35</td>
+<td>2.316721e-28</td>
+<td>2.961418e-22</td>
+<td>1.280241e-41</td>
+<td>5.192504e-23</td>
+<td>3.703750e-31</td>
+<td>6.202265e-31</td>
+<td>3.336875e-33</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>4.282384e-03</td>
+<td>3.885230e-05</td>
 <td>4.940656e-324</td>
-<td>1.738437e-11</td>
-<td>1.385246e-07</td>
-<td>5.632919e-11</td>
-<td>1.006208e-09</td>
-<td>4.115872e-10</td>
-<td>3.184936e-05</td>
-<td>2.372771e-15</td>
-<td>4.641199e-06</td>
+<td>1.142135e-04</td>
+<td>6.781833e-06</td>
+<td>1.321032e-08</td>
+<td>6.115228e-04</td>
+<td>8.990179e-07</td>
+<td>1.069983e-10</td>
+<td>1.537003e-06</td>
+<td>9.266514e-07</td>
 <td>...</td>
-<td>4.207812e-13</td>
-<td>1.216695e-05</td>
-<td>1.566554e-10</td>
-<td>2.169449e-09</td>
-<td>1.368646e-04</td>
-<td>3.668017e-10</td>
-<td>4.877523e-08</td>
-<td>1.240914e-18</td>
-<td>1.640262e-03</td>
-<td>2.267811e-10</td>
+<td>2.454683e-06</td>
+<td>9.609287e-08</td>
+<td>9.919418e-09</td>
+<td>4.872401e-09</td>
+<td>3.240739e-05</td>
+<td>1.456905e-09</td>
+<td>8.230670e-07</td>
+<td>2.699673e-07</td>
+<td>4.660745e-06</td>
+<td>2.299918e-08</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>2.944355e-05</td>
-<td>2.695342e-05</td>
+<td>2.184044e-04</td>
+<td>3.651837e-13</td>
 <td>4.940656e-324</td>
-<td>5.462407e-05</td>
-<td>2.056508e-05</td>
-<td>1.533211e-07</td>
-<td>2.005452e-06</td>
-<td>2.149425e-07</td>
-<td>1.433030e-07</td>
-<td>2.920657e-07</td>
+<td>1.762836e-14</td>
+<td>9.519416e-25</td>
+<td>6.545152e-05</td>
+<td>2.958753e-11</td>
+<td>2.839515e-27</td>
+<td>4.390662e-11</td>
+<td>6.153744e-15</td>
 <td>...</td>
-<td>5.862701e-08</td>
-<td>2.048199e-07</td>
-<td>3.571024e-08</td>
-<td>9.525851e-06</td>
-<td>1.074245e-04</td>
-<td>6.612170e-08</td>
-<td>1.108109e-04</td>
-<td>2.562123e-08</td>
-<td>6.491116e-05</td>
-<td>3.054772e-06</td>
+<td>3.428155e-17</td>
+<td>2.040847e-18</td>
+<td>5.982949e-18</td>
+<td>2.829969e-18</td>
+<td>3.519467e-09</td>
+<td>6.995346e-23</td>
+<td>2.919784e-10</td>
+<td>2.290682e-13</td>
+<td>1.080870e-13</td>
+<td>5.873674e-17</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>1.759656e-07</td>
-<td>3.706972e-08</td>
-<td>2.596132e-12</td>
+<td>1.565194e-09</td>
+<td>9.061402e-12</td>
+<td>2.659864e-09</td>
 <td>4.940656e-324</td>
-<td>1.666094e-13</td>
-<td>9.061328e-09</td>
-<td>2.357076e-13</td>
-<td>7.416904e-10</td>
-<td>1.536418e-17</td>
-<td>1.211900e-07</td>
+<td>1.487900e-10</td>
+<td>2.419839e-10</td>
+<td>3.162685e-09</td>
+<td>5.968172e-19</td>
+<td>9.871110e-08</td>
+<td>1.591932e-12</td>
 <td>...</td>
-<td>1.998803e-13</td>
-<td>5.460746e-08</td>
-<td>1.584122e-16</td>
-<td>1.271391e-10</td>
-<td>1.254258e-07</td>
-<td>6.031245e-12</td>
-<td>1.068921e-11</td>
-<td>1.029768e-20</td>
-<td>4.493510e-12</td>
-<td>1.599687e-07</td>
+<td>1.093071e-11</td>
+<td>2.111759e-09</td>
+<td>6.608259e-19</td>
+<td>1.369975e-04</td>
+<td>1.064901e-08</td>
+<td>1.373909e-10</td>
+<td>6.861039e-11</td>
+<td>1.425653e-10</td>
+<td>2.098048e-10</td>
+<td>2.096172e-12</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>5.693519e-05</td>
-<td>5.433397e-09</td>
-<td>1.367842e-09</td>
-<td>1.601970e-09</td>
+<td>2.795045e-09</td>
+<td>5.231274e-11</td>
+<td>1.470112e-09</td>
+<td>5.848820e-06</td>
 <td>4.940656e-324</td>
-<td>2.144154e-11</td>
-<td>1.748231e-07</td>
-<td>4.097902e-10</td>
-<td>2.889096e-09</td>
-<td>8.147663e-12</td>
+<td>1.696103e-10</td>
+<td>4.795533e-07</td>
+<td>1.559432e-13</td>
+<td>1.606426e-08</td>
+<td>2.920207e-11</td>
 <td>...</td>
-<td>6.447099e-10</td>
-<td>3.988610e-12</td>
-<td>4.217719e-09</td>
-<td>1.850519e-09</td>
-<td>2.914072e-04</td>
-<td>2.068565e-09</td>
-<td>1.885649e-11</td>
-<td>5.422545e-09</td>
-<td>1.380586e-08</td>
-<td>2.794038e-10</td>
+<td>2.483382e-08</td>
+<td>1.437875e-10</td>
+<td>4.482341e-13</td>
+<td>1.131022e-04</td>
+<td>6.983303e-03</td>
+<td>8.733646e-10</td>
+<td>9.160671e-06</td>
+<td>2.484039e-09</td>
+<td>3.769483e-05</td>
+<td>1.087933e-04</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -864,122 +907,122 @@ Completed Pairwise Affinities Matrix.
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">995</th>
-<td>6.322885e-08</td>
-<td>2.460285e-07</td>
-<td>2.702192e-12</td>
-<td>1.511136e-07</td>
-<td>3.068414e-08</td>
-<td>9.370238e-06</td>
-<td>4.447141e-07</td>
-<td>2.912163e-04</td>
-<td>4.222470e-09</td>
-<td>1.321049e-05</td>
+<td>4.304576e-10</td>
+<td>7.012836e-13</td>
+<td>8.647610e-09</td>
+<td>9.318705e-06</td>
+<td>6.919233e-10</td>
+<td>4.351412e-10</td>
+<td>1.073513e-10</td>
+<td>6.971529e-13</td>
+<td>1.656619e-10</td>
+<td>5.879043e-09</td>
 <td>...</td>
-<td>2.170465e-06</td>
-<td>1.034536e-04</td>
-<td>8.113853e-06</td>
-<td>8.608349e-08</td>
-<td>3.877789e-07</td>
+<td>4.372448e-07</td>
+<td>3.663558e-08</td>
+<td>2.204474e-09</td>
+<td>1.585569e-05</td>
+<td>5.331134e-09</td>
 <td>4.940656e-324</td>
-<td>1.610418e-09</td>
-<td>8.560812e-11</td>
-<td>3.892655e-08</td>
-<td>2.922617e-08</td>
+<td>6.300859e-08</td>
+<td>4.980083e-07</td>
+<td>6.978539e-09</td>
+<td>5.869801e-10</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">996</th>
-<td>4.516294e-09</td>
-<td>7.952739e-10</td>
-<td>5.211003e-12</td>
-<td>2.737858e-12</td>
-<td>1.421723e-16</td>
-<td>7.742019e-10</td>
-<td>5.199616e-11</td>
-<td>1.684508e-09</td>
-<td>2.144256e-16</td>
-<td>1.267505e-13</td>
+<td>3.002293e-09</td>
+<td>1.225874e-14</td>
+<td>5.422104e-07</td>
+<td>2.129593e-11</td>
+<td>9.211913e-11</td>
+<td>1.823652e-10</td>
+<td>8.056597e-08</td>
+<td>8.890065e-25</td>
+<td>8.447319e-09</td>
+<td>6.294541e-14</td>
 <td>...</td>
-<td>4.487085e-18</td>
-<td>3.895451e-13</td>
-<td>8.815595e-18</td>
-<td>9.703280e-07</td>
-<td>9.383503e-10</td>
-<td>9.409628e-16</td>
+<td>8.962824e-15</td>
+<td>1.090101e-13</td>
+<td>6.806936e-14</td>
+<td>5.332980e-13</td>
+<td>1.067914e-04</td>
+<td>2.140688e-14</td>
 <td>4.940656e-324</td>
-<td>8.061113e-21</td>
-<td>7.294387e-08</td>
-<td>8.443569e-11</td>
+<td>4.340638e-11</td>
+<td>1.281880e-06</td>
+<td>2.281904e-04</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">997</th>
-<td>1.140722e-09</td>
-<td>3.620427e-12</td>
-<td>3.660759e-12</td>
-<td>2.800857e-11</td>
-<td>1.817220e-07</td>
-<td>6.443025e-09</td>
-<td>2.123201e-08</td>
-<td>6.284725e-10</td>
-<td>7.362038e-02</td>
-<td>5.518449e-13</td>
+<td>2.050591e-07</td>
+<td>5.158642e-09</td>
+<td>2.258650e-05</td>
+<td>1.988845e-06</td>
+<td>2.167747e-09</td>
+<td>9.226990e-08</td>
+<td>7.558719e-09</td>
+<td>1.129690e-11</td>
+<td>3.781045e-06</td>
+<td>2.009996e-07</td>
 <td>...</td>
-<td>8.965477e-08</td>
-<td>5.736040e-13</td>
-<td>2.982074e-11</td>
-<td>1.210110e-10</td>
-<td>4.549318e-09</td>
-<td>3.568734e-10</td>
-<td>7.726003e-12</td>
+<td>3.680358e-09</td>
+<td>2.579330e-08</td>
+<td>1.330346e-09</td>
+<td>5.860590e-07</td>
+<td>1.940207e-06</td>
+<td>1.807296e-07</td>
+<td>2.014530e-06</td>
 <td>4.940656e-324</td>
-<td>6.274855e-11</td>
-<td>2.205289e-06</td>
+<td>2.774594e-05</td>
+<td>2.205589e-09</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">998</th>
-<td>7.988708e-04</td>
-<td>9.610295e-03</td>
-<td>1.178794e-08</td>
-<td>1.190565e-08</td>
-<td>1.548392e-08</td>
-<td>2.324717e-07</td>
-<td>4.669116e-09</td>
-<td>9.722942e-05</td>
-<td>1.998994e-10</td>
-<td>3.307633e-07</td>
+<td>2.798479e-10</td>
+<td>3.928866e-10</td>
+<td>1.943395e-07</td>
+<td>9.892538e-09</td>
+<td>9.252175e-08</td>
+<td>2.825299e-10</td>
+<td>4.490271e-09</td>
+<td>1.254390e-17</td>
+<td>5.414178e-09</td>
+<td>1.456098e-08</td>
 <td>...</td>
-<td>8.467128e-11</td>
-<td>2.244339e-06</td>
-<td>1.136698e-08</td>
-<td>3.514213e-07</td>
-<td>5.586623e-05</td>
-<td>2.593492e-09</td>
-<td>5.012775e-05</td>
-<td>1.075385e-13</td>
+<td>7.369063e-12</td>
+<td>1.111492e-13</td>
+<td>3.058384e-13</td>
+<td>1.796597e-10</td>
+<td>2.207307e-04</td>
+<td>9.734174e-13</td>
+<td>3.392389e-05</td>
+<td>4.061103e-07</td>
 <td>4.940656e-324</td>
-<td>3.287720e-11</td>
+<td>1.326595e-10</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">999</th>
-<td>4.936098e-07</td>
-<td>1.702920e-07</td>
-<td>9.432876e-10</td>
-<td>2.724909e-05</td>
-<td>4.799994e-09</td>
-<td>8.082093e-05</td>
-<td>4.454337e-09</td>
-<td>1.253535e-06</td>
-<td>5.820717e-07</td>
-<td>3.887182e-08</td>
+<td>8.373567e-07</td>
+<td>7.092628e-09</td>
+<td>7.586651e-06</td>
+<td>2.315556e-06</td>
+<td>9.827672e-05</td>
+<td>2.095126e-07</td>
+<td>1.999695e-06</td>
+<td>1.645698e-11</td>
+<td>5.052185e-07</td>
+<td>9.263120e-09</td>
 <td>...</td>
-<td>3.171656e-09</td>
-<td>5.056583e-08</td>
-<td>3.599207e-11</td>
-<td>7.444010e-06</td>
-<td>9.446119e-07</td>
-<td>2.693949e-08</td>
-<td>1.593732e-06</td>
-<td>1.029099e-06</td>
-<td>1.065994e-09</td>
+<td>1.687096e-07</td>
+<td>1.664473e-08</td>
+<td>2.254217e-09</td>
+<td>1.751725e-06</td>
+<td>3.150680e-04</td>
+<td>2.446679e-08</td>
+<td>9.187911e-03</td>
+<td>5.721215e-08</td>
+<td>1.553391e-06</td>
 <td>4.940656e-324</td>
 </tr>
 </tbody>
@@ -997,7 +1040,7 @@ p_{ij}=\frac{p_{j|i}+p_{i|j}}{2n}
 \end{equation}
 \]</span></p>
 <p>Thus, we can define a new function</p>
-<div id="091b8ea4" class="cell" data-execution_count="8">
+<div id="ed3665ef" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_symmetric_p_ij(p_ij: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
@@ -1031,7 +1074,7 @@ p_{ij}=\frac{p_{j|i}+p_{i|j}}{2n}
 </details>
 </div>
 <p>Feeding in <code>p_ij</code> from above, we obtain the following symmetric affinities matrix:</p>
-<div id="812c95f5" class="cell" data-execution_count="9">
+<div id="20ca113f" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p_ij_symmetric <span class="op">=</span> get_symmetric_p_ij(p_ij)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1042,12 +1085,12 @@ Completed Symmetric p_ij Matrix.
 </code></pre>
 </div>
 </div>
-<div id="4cbc15db" class="cell" data-execution_count="10">
+<div id="4c854c8c" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(p_ij_symmetric)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -1082,122 +1125,122 @@ Completed Symmetric p_ij Matrix.
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>4.940656e-324</td>
-<td>2.577076e-06</td>
-<td>1.472178e-08</td>
-<td>1.648796e-10</td>
-<td>3.001909e-08</td>
-<td>1.412628e-11</td>
-<td>4.298076e-10</td>
-<td>9.519371e-10</td>
-<td>6.378383e-12</td>
-<td>5.149593e-13</td>
+<td>1.942615e-08</td>
+<td>1.092044e-07</td>
+<td>7.825968e-13</td>
+<td>1.397522e-12</td>
+<td>3.202544e-07</td>
+<td>3.319254e-09</td>
+<td>7.232154e-10</td>
+<td>5.912796e-10</td>
+<td>1.923277e-12</td>
 <td>...</td>
-<td>2.426865e-08</td>
-<td>3.831219e-12</td>
-<td>2.253760e-09</td>
-<td>2.284020e-11</td>
-<td>4.594315e-05</td>
-<td>3.162762e-11</td>
-<td>4.403634e-11</td>
-<td>5.703674e-13</td>
-<td>4.100150e-07</td>
-<td>2.470640e-10</td>
+<td>6.540083e-09</td>
+<td>6.621684e-10</td>
+<td>5.148447e-10</td>
+<td>1.438509e-09</td>
+<td>7.669477e-13</td>
+<td>2.152288e-13</td>
+<td>1.501146e-12</td>
+<td>1.025295e-10</td>
+<td>1.399239e-13</td>
+<td>4.186783e-10</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>2.577076e-06</td>
+<td>1.942615e-08</td>
 <td>4.940656e-324</td>
-<td>1.347672e-08</td>
-<td>8.779717e-11</td>
-<td>2.744863e-12</td>
-<td>1.348646e-12</td>
-<td>1.923736e-12</td>
-<td>1.894702e-08</td>
-<td>1.203069e-13</td>
-<td>2.320599e-09</td>
+<td>5.710676e-08</td>
+<td>3.390921e-09</td>
+<td>6.631316e-12</td>
+<td>3.220521e-07</td>
+<td>4.495090e-10</td>
+<td>5.534861e-11</td>
+<td>7.685366e-10</td>
+<td>4.634043e-10</td>
 <td>...</td>
-<td>4.003435e-10</td>
-<td>6.132739e-09</td>
-<td>2.003824e-09</td>
-<td>1.111591e-12</td>
-<td>8.838625e-08</td>
-<td>1.231977e-10</td>
-<td>2.478525e-11</td>
-<td>1.810214e-15</td>
-<td>5.625278e-06</td>
-<td>8.525939e-11</td>
+<td>4.008354e-09</td>
+<td>1.425444e-10</td>
+<td>1.042633e-11</td>
+<td>2.446104e-12</td>
+<td>1.620372e-08</td>
+<td>7.288033e-13</td>
+<td>4.115335e-10</td>
+<td>1.375630e-10</td>
+<td>2.330569e-09</td>
+<td>1.504590e-11</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>1.472178e-08</td>
-<td>1.347672e-08</td>
+<td>1.092044e-07</td>
+<td>5.710676e-08</td>
 <td>4.940656e-324</td>
-<td>2.731203e-08</td>
-<td>1.028322e-08</td>
-<td>7.666054e-11</td>
-<td>1.002726e-09</td>
-<td>1.074712e-10</td>
-<td>7.166506e-11</td>
-<td>1.460328e-10</td>
+<td>1.329941e-12</td>
+<td>7.350562e-13</td>
+<td>3.063667e-06</td>
+<td>1.259928e-12</td>
+<td>2.899428e-09</td>
+<td>1.280507e-09</td>
+<td>5.141157e-10</td>
 <td>...</td>
-<td>3.029188e-11</td>
-<td>1.024099e-10</td>
-<td>1.802599e-11</td>
-<td>4.762925e-09</td>
-<td>5.371234e-08</td>
-<td>3.306220e-11</td>
-<td>5.540545e-08</td>
-<td>1.281244e-11</td>
-<td>3.246148e-08</td>
-<td>1.527857e-09</td>
+<td>1.485147e-08</td>
+<td>7.380561e-09</td>
+<td>4.658381e-09</td>
+<td>4.578475e-10</td>
+<td>3.279662e-10</td>
+<td>4.323805e-12</td>
+<td>2.712512e-10</td>
+<td>1.129325e-08</td>
+<td>9.716982e-11</td>
+<td>3.793326e-09</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>1.648796e-10</td>
-<td>8.779717e-11</td>
-<td>2.731203e-08</td>
+<td>7.825968e-13</td>
+<td>3.390921e-09</td>
+<td>1.329941e-12</td>
 <td>4.940656e-324</td>
-<td>8.010682e-13</td>
-<td>2.929189e-11</td>
-<td>3.516130e-14</td>
-<td>3.861129e-13</td>
-<td>2.834901e-13</td>
-<td>6.059499e-11</td>
+<td>2.924484e-09</td>
+<td>8.389021e-11</td>
+<td>1.590171e-12</td>
+<td>2.463520e-09</td>
+<td>3.553312e-10</td>
+<td>1.952497e-12</td>
 <td>...</td>
-<td>2.721591e-09</td>
-<td>2.783607e-11</td>
-<td>3.087990e-11</td>
-<td>8.515643e-14</td>
-<td>1.273023e-10</td>
-<td>7.555983e-11</td>
-<td>6.713535e-15</td>
-<td>1.400429e-14</td>
-<td>5.955070e-12</td>
-<td>1.370453e-08</td>
+<td>1.006520e-08</td>
+<td>9.480590e-08</td>
+<td>1.084791e-11</td>
+<td>6.106704e-06</td>
+<td>5.613025e-12</td>
+<td>4.659421e-09</td>
+<td>4.495316e-14</td>
+<td>9.944938e-10</td>
+<td>5.051172e-12</td>
+<td>1.157779e-09</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>3.001909e-08</td>
-<td>2.744863e-12</td>
-<td>1.028322e-08</td>
-<td>8.010682e-13</td>
+<td>1.397522e-12</td>
+<td>6.631316e-12</td>
+<td>7.350562e-13</td>
+<td>2.924484e-09</td>
 <td>4.940656e-324</td>
-<td>1.083366e-14</td>
-<td>1.223667e-10</td>
-<td>2.048952e-13</td>
-<td>4.156270e-11</td>
-<td>4.073831e-15</td>
+<td>8.693272e-14</td>
+<td>2.397767e-10</td>
+<td>1.333054e-10</td>
+<td>8.035810e-12</td>
+<td>1.460260e-14</td>
 <td>...</td>
-<td>1.289685e-09</td>
-<td>1.994308e-15</td>
-<td>9.855247e-10</td>
-<td>9.253219e-13</td>
-<td>1.595982e-07</td>
-<td>1.637635e-11</td>
-<td>9.428315e-15</td>
-<td>9.357228e-11</td>
-<td>1.464489e-11</td>
-<td>2.539699e-12</td>
+<td>5.487371e-10</td>
+<td>2.097159e-11</td>
+<td>3.341657e-13</td>
+<td>1.108796e-07</td>
+<td>3.492181e-06</td>
+<td>7.826440e-13</td>
+<td>4.580382e-09</td>
+<td>2.325893e-12</td>
+<td>1.889367e-08</td>
+<td>1.035350e-07</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -1225,122 +1268,122 @@ Completed Symmetric p_ij Matrix.
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">995</th>
-<td>3.162762e-11</td>
-<td>1.231977e-10</td>
-<td>3.306220e-11</td>
-<td>7.555983e-11</td>
-<td>1.637635e-11</td>
-<td>4.728566e-09</td>
-<td>2.266264e-10</td>
-<td>1.467317e-07</td>
-<td>6.743309e-12</td>
-<td>6.605247e-09</td>
+<td>2.152288e-13</td>
+<td>7.288033e-13</td>
+<td>4.323805e-12</td>
+<td>4.659421e-09</td>
+<td>7.826440e-13</td>
+<td>2.245980e-13</td>
+<td>5.367567e-14</td>
+<td>3.781865e-10</td>
+<td>8.285628e-14</td>
+<td>2.943525e-12</td>
 <td>...</td>
-<td>1.117546e-07</td>
-<td>5.173903e-08</td>
-<td>5.409924e-08</td>
-<td>4.304222e-11</td>
-<td>1.940595e-10</td>
+<td>3.877889e-09</td>
+<td>9.434798e-10</td>
+<td>9.315206e-11</td>
+<td>1.278966e-08</td>
+<td>2.665567e-12</td>
 <td>4.940656e-324</td>
-<td>8.052096e-13</td>
-<td>2.212407e-13</td>
-<td>2.076002e-11</td>
-<td>2.808283e-11</td>
+<td>3.150431e-11</td>
+<td>3.393689e-10</td>
+<td>3.489756e-12</td>
+<td>1.252688e-11</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">996</th>
-<td>4.403634e-11</td>
-<td>2.478525e-11</td>
-<td>5.540545e-08</td>
-<td>6.713535e-15</td>
-<td>9.428315e-15</td>
-<td>2.533980e-11</td>
-<td>2.469146e-11</td>
-<td>1.532179e-12</td>
-<td>7.926935e-13</td>
-<td>6.337523e-17</td>
+<td>1.501146e-12</td>
+<td>4.115335e-10</td>
+<td>2.712512e-10</td>
+<td>4.495316e-14</td>
+<td>4.580382e-09</td>
+<td>1.494069e-10</td>
+<td>4.118153e-11</td>
+<td>5.884031e-11</td>
+<td>1.693851e-10</td>
+<td>2.555149e-13</td>
 <td>...</td>
-<td>1.640815e-11</td>
-<td>2.600895e-16</td>
-<td>6.171933e-12</td>
-<td>3.158615e-09</td>
-<td>1.164916e-11</td>
-<td>8.052096e-13</td>
+<td>6.597732e-10</td>
+<td>2.604844e-09</td>
+<td>1.085590e-09</td>
+<td>2.406863e-10</td>
+<td>6.444750e-08</td>
+<td>3.150431e-11</td>
 <td>4.940656e-324</td>
-<td>3.863001e-15</td>
-<td>2.510034e-08</td>
-<td>7.969084e-10</td>
+<td>1.007287e-09</td>
+<td>1.760288e-08</td>
+<td>4.708051e-06</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">997</th>
-<td>5.703674e-13</td>
-<td>1.810214e-15</td>
-<td>1.281244e-11</td>
-<td>1.400429e-14</td>
-<td>9.357228e-11</td>
-<td>3.222080e-12</td>
-<td>1.061882e-11</td>
-<td>3.142363e-13</td>
-<td>7.389778e-05</td>
-<td>2.759224e-16</td>
+<td>1.025295e-10</td>
+<td>1.375630e-10</td>
+<td>1.129325e-08</td>
+<td>9.944938e-10</td>
+<td>2.325893e-12</td>
+<td>4.813365e-11</td>
+<td>3.779360e-12</td>
+<td>7.329960e-10</td>
+<td>1.899246e-09</td>
+<td>1.023884e-10</td>
 <td>...</td>
-<td>3.289005e-09</td>
-<td>2.868020e-16</td>
-<td>6.950642e-13</td>
-<td>6.050550e-14</td>
-<td>2.274704e-12</td>
-<td>2.212407e-13</td>
-<td>3.863001e-15</td>
+<td>1.541718e-10</td>
+<td>1.073140e-09</td>
+<td>6.393322e-11</td>
+<td>1.114383e-09</td>
+<td>9.701086e-10</td>
+<td>3.393689e-10</td>
+<td>1.007287e-09</td>
 <td>4.940656e-324</td>
-<td>3.142805e-14</td>
-<td>1.617194e-09</td>
+<td>1.407602e-08</td>
+<td>2.970887e-11</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">998</th>
-<td>4.100150e-07</td>
-<td>5.625278e-06</td>
-<td>3.246148e-08</td>
-<td>5.955070e-12</td>
-<td>1.464489e-11</td>
-<td>1.196359e-10</td>
-<td>2.466430e-12</td>
-<td>4.893338e-08</td>
-<td>5.651840e-12</td>
-<td>1.653817e-10</td>
+<td>1.399239e-13</td>
+<td>2.330569e-09</td>
+<td>9.716982e-11</td>
+<td>5.051172e-12</td>
+<td>1.889367e-08</td>
+<td>5.801515e-12</td>
+<td>2.245399e-12</td>
+<td>3.957500e-10</td>
+<td>5.536396e-12</td>
+<td>1.852097e-10</td>
 <td>...</td>
-<td>3.767645e-10</td>
-<td>1.122365e-09</td>
-<td>1.842396e-09</td>
-<td>1.758398e-10</td>
-<td>2.851576e-08</td>
-<td>2.076002e-11</td>
-<td>2.510034e-08</td>
-<td>3.142805e-14</td>
+<td>6.652160e-10</td>
+<td>1.043128e-10</td>
+<td>1.047833e-10</td>
+<td>2.189754e-10</td>
+<td>1.117092e-07</td>
+<td>3.489756e-12</td>
+<td>1.760288e-08</td>
+<td>1.407602e-08</td>
 <td>4.940656e-324</td>
-<td>5.494357e-13</td>
+<td>7.767619e-10</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">999</th>
-<td>2.470640e-10</td>
-<td>8.525939e-11</td>
-<td>1.527857e-09</td>
-<td>1.370453e-08</td>
-<td>2.539699e-12</td>
-<td>4.111128e-08</td>
-<td>2.228709e-12</td>
-<td>6.267752e-10</td>
-<td>8.017720e-10</td>
-<td>1.943591e-11</td>
+<td>4.186783e-10</td>
+<td>1.504590e-11</td>
+<td>3.793326e-09</td>
+<td>1.157779e-09</td>
+<td>1.035350e-07</td>
+<td>1.049479e-10</td>
+<td>9.998477e-10</td>
+<td>5.366077e-11</td>
+<td>2.526257e-10</td>
+<td>4.631583e-12</td>
 <td>...</td>
-<td>4.959920e-10</td>
-<td>2.528297e-11</td>
-<td>3.354384e-12</td>
-<td>3.723484e-09</td>
-<td>4.729435e-10</td>
-<td>2.808283e-11</td>
-<td>7.969084e-10</td>
-<td>1.617194e-09</td>
-<td>5.494357e-13</td>
+<td>3.960052e-10</td>
+<td>5.317912e-11</td>
+<td>5.649993e-12</td>
+<td>1.083718e-09</td>
+<td>1.575433e-07</td>
+<td>1.252688e-11</td>
+<td>4.708051e-06</td>
+<td>2.970887e-11</td>
+<td>7.767619e-10</td>
 <td>4.940656e-324</td>
 </tr>
 </tbody>
@@ -1355,7 +1398,7 @@ Completed Symmetric p_ij Matrix.
 <section id="sample-initial-solution-compute-low-dimensional-affinity-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="sample-initial-solution-compute-low-dimensional-affinity-matrix">3. Sample Initial Solution &amp; Compute Low Dimensional Affinity Matrix</h3>
 <p>Now we want to sample a random initial solution in the lower dimensional space as follows:</p>
-<div id="f393067a" class="cell" data-execution_count="11">
+<div id="d1e23777" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> initialization(</span>
@@ -1397,18 +1440,18 @@ Completed Symmetric p_ij Matrix.
 <span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="09428840" class="cell" data-execution_count="12">
+<div id="4434a41d" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>y0 <span class="op">=</span> initialization(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="8d9bb7aa" class="cell" data-execution_count="13">
+<div id="8725c646" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 
 
@@ -1423,28 +1466,28 @@ Completed Symmetric p_ij Matrix.
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>1.958579e-04</td>
-<td>0.000038</td>
+<td>-0.000006</td>
+<td>-0.000083</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>4.875707e-05</td>
-<td>0.000080</td>
+<td>-0.000061</td>
+<td>-0.000056</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>7.422065e-05</td>
-<td>0.000304</td>
+<td>0.000125</td>
+<td>-0.000092</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>-1.158813e-04</td>
-<td>0.000017</td>
+<td>-0.000007</td>
+<td>0.000005</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>1.075685e-04</td>
-<td>-0.000021</td>
+<td>0.000079</td>
+<td>-0.000019</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -1453,28 +1496,28 @@ Completed Symmetric p_ij Matrix.
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">995</th>
-<td>-2.147986e-07</td>
-<td>-0.000079</td>
+<td>0.000128</td>
+<td>0.000066</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">996</th>
-<td>6.445307e-05</td>
-<td>0.000011</td>
+<td>0.000113</td>
+<td>-0.000063</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">997</th>
-<td>-5.185968e-05</td>
-<td>-0.000165</td>
+<td>-0.000060</td>
+<td>0.000040</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">998</th>
-<td>1.175825e-04</td>
-<td>0.000036</td>
+<td>0.000073</td>
+<td>-0.000030</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">999</th>
-<td>-1.767679e-04</td>
-<td>0.000003</td>
+<td>0.000195</td>
+<td>-0.000062</td>
 </tr>
 </tbody>
 </table>
@@ -1491,7 +1534,7 @@ q_{ij}=\frac{(1+\|y_i-y_j\|^2)^{-1}}{\sum_{k \ne l} (1+\|y_i-y_j\|^2)^{-1}}
 \end{equation}
 \]</span></p>
 <p>Again, we set <span class="math inline">\(q=0\)</span> whenever <span class="math inline">\(i = j\)</span>. Note this equation differs from eq. (1) in that the denominator is over all <span class="math inline">\(i\)</span> and thus symmetric by construction. Putting this into code, we obtain:</p>
-<div id="13e36108" class="cell" data-execution_count="14">
+<div id="6b7252a8" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_low_dimensional_affinities(Y: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
@@ -1532,18 +1575,18 @@ q_{ij}=\frac{(1+\|y_i-y_j\|^2)^{-1}}{\sum_{k \ne l} (1+\|y_i-y_j\|^2)^{-1}}
 </details>
 </div>
 <p>Here we are seeking a 1000 x 1000 affinity matrix but now in the lower dimensional space:</p>
-<div id="db9e78ec" class="cell" data-execution_count="15">
+<div id="02926183" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>q_ij <span class="op">=</span> get_low_dimensional_affinities(y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="d6ebb2f6" class="cell" data-execution_count="16">
+<div id="036899fd" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(q_ij)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
 
@@ -1864,7 +1907,7 @@ C=\text{KL}(P\|Q)=\sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}}
 \end{equation}
 \]</span></p>
 <p>In python, we have:</p>
-<div id="5262f52b" class="cell" data-execution_count="17">
+<div id="71ff4d55" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_gradient(p_ij: np.ndarray, q_ij: np.ndarray, Y: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
@@ -1902,18 +1945,18 @@ C=\text{KL}(P\|Q)=\sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}}
 </details>
 </div>
 <p>Feeding in the relevant arguments, we obtain the gradient as follows:</p>
-<div id="8a5dfc2c" class="cell" data-execution_count="18">
+<div id="f198f81c" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>gradient <span class="op">=</span> get_gradient(p_ij_symmetric, q_ij, y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="6c19783c" class="cell" data-execution_count="19">
+<div id="616e43ec" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(gradient)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 
 
@@ -1928,28 +1971,28 @@ C=\text{KL}(P\|Q)=\sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}}
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>1.285772e-08</td>
-<td>1.717185e-07</td>
+<td>-1.286946e-07</td>
+<td>-9.462969e-09</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>-9.110357e-08</td>
-<td>2.771665e-07</td>
+<td>1.707158e-09</td>
+<td>-1.425793e-09</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>-3.023443e-07</td>
-<td>-1.250777e-07</td>
+<td>2.251103e-07</td>
+<td>4.674707e-08</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>2.908494e-07</td>
-<td>-5.401397e-08</td>
+<td>9.274299e-08</td>
+<td>6.214602e-08</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>-6.691120e-08</td>
-<td>8.807128e-08</td>
+<td>-2.121515e-07</td>
+<td>1.341276e-07</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -1958,28 +2001,28 @@ C=\text{KL}(P\|Q)=\sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}}
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">995</th>
-<td>1.513385e-07</td>
-<td>-9.807733e-08</td>
+<td>-2.399576e-07</td>
+<td>-2.276706e-07</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">996</th>
-<td>1.655642e-07</td>
-<td>-1.960931e-07</td>
+<td>-1.773476e-07</td>
+<td>1.952968e-07</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">997</th>
-<td>1.520482e-07</td>
-<td>6.867118e-09</td>
+<td>-2.348704e-07</td>
+<td>-2.571400e-08</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">998</th>
-<td>7.995018e-08</td>
-<td>1.589652e-07</td>
+<td>9.532368e-08</td>
+<td>1.930476e-07</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">999</th>
-<td>-2.025396e-07</td>
-<td>-1.664919e-07</td>
+<td>-2.434140e-07</td>
+<td>1.972993e-08</td>
 </tr>
 </tbody>
 </table>
@@ -2002,7 +2045,7 @@ C=\text{KL}(P\|Q)=\sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}}
 <p>where <span class="math inline">\(\eta\)</span> is our <a href="https://en.wikipedia.org/wiki/Learning_rate">learning rate</a> and <span class="math inline">\(\alpha(t)\)</span> is our momentum term as a function of time. The learning rate controls the step size at each iteration and the momentum term allows the optimization algorithm to gain inertia in the smooth direction of the search space, while not being bogged down by the noisy parts of the gradient. We will set <span class="math inline">\(\eta=200\)</span> for our example and will fix <span class="math inline">\(\alpha(t)=0.5\)</span> if <span class="math inline">\(t &lt; 250\)</span> and <span class="math inline">\(\alpha(t)=0.8\)</span> otherwise. We have all the components necessary above to compute to the update rule, thus we can now run our optimization over a set number of iterations <span class="math inline">\(T\)</span> (we will set <span class="math inline">\(T=1000\)</span>).</p>
 <p>Before we set up for iteration scheme, let’s first introduce the enhancement the authors refer to as “early exaggeration”. This term is a constant that scales the original matrix of affinities <span class="math inline">\(p_{ij}\)</span>. What this does is it places more emphasis on modeling the very similar points (high values in <span class="math inline">\(p_{ij}\)</span> from the original space) in the new space early on and thus forming “clusters” of highly similar points. The early exaggeration is placed on at the beginning of the iteration scheme (<span class="math inline">\(T&lt;250\)</span>) and then turned off otherwise. Early exaggeration will be set to 4 in our case. We will see this in action in our visual below following implementation.</p>
 <p>Now, putting all of the pieces together for the algorithm, we have the following:</p>
-<div id="0df65cf3" class="cell" data-execution_count="20">
+<div id="e36242a9" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tsne(</span>
@@ -2087,7 +2130,7 @@ C=\text{KL}(P\|Q)=\sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}}
 </details>
 </div>
 <p>Now calling the code:</p>
-<div id="d044b5a1" class="cell" data-execution_count="21">
+<div id="ac19de61" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>solution, Y <span class="op">=</span> tsne(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2100,35 +2143,35 @@ Computing Symmetric p_ij matrix....
 Completed Symmetric p_ij Matrix. 
 
 Optimizing Low Dimensional Embedding....
-Iteration 1: Value of Cost Function is 4.4525086570258905
-Iteration 50: Value of Cost Function is 2.9473860236322285
-Iteration 100: Value of Cost Function is 2.7005255423951215
-Iteration 150: Value of Cost Function is 2.620784177622922
-Iteration 200: Value of Cost Function is 2.5839141734253266
-Iteration 250: Value of Cost Function is 2.5648995795819136
-Iteration 300: Value of Cost Function is 1.5537939315939486
-Iteration 350: Value of Cost Function is 1.3778430802615222
-Iteration 400: Value of Cost Function is 1.2869545652349523
-Iteration 450: Value of Cost Function is 1.22898127858543
-Iteration 500: Value of Cost Function is 1.1877957557370933
-Iteration 550: Value of Cost Function is 1.1566131084826192
-Iteration 600: Value of Cost Function is 1.1319737470199924
-Iteration 650: Value of Cost Function is 1.111886076357692
-Iteration 700: Value of Cost Function is 1.0951161051850566
-Iteration 750: Value of Cost Function is 1.080857503814209
-Iteration 800: Value of Cost Function is 1.0685532279137573
-Iteration 850: Value of Cost Function is 1.0578039230898306
-Iteration 900: Value of Cost Function is 1.0483144977938448
-Iteration 950: Value of Cost Function is 1.039862903924877
-Completed Low Dimensional Embedding: Final Value of Cost Function is 1.0325664304756565</code></pre>
+Iteration 1: Value of Cost Function is 4.4406978130558805
+Iteration 50: Value of Cost Function is 2.962401546326715
+Iteration 100: Value of Cost Function is 2.700973774872353
+Iteration 150: Value of Cost Function is 2.626831291889962
+Iteration 200: Value of Cost Function is 2.5857498685122136
+Iteration 250: Value of Cost Function is 2.564941209380378
+Iteration 300: Value of Cost Function is 1.5533671265166362
+Iteration 350: Value of Cost Function is 1.3730253404956603
+Iteration 400: Value of Cost Function is 1.2803489722973787
+Iteration 450: Value of Cost Function is 1.2212705755480584
+Iteration 500: Value of Cost Function is 1.1794021107310177
+Iteration 550: Value of Cost Function is 1.147752347037585
+Iteration 600: Value of Cost Function is 1.12276586088434
+Iteration 650: Value of Cost Function is 1.1024151891121186
+Iteration 700: Value of Cost Function is 1.0854616699236224
+Iteration 750: Value of Cost Function is 1.071036433368177
+Iteration 800: Value of Cost Function is 1.058604345842621
+Iteration 850: Value of Cost Function is 1.0477978673444914
+Iteration 900: Value of Cost Function is 1.038290429912608
+Iteration 950: Value of Cost Function is 1.029831423205263
+Completed Low Dimensional Embedding: Final Value of Cost Function is 1.0225388914762061</code></pre>
 </div>
 </div>
-<div id="345f9b9b" class="cell" data-execution_count="22">
+<div id="69bfb55d" class="cell" data-execution_count="24">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(solution)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="23">
 <div>
 
 
@@ -2143,28 +2186,28 @@ Completed Low Dimensional Embedding: Final Value of Cost Function is 1.032566430
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>-18.778132</td>
-<td>-22.392993</td>
+<td>34.014055</td>
+<td>1.542836</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>-8.373488</td>
-<td>25.327486</td>
+<td>35.155558</td>
+<td>-16.882073</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>0.940412</td>
-<td>35.451235</td>
+<td>13.360120</td>
+<td>-2.866010</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>16.452785</td>
-<td>8.569660</td>
+<td>-8.949272</td>
+<td>-14.304973</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>-15.469808</td>
-<td>-29.181793</td>
+<td>-16.397379</td>
+<td>23.816197</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">...</th>
@@ -2173,28 +2216,28 @@ Completed Low Dimensional Embedding: Final Value of Cost Function is 1.032566430
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">995</th>
-<td>13.168054</td>
-<td>-12.384972</td>
+<td>-8.576599</td>
+<td>-26.687632</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">996</th>
-<td>21.578813</td>
-<td>33.036358</td>
+<td>-3.064378</td>
+<td>32.732870</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">997</th>
-<td>-33.568147</td>
-<td>-2.820014</td>
+<td>-19.259571</td>
+<td>7.352250</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">998</th>
-<td>-8.669330</td>
-<td>27.073897</td>
+<td>-9.212013</td>
+<td>19.369818</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">999</th>
-<td>-6.451164</td>
-<td>10.771010</td>
+<td>-4.722223</td>
+<td>35.397239</td>
 </tr>
 </tbody>
 </table>
@@ -2204,7 +2247,7 @@ Completed Low Dimensional Embedding: Final Value of Cost Function is 1.032566430
 </div>
 </div>
 <p>where <code>solution</code> is the final 2-D mapping and <code>Y</code> is our mapped 2-D values at each step of the iteration. Plotting the evolution of <code>Y</code> where <code>Y[-1]</code> is our final 2-D mapping, we obtain (note how the algorithm behaves with early exaggeration on and off):</p>
-<div id="47ed778b" class="cell" data-execution_count="23">
+<div id="c1695d0e" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>

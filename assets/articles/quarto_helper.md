@@ -7,17 +7,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
+
+``{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Econometrics • Regression Geometry",
+    title='Controlling for "X"',
+    subtitle="Understand linear regression mechanics via the Frisch–Waugh–Lovell Theorem.",
+    chips=("Partialling Out", "Orthogonalization", "Interpretation"),
+    takeaways=(
+        '"Control for X" means removing the part of T and y explained by X.',
+        "Regressing residuals y* on T* gives the same slope as full OLS.",
+        "You can visualize 'all else equal' with a clean residual plot.",
+    ),
+    equation_latex=r"y^* = \beta\,T^* + \varepsilon",
+)
+``
 ```
 
 # Quarto Live for Python with Pyodide

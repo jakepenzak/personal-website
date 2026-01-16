@@ -58,7 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="nm2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="nm2_files/libs/clipboard/clipboard.min.js"></script>
 <script src="nm2_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="nm2_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="nm2_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -69,16 +69,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="nm2_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="nm2_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="nm2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="nm2_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="nm2_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="nm2_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="nm2_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="nm2_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
 <link href="nm2_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -108,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -151,15 +152,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-Optimization, Newton’s Method, &amp; Profit Maximization: Part 2 - Constrained Optimization Theory
-</h1>
-</center>
-<center>
-<strong>Learn how to solve constrained optimization problems</strong>
-</center>
-<div id="d113c236" class="cell" data-execution_count="2">
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Optimization • Constraints</div>
+      <h1 class="fwl-title">Optimization, Newtons Method, &amp; Profit Maximization: Part 2 - Constrained Optimization Theory</h1>
+      <p class="fwl-subtitle"><strong>Learn how to solve constrained optimization problems.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Lagrangian</span><span class="fwl-chip">Barrier Methods</span><span class="fwl-chip">Interior-Point</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">Equality constraints can be handled via Lagrange multipliers in a single augmented objective.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Inequality constraints can be solved with log barriers that keep iterates feasible.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Combining Lagrangians + barriers yields a practical template for mixed constraints.</div></div>
+      <div class="fwl-eq">\[\; \mathcal{O}(x)=f(x)+\lambda\,h(x)-\rho\,\log(c(x)) \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="ced8188f" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -221,7 +267,7 @@ Optimization, Newton’s Method, &amp; Profit Maximization: Part 2 - Constrained
 \end{equation}
 \]</span></p>
 <p>Putting this into python code, we make use of <a href="https://www.sympy.org/en/index.html">SymPy</a> — a python library for symbolic mathematics — and create generalizable functions to compute the gradient, compute the Hessian, and implement Newton’s method for an n-dimensional function (see <a href="/articles/nm1" target="_blank" rel="noopener noreferrer">part 1</a> for full recap) and, leveraging these functions, we can solve an unconstrained optimization problem as follows:</p>
-<div id="b9856b92" class="cell" data-execution_count="3">
+<div id="eb0ae8d1" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Functions Defined in Part 1</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_gradient(</span>
@@ -328,7 +374,7 @@ Optimization, Newton’s Method, &amp; Profit Maximization: Part 2 - Constrained
 <span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> solution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="3e2fbf3a" class="cell" data-execution_count="4">
+<div id="05cadd23" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> sm.symbols(<span class="st">"x y"</span>)</span>
@@ -348,7 +394,7 @@ Step 5: [0.9999957  0.99999139]
 
 Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: 0.9999999999814724}</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>{x: 0.9999999999999999, y: 0.9999999999814724}</code></pre>
 </div>
 </div>
@@ -383,7 +429,7 @@ Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: 0.999
 \end{equation}
 \]</span></p>
 <p>Note that, for simplicity and consistency, the equality constraints should be written such that they are equal to zero. Now our optimization problem looks like:</p>
-<div id="f640894d" class="cell" data-execution_count="5">
+<div id="7fa2912b" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the Rosenbrock function</span></span>
@@ -472,7 +518,7 @@ Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: 0.999
 </details>
 </div>
 <center><iframe src="data/eqc_rosenbrocks_viz_3d.html" width="750" height="600" frameborder="0"></iframe></center>
-<div id="807986b8" class="cell" data-execution_count="6">
+<div id="a65d2cd0" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the Rosenbrock function</span></span>
@@ -577,7 +623,7 @@ Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: 0.999
 \end{equation}
 \]</span></p>
 <p>We can then solve this Lagrangian using Newton’s method (or gradient descent!), but now including the Lagrange multipliers as additional choice variables.</p>
-<div id="0d02aa17" class="cell" data-execution_count="7">
+<div id="d9007afe" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x, y, λ <span class="op">=</span> sm.symbols(<span class="st">"x y λ"</span>)</span>
@@ -598,7 +644,7 @@ Step 5: [   0.999996   -1.000008 -400.      ]
 
 Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: -1.0000000000160152, λ: -400.0}</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>{x: 0.9999999999999999, y: -1.0000000000160152, λ: -400.0}</code></pre>
 </div>
 </div>
@@ -627,7 +673,7 @@ Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: -1.00
 \end{equation}
 \]</span></p>
 <p>Now our optimization problem looks like:</p>
-<div id="bf70a9d2" class="cell" data-execution_count="8">
+<div id="97ed332e" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the Rosenbrock function</span></span>
@@ -765,7 +811,7 @@ Convergence Achieved (6 iterations): Solution = {x: 0.9999999999999999, y: -1.00
 </details>
 </div>
 <center><iframe src="data/ineqc_rosenbrocks_viz_3d.html" width="750" height="600" frameborder="0"></iframe></center>
-<div id="d0449e5b" class="cell" data-execution_count="9">
+<div id="f2c8ce89" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the Rosenbrock function</span></span>
@@ -862,7 +908,7 @@ g_j(\mathbf{x}), &amp; g_j(\mathbf{x}) \geq 0 \\
 \]</span></p>
 <p>where <span class="math inline">\(\rho\)</span> is a small positive scalar — known as the barrier parameter. As <span class="math inline">\(\rho \rightarrow 0\)</span>, the solution of the barrier function <span class="math inline">\(\mathcal{B}(\mathbf{X},\rho)\)</span> should converge to the solution of our original constrained optimization function. Note, the <span class="math inline">\(c(x)\)</span> states that depending on how we formulate our inequality constraints (greater than or less than zero) will dictate whether we use the negative or positive of that constraint. We know that <span class="math inline">\(y=\log(x)\)</span> is undefined for <span class="math inline">\(x \le 0\)</span>, thus we need to formulate our constraint to always be <span class="math inline">\(\ge 0\)</span>.</p>
 <p>How exactly does the barrier method work, you may ask? To begin with, when using the barrier method, we must choose starting values that are in the feasible region. As the optimal values approach the “barrier” outlined by the constraint, this method relies on the fact that the logarithmic function approaches negative infinity as the value approaches zero, thereby penalizing the objective function value. As <span class="math inline">\(\rho \rightarrow 0\)</span>, the penalization decreases (see figure directly below) and we converge to the solution. However, it is necessary to start with a sufficiently large <span class="math inline">\(\rho\)</span> so that the penalization is large enough to prevent “jumping” out of the barriers. Therefore, the algorithm has one extra loop than Newton’s method alone — namely, we choose a starting value <span class="math inline">\(\rho\)</span>, optimize the barrier function using Newton’s method, then update <span class="math inline">\(\rho\)</span> by slowly decreasing it (<span class="math inline">\(\rho \rightarrow 0\)</span>), and repeat until convergence.</p>
-<div id="cd587a6c" class="cell" data-outpute="false" data-execution_count="10">
+<div id="99bb13e6" class="cell" data-outpute="false" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining surface and axes</span></span>
@@ -893,7 +939,7 @@ g_j(\mathbf{x}), &amp; g_j(\mathbf{x}) \geq 0 \\
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="nm2_files/figure-html/cell-10-output-1.png" width="710" height="509" class="figure-img"></p>
+<p><img src="nm2_files/figure-html/cell-11-output-1.png" width="710" height="509" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -907,7 +953,7 @@ g_j(\mathbf{x}), &amp; g_j(\mathbf{x}) \geq 0 \\
 \end{equation}
 \]</span></p>
 <p>Recall that <span class="math inline">\(\log(a) + \log(b) = \log(ab)\)</span> and our one constraint <span class="math inline">\(x \le 0 \rightarrow -x \ge 0\)</span>. We must then update our code to accommodate the barrier method algorithm:</p>
-<div id="6ebe14ed" class="cell" data-execution_count="11">
+<div id="dca8886f" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> constrained_newtons_method(</span>
@@ -988,7 +1034,7 @@ g_j(\mathbf{x}), &amp; g_j(\mathbf{x}) \geq 0 \\
 </details>
 </div>
 <p>We can now solve the Barrier function with the code above (Note: Make sure starting values are in the feasible range of inequality constraints &amp; you may have to increase the starting value of rho if you jump out of inequality constraints):</p>
-<div id="25a2403e" class="cell" data-execution_count="12">
+<div id="0e2851d5" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>x, y, ρ <span class="op">=</span> sm.symbols(<span class="st">"x y ρ"</span>)</span>
@@ -1060,7 +1106,7 @@ Current solution: {x: -1.7302169664789209, y: 3.0015385348469783, ρ: 0.00218474
  Overall Convergence Achieved (86 steps): Solution = {x: -1.7300082149986147, y: 3.0008175060422393}
 </code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>{x: -1.7300082149986147, y: 3.0008175060422393}</code></pre>
 </div>
 </div>
@@ -1106,7 +1152,7 @@ g_j(\mathbf{x}), &amp; g_j(\mathbf{x}) \geq 0 \\
 \end{equation}
 \]</span></p>
 <p>In python,</p>
-<div id="7acdb25b" class="cell" data-execution_count="13">
+<div id="95210525" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>x, y, λ, ρ <span class="op">=</span> sm.symbols(<span class="st">"x y λ ρ"</span>)</span>
@@ -1181,7 +1227,7 @@ Current solution: {x: -2.236443040019997, y: 3.0016774712330747, λ: -401.446895
  Overall Convergence Achieved (87 steps): Solution = {x: -2.236247356060529, y: 3.000802237482949, λ: -401.44706163498415}
 </code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>{x: -2.236247356060529, y: 3.000802237482949, λ: -401.44706163498415}</code></pre>
 </div>
 </div>

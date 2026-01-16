@@ -5,20 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
-<center> <h1> Controlling for "X": </h1> </center>
-<center> **Understanding linear regression mechanics via the Frisch-Waugh-Lovell Theorem** </center>
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Econometrics • Regression Geometry",
+    title='Controlling for "X"',
+    subtitle="Understand linear regression mechanics via the Frisch–Waugh–Lovell Theorem.",
+    chips=("Partialling Out", "Orthogonalization", "Interpretation"),
+    takeaways=(
+        '"Control for X" means removing the part of T and y explained by X.',
+        "Regressing residuals y* on T* gives the same slope as full OLS.",
+        "You can visualize 'all else equal' with a clean residual plot.",
+    ),
+    equation_latex=r"y^* = \beta\,T^* + \varepsilon",
+)
+```
 
 
 ```{python}
@@ -36,6 +51,7 @@ from IPython.display import HTML
 ```
 
 ## Introduction
+
 
 Applied econometrics is generally interested in establishing causality. That is, what is the “treatment” effect of $T$ on some outcome $y$. In a simple bivariate case, we can imagine randomly assigning treatment $T=1$ to some individuals and $T=0$ to others. This can be represented by the following linear regression model:
 

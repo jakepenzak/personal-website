@@ -5,21 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
+```{python}
+#| echo: false
+#| output: asis
 
-<center> <h1> Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Applications </h1> </center>
-<center> **Learn how to utilize DML in causal inference tasks** </center>
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Causal ML • Double/Debiased ML",
+    title='Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Applications',
+    subtitle="Learn how to utilize DML in causal inference tasks.",
+    chips=("Partialling Out", "Cross-Fitting", "Neyman Orthogonality"),
+    takeaways=(
+        "DML estimates causal effects by residualizing y and T with flexible ML models.",
+        "Cross-fitting reduces overfitting bias and stabilizes inference.",
+        "You can recover the true ATE even under highly non-linear confounding.",
+    ),
+    equation_latex=r"y-\mathcal{M}_y(X)=\beta\,(T-\mathcal{M}_T(X))+\varepsilon",
+)
+```
 
 ```{python}
 #| code-fold: true

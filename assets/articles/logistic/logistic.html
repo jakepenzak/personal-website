@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="logistic_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="logistic_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="logistic_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="logistic_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="logistic_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="logistic_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="logistic_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="logistic_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
@@ -77,11 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -111,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -152,15 +150,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-Predictive Parameters in a Logistic Regression: Making Sense of it All
-</h1>
-</center>
-<center>
-<strong>Acquire a robust understanding of logit model parameters beyond the canonical odds ratio interpretation</strong>
-</center>
-<div id="30b8ef77" class="cell" data-execution_count="1">
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Statistics • Classification</div>
+      <h1 class="fwl-title">Predictive Parameters in a Logistic Regression: Making Sense of it All</h1>
+      <p class="fwl-subtitle"><strong>Acquire a robust understanding of logit model parameters beyond the canonical odds ratio interpretation.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Marginal Effects</span><span class="fwl-chip">Odds Ratios</span><span class="fwl-chip">Interpretability</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">Logit coefficients are linear in log-odds, but probability effects depend on X.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Average marginal effects translate coefficients into percentage-point probability changes.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Odds ratios (exp(β)) are convenient, but not always the most intuitive story.</div></div>
+      <div class="fwl-eq">\[\; \frac{\partial p(X)}{\partial x}=\beta\,\frac{e^{-X\beta}}{(1+e^{-X\beta})^2} \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="a3715620" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -186,7 +229,7 @@ Predictive Parameters in a Logistic Regression: Making Sense of it All
 <h2 class="anchored" data-anchor-id="logistic-regression-crash-course">Logistic Regression Crash Course</h2>
 <p><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logit Models</a> belong to a more broad family of <a href="https://en.wikipedia.org/wiki/Generalized_linear_model">generalized linear models</a> (GLMs) that, in brief, allow for flexible fitting of linear models when the outcome of interest follows a different underlying distribution than gaussian and relates the linear model to the outcome of interest via a link function. The canonical linear regression is a special case where the link function is the identity function. In the binary outcome case, a linear regression, which is referred to as linear probability model, can provide predictions that are less than 0 or greater than 1 (See Figure 1). This clearly poses issues as probabilities are naturally bounded between 0 and 1. However, GLM’s provide a convenient framework to solve this problem!</p>
 <p>The logit model is a specific case that allows for the modeling of binary outcomes that follow a <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli distribution</a>. The logit model is particularly attractive because the link function used (logit function) is bounded between 0 and 1. And consequently, all model predictions are bounded between 0 and 1, as anticipated in the probability space. Figure 1 below provides a nice visual comparison between the model fits of linear probability model and logistic regression in a bivariate case.</p>
-<div id="afd041e5" class="cell" data-execution_count="2">
+<div id="406e1f39" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="op">-</span><span class="fl">0.25</span>, <span class="fl">1.25</span>, <span class="fl">0.001</span>)</span>
@@ -339,14 +382,14 @@ p(X_i)=\frac{1}{1+e^{-(\beta_0+\beta^*x^*_i+\beta^{**}x^{*2}_i+\beta^{***}x_i^*\
 <h2 class="anchored" data-anchor-id="the-marginal-effects-in-predicting-credit-card-fraud">The Marginal Effects in Predicting Credit Card Fraud</h2>
 <p>To demonstrate a concrete example of what we discussed above, we will utilize the following <a href="https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download">Kaggle dataset</a> on credit card transactions with the intent of building a model to predict whether a transaction is fraudulent<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. The dataset has the following variables on each transaction:</p>
 <p>First, let’s import the data and generate summary statistics:</p>
-<div id="94f6d484" class="cell" data-execution_count="3">
+<div id="4ce98c88" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fraud <span class="op">=</span> pd.read_csv(<span class="st">"data/card_transdata.csv"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fraud.describe().<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -460,7 +503,7 @@ p(X_i)=\frac{1}{1+e^{-(\beta_0+\beta^*x^*_i+\beta^{**}x^{*2}_i+\beta^{***}x_i^*\
 </div>
 </div>
 <p>We will now build a logistic regression model using scikit-learn. Suppose we have already gone through the proper steps in training and validating the model and have determined the appropriate model. Our final model is as follows:</p>
-<div id="991ace2f" class="cell" data-execution_count="4">
+<div id="1bf42b0c" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> <span class="bu">list</span>(fraud.iloc[:, <span class="dv">0</span>:<span class="dv">7</span>].columns)</span>
@@ -482,7 +525,7 @@ p(X_i)=\frac{1}{1+e^{-(\beta_0+\beta^*x^*_i+\beta^{**}x^{*2}_i+\beta^{***}x_i^*\
 </details>
 </div>
 <p>We have built our logit model to predict if a credit card transaction is fraudulent. Now let’s pivot into explaining the model parameters to understand the inner workings of the model and the subsequent role each feature plays in driving predictions. We will define a function to compute the marginal effects of the logistic regression both in terms of probabilities and odds:</p>
-<div id="20e1d14c" class="cell" data-execution_count="5">
+<div id="7f821e2b" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> logit_margeff(</span>
@@ -542,12 +585,12 @@ p(X_i)=\frac{1}{1+e^{-(\beta_0+\beta^*x^*_i+\beta^{**}x^{*2}_i+\beta^{***}x_i^*\
 <p>Note that line 14 is the average marginal effect calculated using (5) and line 21 is the odds ratio calculated using (9).</p>
 </blockquote>
 <p>After we have defined this function all we have to do is feed in the logit model we have built and the matrix of features. Let’s first interpret the output in terms of probabilities:</p>
-<div id="d296fcf9" class="cell" data-execution_count="6">
+<div id="635d2b1d" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>logit_margeff(final_mod, fraud[features], kind<span class="op">=</span><span class="st">"probability"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -607,12 +650,12 @@ p(X_i)=\frac{1}{1+e^{-(\beta_0+\beta^*x^*_i+\beta^{**}x^{*2}_i+\beta^{***}x_i^*\
 <p><strong>Interpretation (used_pin_number):</strong> On average, a credit card transaction that included the use of a pin number is associated with a 32.3 percentage point decrease in the probability that the transaction is fraudulent.</p>
 </blockquote>
 <p>Now, in terms of odds:</p>
-<div id="153a57bc" class="cell" data-execution_count="7">
+<div id="b4af1f5e" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>logit_margeff(final_mod, fraud[features], kind<span class="op">=</span><span class="st">"odds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 

@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="fwl_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="fwl_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="fwl_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="fwl_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="fwl_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="fwl_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="fwl_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="fwl_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
@@ -77,11 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -111,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -149,15 +147,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-Controlling for “X”:
-</h1>
-</center>
-<center>
-<strong>Understanding linear regression mechanics via the Frisch-Waugh-Lovell Theorem</strong>
-</center>
-<div id="cacf75f4" class="cell" data-execution_count="2">
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Econometrics • Regression Geometry</div>
+      <h1 class="fwl-title">Controlling for "X"</h1>
+      <p class="fwl-subtitle"><strong>Understand linear regression mechanics via the Frisch–Waugh–Lovell Theorem.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Partialling Out</span><span class="fwl-chip">Orthogonalization</span><span class="fwl-chip">Interpretation</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">"Control for X" means removing the part of T and y explained by X.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Regressing residuals y* on T* gives the same slope as full OLS.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">You can visualize 'all else equal' with a clean residual plot.</div></div>
+      <div class="fwl-eq">\[\; y^* = \beta\,T^* + \varepsilon \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="7c4f3511" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relevant Imports</span></span>
@@ -304,7 +347,7 @@ y=\mathbf{X} \beta + \epsilon
 <p>Note that all values in the DGP were, in general, chosen arbitrarily such that the data works nicely for demonstration purposes. However, within the realm of this simulation we can interpret the coefficient on “read” as follows: On average, for each additional day a month that an individual read as child, their educational attainment increased by 0.2 years.</p>
 </blockquote>
 <p>First, let’s generate the data:</p>
-<div id="54ca8f06" class="cell" data-execution_count="3">
+<div id="66f7f6a8" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame()</span>
@@ -338,7 +381,7 @@ y=\mathbf{X} \beta + \epsilon
 </details>
 </div>
 <p>The data will look a little something like:</p>
-<div id="9ad11886" class="cell" data-execution_count="4">
+<div id="bb0132f6" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">15</span>), dpi<span class="op">=</span><span class="dv">300</span>)</span>
@@ -363,7 +406,7 @@ y=\mathbf{X} \beta + \epsilon
 </div>
 <p><img src="data/data_hists.webp" class="img-fluid"></p>
 <p>The graph in the bottom right provides the scatter plot and naïve regression line of educ on read. This relationship, on the surface, shows a very strong positive relationship between days read a month as a child and educational attainment. However, we know that by construction this is not the true relationship between educ and read because of the common confounding covariates. We can quantify this result and the bias more formally via regression analysis. Let’s now go ahead and estimate the naïve regression (i.e., eq. (3) less <span class="math inline">\(X\)</span>), the multiple regression with all relevant covariates (i.e., eq. (3)), and the FWL 3 step process (i.e., eqs. (8)-(12)):</p>
-<div id="e8869b30" class="cell" data-execution_count="5">
+<div id="31e3de2c" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Regression Analysis</span></span>
@@ -385,7 +428,7 @@ y=\mathbf{X} \beta + \epsilon
 </details>
 </div>
 <p>The regression results are:</p>
-<div id="53fd273a" class="cell" data-execution_count="6">
+<div id="7c1df0d9" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> [<span class="st">"read"</span>, <span class="st">"read_star"</span>, <span class="st">"HHinc"</span>, <span class="st">"pareduc"</span>, <span class="st">"IQ"</span>, <span class="st">"Intercept"</span>]</span>
@@ -408,26 +451,26 @@ y=\mathbf{X} \beta + \epsilon
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>HTML(<span class="ss">f"&lt;center&gt;</span><span class="sc">{</span>regtable<span class="sc">.</span>render_html()<span class="sc">}</span><span class="ss">&lt;/center&gt;"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="35">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <center>Table 1: The Effect of Childhood Reading on Educational Attainment<br><table style="text-align:center"><tbody><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
 <tr><td style="text-align:left"></td></tr><tr><td></td><td colspan="1">Naive OLS</td><td colspan="1">Multiple OLS</td><td colspan="1">FWL</td></tr><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
 <tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
 
-<tr><td style="text-align:left">Read (Days/Month)</td><td>0.695<sup>***</sup></td><td>0.200<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left">Read (Days/Month)</td><td>0.687<sup>***</sup></td><td>0.181<sup>***</sup></td><td></td></tr>
 <tr><td style="text-align:left"></td><td>(0.005)</td><td>(0.009)</td><td></td></tr>
-<tr><td style="text-align:left">Read*</td><td></td><td></td><td>0.200<sup>***</sup></td></tr>
+<tr><td style="text-align:left">Read*</td><td></td><td></td><td>0.181<sup>***</sup></td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td>(0.009)</td></tr>
-<tr><td style="text-align:left">HHinc</td><td></td><td>0.993<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left">HHinc</td><td></td><td>1.024<sup>***</sup></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.019)</td><td></td></tr>
-<tr><td style="text-align:left">Avg. Parents Education (Yrs)</td><td></td><td>0.106<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left">Avg. Parents Education (Yrs)</td><td></td><td>0.107<sup>***</sup></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.006)</td><td></td></tr>
-<tr><td style="text-align:left">IQ</td><td></td><td>0.202<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left">IQ</td><td></td><td>0.200<sup>***</sup></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.002)</td><td></td></tr>
-<tr><td style="text-align:left">Intercept</td><td>6.845<sup>***</sup></td><td>-15.211<sup>***</sup></td><td>-0.000<sup></sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.050)</td><td>(0.285)</td><td>(0.017)</td></tr>
+<tr><td style="text-align:left">Intercept</td><td>6.910<sup>***</sup></td><td>-15.027<sup>***</sup></td><td>0.000<sup></sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.049)</td><td>(0.291)</td><td>(0.017)</td></tr>
 
 <tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align: left">Observations</td><td>9903</td><td>9903</td><td>9903</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.755</td><td>0.857</td><td>0.052</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.755</td><td>0.857</td><td>0.052</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>2.220</td><td>1.698</td><td>1.698</td></tr><tr><td style="text-align: left">F Statistic</td><td>20517.791<sup>***</sup></td><td>9527.900<sup>***</sup></td><td>538.137<sup>***</sup></td></tr>
+<tr><td style="text-align: left">Observations</td><td>9905</td><td>9905</td><td>9905</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.754</td><td>0.853</td><td>0.043</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.754</td><td>0.853</td><td>0.043</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>2.205</td><td>1.703</td><td>1.703</td></tr><tr><td style="text-align: left">F Statistic</td><td>21213.170<sup>***</sup></td><td>8795.086<sup>***</sup></td><td>412.574<sup>***</sup></td></tr>
 <tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td><td colspan="3" style="text-align: right"><sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01</td></tr></tbody></table></center>
 </div>
 </div>
@@ -436,7 +479,7 @@ y=\mathbf{X} \beta + \epsilon
 <p>A general rule of thumb for signing bias in a regression is the sign of cov(outcome,X) multiplied by the sign of cov(treatment,X). By construction, we have the cov(educ,X)&gt;0 and cov(read,X)&gt;0 and, hence, positive bias.</p>
 </blockquote>
 <p>So, we have now shown the FWL being used to obtain the same estimate, but the real power in FWL lies in the ability to plot the true relationship. Figure 2 below shows the initial relationship of the naïve regression without factoring in the covariates and then the relationship of the residuals from the FWL process, where the noise is from the stochastic error term in DGP. In this case, the FWL slope is the true relationship! We can see how vastly different the slope estimates are. This is where the true power of the FWL theorem lies! It allows us to visualize the relationship between a treatment and outcome after we partial out the variation that is already explained by the additional covariates.</p>
-<div id="30e26529" class="cell" data-execution_count="7">
+<div id="0e2ebd01" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>

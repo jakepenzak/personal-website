@@ -5,20 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
-<center> <h1> Optimization, Newton's Method, & Profit Maximization: Part 1 - Basic Optimization Theory </h1> </center>
-<center> **Learn how to solve and utilize Newton's Method for multi-dimensional optimization problems** </center>
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.gif",
+    kicker="Optimization • Newton's Method",
+    title='Optimization, Newton''s Method, & Profit Maximization: Part 1 - Basic Optimization Theory',
+    subtitle="Learn how to solve and utilize Newton's Method for multi-dimensional optimization problems.",
+    chips=("Gradients", "Hessians", "Second-Order Methods"),
+    takeaways=(
+        "Optimization problems combine an objective with (optional) constraints.",
+        "Gradient descent uses first-order information; Newton's method uses curvature via the Hessian.",
+        "Second-order updates can converge much faster, but require Hessian computation/inversion.",
+    ),
+    equation_latex=r"x_{k+1}=x_k-\mathbf{H}(x_k)^{-1}\nabla f(x_k)",
+)
+```
 
 ```{python}
 #| code-fold: true

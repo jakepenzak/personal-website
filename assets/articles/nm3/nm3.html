@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="nm3_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="nm3_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="nm3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="nm3_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="nm3_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="nm3_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="nm3_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="nm3_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
@@ -77,11 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -111,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -155,15 +153,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-Optimization, Newton’s Method, &amp; Profit Maximization: Part 3 - Applied Profit Maximization
-</h1>
-</center>
-<center>
-<strong>Learn how to apply optimization &amp; econometric techniques to solve an applied profit maximization problem</strong>
-</center>
-<div id="ba253ac9" class="cell" data-execution_count="2">
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Econometrics • Optimization</div>
+      <h1 class="fwl-title">Optimization, Newtons Method, &amp; Profit Maximization: Part 3 - Applied Profit Maximization</h1>
+      <p class="fwl-subtitle"><strong>Learn how to apply optimization &amp; econometric techniques to solve an applied profit maximization problem.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Profit Maximization</span><span class="fwl-chip">Demand Modeling</span><span class="fwl-chip">Constrained Opt.</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">Translate a business objective into a constrained optimization problem.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Use an econometric demand model to connect ad spend to revenue.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Solve budget + minimum-spend constraints with Lagrangians and log barriers.</div></div>
+      <div class="fwl-eq">\[\; \max_{\delta,\tau}\;\pi(\delta,\tau)\ \ \text{s.t.}\ \delta+\tau=B \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="1fc2e7c7" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -237,7 +280,7 @@ g_j(\mathbf{x}), &amp; g_j(\mathbf{x}) \geq 0 \\
 \]</span></p>
 <p>In python, utilizing <a href="https://www.sympy.org/en/index.html">SymPy</a>, we have 4 functions. A function that obtains the gradient of our SymPy function, the Hessian of our SymPy function, solves unconstrained optimization problem via Newton’s method, and solves a constrained optimization problem via Newton’s method according to the generalization eq. (2).</p>
 <p>To solve a constrained optimization problem, we can run the following code (Make sure starting values are in the feasible range of inequality constraints!):</p>
-<div id="2af74d47" class="cell" data-execution_count="3">
+<div id="3444dcba" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Functions Defined in Part 1 &amp; Part 2</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_gradient(</span>
@@ -420,7 +463,7 @@ g_j(\mathbf{x}), &amp; g_j(\mathbf{x}) \geq 0 \\
 <span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> overall_solution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="e8c4480f" class="cell" data-execution_count="4">
+<div id="9030a9d6" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x, y, λ, ρ <span class="op">=</span> sm.symbols(<span class="st">"x y λ ρ"</span>)</span>
@@ -500,7 +543,7 @@ Current solution: {x: -2.236443040019997, y: 3.0016774712330747, λ: -401.446895
  Overall Convergence Achieved (87 steps): Solution = {x: -2.236247356060529, y: 3.000802237482949, λ: -401.44706163498415}
 </code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>{x: -2.236247356060529, y: 3.000802237482949, λ: -401.44706163498415}</code></pre>
 </div>
 </div>
@@ -562,7 +605,7 @@ q_t(\delta,\tau,\cdot)=\alpha+\beta\ln(\delta_t)+\gamma\ln(\tau_t)+\phi_1q_{t-1}
 \end{equation}
 \]</span></p>
 <p>Why the natural log of digital and television ad spend you may ask? This is by no means a required nor a definitive decision in this context, but I am seeking to demonstrate how variable transformations can capture hypotheses about the relationship between our choice variables and the outcomes of interest. In our case, suppose we hypothesize that the impact on ad spend increases sharply initially, but gradually levels out (e.g., saturation effects or the law of diminishing returns). This is exactly what the logarithm transformation will allow us to model. Observe:</p>
-<div id="249a61c8" class="cell" data-execution_count="5">
+<div id="3cbba9aa" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">125</span>)</span>
@@ -603,7 +646,7 @@ q_t(\delta,\tau,\cdot)=\alpha+\beta\ln(\delta_t)+\gamma\ln(\tau_t)+\phi_1q_{t-1}
 <h3 class="anchored" data-anchor-id="optional-data-simulation">Optional: Data Simulation</h3>
 <p>Note this section can be skipped without any loss of the primary content.</p>
 <p>Let’s first simulate monthly data over 10 years for quantity demanded, where the following variables included are as follows:</p>
-<div id="101c738f" class="cell" data-execution_count="6">
+<div id="49d3d734" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Data Simulation</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame()</span>
@@ -653,12 +696,12 @@ q_t(\delta,\tau,\cdot)=\alpha+\beta\ln(\delta_t)+\gamma\ln(\tau_t)+\phi_1q_{t-1}
 <span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="792bf35b" class="cell" data-execution_count="7">
+<div id="32901990" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="27">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -962,7 +1005,7 @@ q_t(\delta,\tau,\cdot)=\alpha+\beta\ln(\delta_t)+\gamma\ln(\tau_t)+\phi_1q_{t-1}
 </div>
 </div>
 <p>Note that we include lag variables because it is highly plausible that today’s quantity demanded is a function of lagged values for many of the variables. We also control for seasonality effects by incorporation dummy variables for each month (this is one of many ways to incorporate seasonality into the model). We then specify the parameters associated with each variable as (note that these parameters are specified in the same order as the columns of the dataframe!):</p>
-<div id="4b6e4c68" class="cell" data-execution_count="8">
+<div id="420e3b89" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Parameter Definition</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> np.array(</span>
@@ -1028,7 +1071,7 @@ q_t
 \end{aligned}
 \tag{11}
 \end{equation}\]</span></p>
-<div id="cd10da68" class="cell" data-execution_count="9">
+<div id="450009ae" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>AR Data Simulation</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> quantity_ar2_process(T, ϕ<span class="dv">1</span>, ϕ<span class="dv">2</span>, q0, q_1, ϵ, df, params):</span>
@@ -1068,12 +1111,12 @@ q_t
 <span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"quantity_demanded_lag2"</span>] <span class="op">=</span> df[<span class="st">"quantity_demanded"</span>].shift(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="48017c8c" class="cell" data-execution_count="10">
+<div id="778f345e" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -1391,7 +1434,7 @@ q_t
 \end{equation}
 \]</span></p>
 <p>As discussed before, we need to estimate our quantity demanded, <span class="math inline">\(\hat{q}\)</span>. Let’s take a look at what our quantity demanded looks like over the 10 years simulated:</p>
-<div id="bcf83404" class="cell" data-execution_count="11">
+<div id="72429e40" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(dpi<span class="op">=</span><span class="dv">125</span>)</span>
@@ -1424,12 +1467,12 @@ q_t
 </div>
 <p><img src="data/quantity_demanded_plot.webp" class="img-fluid"></p>
 <p>We can clearly see some seasonality occurring towards the end of the years and it appears we are dealing with a <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary process</a> (this is all by construction). Now suppose that we have the following observed variables:</p>
-<div id="17dad0a7" class="cell" data-execution_count="12">
+<div id="fd1dbb22" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(df.columns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>['log_digital_advertising',
  'log_television_advertising',
  'log_digital_advertising_lag1',
@@ -1466,7 +1509,7 @@ q_t
 <p>A great exercise would be to solve the linear regression using the Gradient Descent ot Newton’s method code we have constructed and compare the results to statsmodels. Hint: the objective in a linear regression is to minimize the Residual Sum of Squares. Note that the code we have written is by no means an efficient approach to solving a linear regression, but this is more oriented towards illustrating optimization theory in a model fitting (regression) context. Code for this will be provided at the end of the article!</p>
 </blockquote>
 <p>Note that we drop the first 2 observations as these are our first two lags and we drop July as a reference month:</p>
-<div id="1abf73aa" class="cell" data-execution_count="13">
+<div id="c24e2806" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Fit Econometric model using OLS</span></span>
@@ -1486,8 +1529,8 @@ q_t
 Dep. Variable:      quantity_demanded   R-squared:                       0.968
 Model:                            OLS   Adj. R-squared:                  0.959
 Method:                 Least Squares   F-statistic:                     109.2
-Date:                Wed, 14 Jan 2026   Prob (F-statistic):           1.08e-56
-Time:                        22:39:30   Log-Likelihood:                -1132.0
+Date:                Fri, 16 Jan 2026   Prob (F-statistic):           1.08e-56
+Time:                        14:54:33   Log-Likelihood:                -1132.0
 No. Observations:                 116   AIC:                             2316.
 Df Residuals:                      90   BIC:                             2388.
 Df Model:                          25                                         
@@ -1545,7 +1588,7 @@ strong multicollinearity or other numerical problems.</code></pre>
 <p>The results above can be verified and compared with the data construction above in the data simulation section</p>
 </blockquote>
 <p>Let’s now specify our symbolic variables for our optimization problem (<span class="math inline">\(\delta\)</span>, <span class="math inline">\(\tau\)</span>, <span class="math inline">\(\lambda\)</span>, and <span class="math inline">\(\rho\)</span>), the values of our present variables at time <span class="math inline">\(t\)</span>, and grab the lagged values from our data. We can then obtain <span class="math inline">\(\hat{q}(\delta, \tau)\)</span> at a point in time:</p>
-<div id="ffc292fd" class="cell" data-execution_count="14">
+<div id="8a287da1" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build Symbolic Functions with all variables in function</span></span>
@@ -1607,7 +1650,7 @@ strong multicollinearity or other numerical problems.</code></pre>
 \hat{q}(\delta,\tau,\cdot) = 10071.28*\log(δ) + 6219.99*\log(τ) + 21336.81
 \]</span></p>
 <p>Now we can construct our revenue, cost, and put them together to construct our profit function. Here our cost to produce each unit is $140 base and is discounted by $0.0001 for each additional unit produced:</p>
-<div id="8f051744" class="cell" data-execution_count="15">
+<div id="0f31e803" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Revenue <span class="op">=</span> price <span class="op">*</span> quantity_demanded</span>
@@ -1625,7 +1668,7 @@ strong multicollinearity or other numerical problems.</code></pre>
 \end{aligned}
 \]</span></p>
 <p>Plotting our profit as a function of digital ad spend and television ad spend, <span class="math inline">\(π(\delta, \tau)\)</span>:</p>
-<div id="9c8105db" class="cell" data-execution_count="16">
+<div id="5ff97581" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log(x):</span>
@@ -1731,7 +1774,7 @@ strong multicollinearity or other numerical problems.</code></pre>
 </details>
 </div>
 <center><iframe src="data/profit_function_3d.html" width="750" height="600" frameborder="0"></iframe></center>
-<div id="5b8df502" class="cell" data-execution_count="17">
+<div id="4f3acca4" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log(x):</span>
@@ -1827,7 +1870,7 @@ strong multicollinearity or other numerical problems.</code></pre>
 </div>
 <p><img src="data/profit_function_viz_contour.webp" class="img-fluid"></p>
 <p>Let’s now solve our optimization problem as formulated in eq. 12 via python using the optimization theory that we have learned from part 1 and part 2 of this series. <em>Note that the extremely high value of <span class="math inline">\(\rho\)</span> is to account for the fact that the values of our objective function are extremely large thus we need to make sure penalization is large enough to avoid “jumping” out of constraints - we could normalize values for more stability.</em></p>
-<div id="98d6e787" class="cell" data-execution_count="18">
+<div id="fcfc2974" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>symbols <span class="op">=</span> [δ, τ, λ, ρ]</span>
@@ -1851,98 +1894,98 @@ Current solution: {δ: 20000, τ: 80000, λ: 0, ρ: 100000}
 Step 10 w/ rho=34867.84401000001
 ============================================================
 
-Current solution: {δ: 59721.7502330228, τ: 40278.2497669772, λ: 13.204323073893145, ρ: 34867.84401000001}
+Current solution: {δ: 59721.75023304118, τ: 40278.24976695882, λ: 13.204323073890993, ρ: 34867.84401000001}
 
 ============================================================
 Step 20 w/ rho=12157.665459056934
 ============================================================
 
-Current solution: {δ: 61001.70966611607, τ: 38998.29033388393, λ: 12.408738190635628, ρ: 12157.665459056934}
+Current solution: {δ: 61001.709666136674, τ: 38998.290333863326, λ: 12.408738190633304, ρ: 12157.665459056934}
 
 ============================================================
 Step 30 w/ rho=4239.115827521623
 ============================================================
 
-Current solution: {δ: 61521.711157114754, τ: 38478.288842885246, λ: 12.124263393755493, ρ: 4239.115827521623}
+Current solution: {δ: 61521.71115713636, τ: 38478.28884286364, λ: 12.124263393753083, ρ: 4239.115827521623}
 
 ============================================================
 Step 40 w/ rho=1478.0882941434604
 ============================================================
 
-Current solution: {δ: 61714.32844144919, τ: 38285.67155855081, λ: 12.023932470203048, ρ: 1478.0882941434604}
+Current solution: {δ: 61714.32844147119, τ: 38285.67155852881, λ: 12.0239324702006, ρ: 1478.0882941434604}
 
 ============================================================
 Step 50 w/ rho=515.3775207320118
 ============================================================
 
-Current solution: {δ: 61782.99855106975, τ: 38217.00144893025, λ: 11.988794066053046, ρ: 515.3775207320118}
+Current solution: {δ: 61782.99855109189, τ: 38217.00144890811, λ: 11.988794066050586, ρ: 515.3775207320118}
 
 ============================================================
 Step 60 w/ rho=179.70102999144333
 ============================================================
 
-Current solution: {δ: 61807.132176608946, τ: 38192.867823391054, λ: 11.976522400466601, ρ: 179.70102999144333}
+Current solution: {δ: 61807.13217663114, τ: 38192.86782336886, λ: 11.976522400464138, ρ: 179.70102999144333}
 
 ============================================================
 Step 70 w/ rho=62.65787482177979
 ============================================================
 
-Current solution: {δ: 61815.57041635621, τ: 38184.42958364379, λ: 11.97224110945582, ρ: 62.65787482177979}
+Current solution: {δ: 61815.57041637842, τ: 38184.42958362158, λ: 11.972241109453353, ρ: 62.65787482177979}
 
 ============================================================
 Step 80 w/ rho=21.847450052839246
 ============================================================
 
-Current solution: {δ: 61818.51550151721, τ: 38181.48449848279, λ: 11.970748019137895, ρ: 21.847450052839246}
+Current solution: {δ: 61818.51550153943, τ: 38181.48449846057, λ: 11.970748019135428, ρ: 21.847450052839246}
 
 ============================================================
 Step 90 w/ rho=7.617734804586651
 ============================================================
 
-Current solution: {δ: 61819.542736584815, τ: 38180.457263415185, λ: 11.970227374628823, ρ: 7.617734804586651}
+Current solution: {δ: 61819.542736607036, τ: 38180.457263392964, λ: 11.970227374626356, ρ: 7.617734804586651}
 
 ============================================================
 Step 100 w/ rho=2.6561398887587533
 ============================================================
 
-Current solution: {δ: 61819.90095355983, τ: 38180.09904644017, λ: 11.97004583272113, ρ: 2.6561398887587533}
+Current solution: {δ: 61819.900953582044, τ: 38180.099046417956, λ: 11.970045832718663, ρ: 2.6561398887587533}
 
 ============================================================
 Step 110 w/ rho=0.92613871309979
 ============================================================
 
-Current solution: {δ: 61820.02586123394, τ: 38179.97413876606, λ: 11.96998253243781, ρ: 0.92613871309979}
+Current solution: {δ: 61820.02586125615, τ: 38179.97413874385, λ: 11.969982532435342, ρ: 0.92613871309979}
 
 ============================================================
 Step 120 w/ rho=0.32292460179985627
 ============================================================
 
-Current solution: {δ: 61820.0694144716, τ: 38179.9305855284, λ: 11.96996046092882, ρ: 0.32292460179985627}
+Current solution: {δ: 61820.069414493824, τ: 38179.930585506176, λ: 11.969960460926353, ρ: 0.32292460179985627}
 
 ============================================================
 Step 130 w/ rho=0.11259684642548758
 ============================================================
 
-Current solution: {δ: 61820.08460062253, τ: 38179.91539937747, λ: 11.969952765061599, ρ: 0.11259684642548758}
+Current solution: {δ: 61820.08460064475, τ: 38179.91539935525, λ: 11.969952765059132, ρ: 0.11259684642548758}
 
 ============================================================
 Step 140 w/ rho=0.03926009277181828
 ============================================================
 
-Current solution: {δ: 61820.08989571518, τ: 38179.91010428482, λ: 11.969950081677661, ρ: 0.03926009277181828}
+Current solution: {δ: 61820.089895737394, τ: 38179.910104262606, λ: 11.969950081675194, ρ: 0.03926009277181828}
 
 ============================================================
 Step 150 w/ rho=0.013689147905858883
 ============================================================
 
-Current solution: {δ: 61820.09174200095, τ: 38179.90825799905, λ: 11.96994914603942, ρ: 0.013689147905858883}
+Current solution: {δ: 61820.09174202316, τ: 38179.90825797684, λ: 11.969949146036953, ρ: 0.013689147905858883}
 
- Overall Convergence Achieved (155 steps): Solution = {δ: 61820.09214675682, τ: 38179.90785324318, λ: 11.969948940922194}
+ Overall Convergence Achieved (155 steps): Solution = {δ: 61820.09214677903, τ: 38179.90785322097, λ: 11.969948940919727}
 </code></pre>
 </div>
 </div>
 <p>Thus, our solution is to spend ~61,800 on digital ad spend and ~38,200 on television ad spend. These values correspond to:</p>
-<div id="584c498b" class="cell" data-cold-fold="show" data-execution_count="19">
+<div id="7919dd9c" class="cell" data-cold-fold="show" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>digital_ad <span class="op">=</span> optimums[δ]</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>television_ad <span class="op">=</span> optimums[τ]</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1979,7 +2022,7 @@ Profit: $11,745,520.95</code></pre>
 \end{equation}
 \]</span></p>
 <p>Thus, using our Newton method function and framework, we have:</p>
-<div id="edc8159c" class="cell" data-execution_count="20">
+<div id="1319c970" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ols_newtons_method(input_df: pd.DataFrame):</span>
@@ -2005,7 +2048,7 @@ Profit: $11,745,520.95</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Starting Values: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-Step 1: [ 1.00712796e+04  6.21999262e+03  6.86959945e+02  2.27747932e+03
+Step 1: [ 1.00712796e+04  6.21999261e+03  6.86959945e+02  2.27747932e+03
   3.66015018e+03  1.32121950e+03 -1.03550230e+03 -4.60613677e+02
   1.03678177e+01  4.84864279e+02  2.97464973e+02  6.08987308e+01
   8.14046698e+03 -3.97715611e+03 -2.41560079e+03 -5.83579543e+03
@@ -2013,7 +2056,7 @@ Step 1: [ 1.00712796e+04  6.21999262e+03  6.86959945e+02  2.27747932e+03
   2.01337932e+04  1.95780226e+04  2.38768338e+04  2.01485314e+04
   3.23435391e-01  6.63703800e-02]
 
-Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.279574672591, log_television_advertising: 6219.992615093847, log_digital_advertising_lag1: 686.9599448009262, log_digital_advertising_lag2: 2277.479315800686, log_television_advertising_lag1: 3660.150183706975, log_television_advertising_lag2: 1321.2195017587244, price: -1035.5023000353863, price_lag1: -460.61367719739616, price_lag2: 10.367817728215432, comp_price: 484.8642794343567, comp_price_lag1: 297.4649726062487, comp_price_lag2: 60.898730763043254, Jan: 8140.466979162277, Feb: -3977.156109374738, Mar: -2415.600786874247, Apr: -5835.7954285813485, May: -7373.276919011103, June: -5127.865230186678, Aug: -1747.019991282958, Sep: 9292.899821984285, Oct: 20133.793210631953, Nov: 19578.022633479686, Dec: 23876.833796154748, constant: 20148.531416821497, quantity_demanded_lag1: 0.32343539055981424, quantity_demanded_lag2: 0.06637037997460499}</code></pre>
+Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.279574670887, log_television_advertising: 6219.992615081673, log_digital_advertising_lag1: 686.9599447963582, log_digital_advertising_lag2: 2277.479315794366, log_television_advertising_lag1: 3660.150183711977, log_television_advertising_lag2: 1321.2195017543606, price: -1035.5023000355445, price_lag1: -460.613677196778, price_lag2: 10.367817728525031, comp_price: 484.8642794344926, comp_price_lag1: 297.4649726058325, comp_price_lag2: 60.89873076279363, Jan: 8140.466979139547, Feb: -3977.1561093834475, Mar: -2415.6007868795728, Apr: -5835.795428587373, May: -7373.276919008507, June: -5127.865230188574, Aug: -1747.0199912903229, Sep: 9292.899821983603, Oct: 20133.79321061937, Nov: 19578.022633462126, Dec: 23876.83379613904, constant: 20148.53141692934, quantity_demanded_lag1: 0.3234353905604672, quantity_demanded_lag2: 0.06637037997438934}</code></pre>
 </div>
 </div>
 <p>Next we will compute the analytical solution. That is, if we take the derivative of eq. A1 and set it equal to zero and solve for <span class="math inline">\(\beta\)</span>, we obtain:</p>
@@ -2024,7 +2067,7 @@ Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.
 \end{equation}
 \]</span></p>
 <p>Coding this, we have (we also provide analytical standard errors to compare to statsmodels, see the <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation">OLS wiki page</a> if you are interested):</p>
-<div id="ea2cf7eb" class="cell" data-execution_count="21">
+<div id="442f5d21" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ols_analytical(input_df: pd.DataFrame):</span>
@@ -2048,7 +2091,7 @@ Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.
 </details>
 </div>
 <p>Now, comparing all these results:</p>
-<div id="6d0b86d7" class="cell" data-execution_count="22">
+<div id="38df9500" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ols_results <span class="op">=</span> pd.DataFrame()</span>
@@ -2067,7 +2110,7 @@ Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.
 <span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>ols_results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="42">
+<div class="cell-output cell-output-display" data-execution_count="22">
 <div>
 
 
@@ -2126,7 +2169,7 @@ Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.
 <tr class="odd">
 <th data-quarto-table-cell-role="th">log_television_advertising_lag1</th>
 <td>3660.150184</td>
-<td>3660.150184</td>
+<td>3660.150183</td>
 <td>1528.434428</td>
 <td>3660.150184</td>
 <td>1528.434428</td>
@@ -2264,7 +2307,7 @@ Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.
 <td>19578.022633</td>
 <td>19578.022633</td>
 <td>3262.191763</td>
-<td>19578.022634</td>
+<td>19578.022633</td>
 <td>3262.191763</td>
 </tr>
 <tr class="odd">
@@ -2278,7 +2321,7 @@ Convergence Achieved (2 iterations): Solution = {log_digital_advertising: 10071.
 <tr class="even">
 <th data-quarto-table-cell-role="th">constant</th>
 <td>20148.531417</td>
-<td>20148.531416</td>
+<td>20148.531418</td>
 <td>39848.142818</td>
 <td>20148.531417</td>
 <td>39848.142818</td>

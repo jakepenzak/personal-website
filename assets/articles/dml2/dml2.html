@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="dml2_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="dml2_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="dml2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="dml2_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="dml2_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="dml2_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="dml2_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="dml2_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
@@ -77,11 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -111,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -149,15 +147,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-Double Machine Learning, Simplified: Part 2 - Targeting &amp; the CATE
-</h1>
-</center>
-<center>
-<strong>Learn how to utilize DML for estimating idiosyncratic treatment effects to enable personalized targeting</strong>
-</center>
-<div id="b8b8f81c" class="cell" data-execution_count="1">
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Causal ML • Heterogeneous Effects</div>
+      <h1 class="fwl-title">Double Machine Learning, Simplified: Part 2 - Targeting &amp; the CATE</h1>
+      <p class="fwl-subtitle"><strong>Learn how to utilize DML for estimating idiosyncratic treatment effects to enable personalized targeting.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">CATE</span><span class="fwl-chip">Linear DML</span><span class="fwl-chip">Non-Parametric DML</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">Move beyond the ATE: estimate treatment effect heterogeneity via the CATE.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Linear DML uses interactions with residualized treatment to model interpretable heterogeneity.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Non-parametric DML learns flexible CATE functions via a weighted regression objective.</div></div>
+      <div class="fwl-eq">\[\; \tilde{y}=\tau(X)\,\tilde{T}+\varepsilon \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="5f50c05b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -273,7 +316,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 \]</span></p>
 <p>where <span class="math inline">\(\mathbf{\Omega}\)</span> is the vector of coefficients for the interaction terms. Now our CATE function, call it <span class="math inline">\(\tau\)</span>, takes the form <span class="math inline">\(\tau(\mathbf{X}) = \beta_1 + \mathbf{X}\mathbf{\Omega}\)</span>, where we can predict each individuals CATE given <span class="math inline">\(\mathbf{X}\)</span>. If <span class="math inline">\(T\)</span> is continuous, this CATE function is for a 1 unit increase in T. Note that <span class="math inline">\(\tau(\mathbf{X}) = \beta_1\)</span> in eq. (3) where <span class="math inline">\(\tau(\mathbf{X})\)</span> is assumed a constant. Let’s take a look at this in action!</p>
 <p>First, let’s use the same casual DAG from part 1, where we will be looking at the effect of an individuals time spent on the website on their purchase amount, or sales, in the past month (assuming we observe all confounders).:</p>
-<div id="dfd1d5dd" class="cell" data-execution_count="2">
+<div id="13136dd5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a directed graph</span></span>
@@ -307,7 +350,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 </div>
 <p><img src="data/dag1.webp" class="img-fluid"></p>
 <p>Let’s then simulate this DGP using a similar process as utilized in part 1 (note that all values &amp; data are chosen and generated arbitrarily for demonstrative purposes). Observe that we now include interaction terms in the sales DGP to model the CATE, or treatment effect heterogeneity (note that the DGP in part 1 had no treatment effect heterogeneity by construction)</p>
-<div id="358fdc52" class="cell" data-execution_count="3">
+<div id="c04f0195" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample Size</span></span>
@@ -382,12 +425,12 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="362b9463" class="cell" data-execution_count="4">
+<div id="501efc97" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
 
@@ -511,7 +554,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 </div>
 </div>
 <p>Now, to estimate our CATE function, as outlined in eq. (4), we can run:</p>
-<div id="47de9397" class="cell" data-execution_count="5">
+<div id="ecb9a0f6" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DML Procedure for Estimating the CATE</span></span>
@@ -545,8 +588,8 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 Dep. Variable:     residualized_sales   R-squared:                       0.742
 Model:                            OLS   Adj. R-squared:                  0.742
 Method:                 Least Squares   F-statistic:                 7.207e+04
-Date:                Wed, 14 Jan 2026   Prob (F-statistic):               0.00
-Time:                        22:48:13   Log-Likelihood:            -5.4142e+05
+Date:                Fri, 16 Jan 2026   Prob (F-statistic):               0.00
+Time:                        14:53:50   Log-Likelihood:            -5.4142e+05
 No. Observations:              100000   AIC:                         1.083e+06
 Df Residuals:                   99995   BIC:                         1.083e+06
 Df Model:                           4                                         
@@ -571,7 +614,7 @@ Notes:
 </div>
 </div>
 <p>Here we can see that linear DML closely modeled the true DGP for the CATE (see coefficients on interaction terms in sales DGP). Let’s evaluate the performance of our CATE function by comparing the linear DML predictions to the true CATE for a 1 hour increase in time on the spent on the website:</p>
-<div id="04e9f22d" class="cell" data-execution_count="6">
+<div id="ea992585" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict CATE of 1 hour increase</span></span>
@@ -590,13 +633,13 @@ Notes:
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"R-Squared: </span><span class="sc">{</span>r2_score(true_cates, linear_dml_cates)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Mean Squared Error: 1.5107484209942315
-Mean Absolute Error: 0.987885821785047
-R-Squared: 0.9825949051151979</code></pre>
+<pre><code>Mean Squared Error: 1.5107484209942401
+Mean Absolute Error: 0.9878858217850499
+R-Squared: 0.9825949051151978</code></pre>
 </div>
 </div>
 <p>Plotting the distributions of the predicted CATE and true CATE, we obtain:</p>
-<div id="e1de0155" class="cell" data-execution_count="7">
+<div id="a0ad7d0c" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>hist_effect(true_cates, linear_dml_cates, save_path<span class="op">=</span><span class="st">"data/linear_dml_hist.webp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -604,7 +647,7 @@ R-Squared: 0.9825949051151979</code></pre>
 </div>
 <p><img src="data/linear_dml_hist.webp" class="img-fluid"></p>
 <p>Additionally, plotting the predicted values versus the true values we obtain:</p>
-<div id="4f9cfc28" class="cell" data-execution_count="8">
+<div id="cd9b4176" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot_effect(true_cates, linear_dml_cates, save_path<span class="op">=</span><span class="st">"data/linear_dml_line.webp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -612,7 +655,7 @@ R-Squared: 0.9825949051151979</code></pre>
 </div>
 <p><img src="data/linear_dml_line.webp" class="img-fluid"></p>
 <p>Overall, we have pretty impressive performance! However, the primary limitation in this approach is that we must manually specify the functional form of the CATE function, thus if we are only including linear interaction terms we may not capture the true CATE function. In our example, we simulated the DGP to only have these linear interaction terms and thus the performance is strong by construction, but let’s see what happens when we tweak the DGP for the CATE to be arbitrarily non-linear:</p>
-<div id="c508ebf2" class="cell" data-execution_count="9">
+<div id="046d13bb" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome (y = f(T,X,Z) + ε2)</span></span>
@@ -681,7 +724,7 @@ R-Squared: 0.9825949051151979</code></pre>
 </details>
 </div>
 <p>Fitting our models:</p>
-<div id="6d026e9d" class="cell" data-execution_count="10">
+<div id="46d5988b" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DML Procedure</span></span>
@@ -717,8 +760,8 @@ R-Squared: 0.9825949051151979</code></pre>
 Dep. Variable:     residualized_sales   R-squared:                       0.496
 Model:                            OLS   Adj. R-squared:                  0.496
 Method:                 Least Squares   F-statistic:                 2.457e+04
-Date:                Wed, 14 Jan 2026   Prob (F-statistic):               0.00
-Time:                        22:48:24   Log-Likelihood:            -5.8008e+05
+Date:                Fri, 16 Jan 2026   Prob (F-statistic):               0.00
+Time:                        14:53:58   Log-Likelihood:            -5.8008e+05
 No. Observations:              100000   AIC:                         1.160e+06
 Df Residuals:                   99995   BIC:                         1.160e+06
 Df Model:                           4                                         
@@ -743,7 +786,7 @@ Notes:
 </div>
 </div>
 <p>And then evaluating performance:</p>
-<div id="e0cdf318" class="cell" data-execution_count="11">
+<div id="474e8784" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict CATE of 1 hour increase</span></span>
@@ -768,11 +811,11 @@ Notes:
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mean Squared Error: 53.704983242765145
-Mean Absolute Error: 4.3145488968074055
+Mean Absolute Error: 4.314548896807403
 R-Squared: 0.6287019468647995</code></pre>
 </div>
 </div>
-<div id="0024cc91" class="cell" data-execution_count="12">
+<div id="46d3f859" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>hist_effect(</span>
@@ -783,7 +826,7 @@ R-Squared: 0.6287019468647995</code></pre>
 </details>
 </div>
 <p><img src="data/linear_dml_nonlinear_hist.webp" class="img-fluid"></p>
-<div id="4bd2d43b" class="cell" data-execution_count="13">
+<div id="6eab2591" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plot_effect(</span>
@@ -824,7 +867,7 @@ y-\mathcal{M}_y(\mathbf{X})&amp;=\tau(\mathbf{X})(T-\mathcal{M}_T(\mathbf{X}))+\
 <p><em>Take a moment and soak in the elegance of this result… We can directly learn the CATE function &amp; predict an individuals CATE given our residualized outcome, <span class="math inline">\(y\)</span>, and treatment, <span class="math inline">\(T\)</span>!</em></p>
 <p>Let’s take a look at this in action now. We will reuse the DGP for the non-linear CATE function that was utilized in the example where linear DML performs poorly above. To construct of Non-Parametric DML model, we can run:</p>
 <p>Then define the causal loss function as such (note this is just the MSE!):</p>
-<div id="eec9cd79" class="cell" data-execution_count="14">
+<div id="4959ed6f" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define Target &amp; Weights</span></span>
@@ -844,7 +887,7 @@ y-\mathcal{M}_y(\mathbf{X})&amp;=\tau(\mathbf{X})(T-\mathcal{M}_T(\mathbf{X}))+\
 </details>
 </div>
 <p>And to make predictions + evaluate performance:</p>
-<div id="f27bb3a5" class="cell" data-execution_count="15">
+<div id="140957f6" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict CATE of 1 hour increase</span></span>
@@ -866,7 +909,7 @@ Mean Absolute Error: 1.6626763928716335
 R-Squared: 0.9621116491439838</code></pre>
 </div>
 </div>
-<div id="4352e4fc" class="cell" data-execution_count="16">
+<div id="b67eb93d" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>hist_effect(</span>
@@ -877,7 +920,7 @@ R-Squared: 0.9621116491439838</code></pre>
 </details>
 </div>
 <p><img src="data/nonparam_dml_nonlinear_hist.webp" class="img-fluid"></p>
-<div id="0e1ff825" class="cell" data-execution_count="17">
+<div id="29d8badf" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plot_effect(</span>

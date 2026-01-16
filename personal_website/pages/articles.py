@@ -106,49 +106,75 @@ def create_article_card(
     )
 
     # Article content
-    content = rx.vstack(
-        rx.center(
-            rx.image(
-                src=article_meta.img_src,
-                height=["120px", "140px", "160px"]
-                if is_featured
-                else ["100px", "120px", "140px"],
-                object_fit="cover",
-                border_radius="md",
-                width="100%",
-                max_width="280px" if is_featured else "240px",
-            ),
-            padding="1em",
+    image_section_height = "200px" if is_featured else "170px"
+
+    image_section = rx.box(
+        rx.image(
+            src=article_meta.img_src,
+            height="100%",
+            width="100%",
+            object_fit="cover",
+            border_radius="md",
         ),
-        rx.vstack(
-            rx.center(badges),
-            rx.text(
-                article_meta.title_str,
-                size="5" if is_featured else "4",
-                color="#522181",
-                text_align="center",
-                line_height="1.3",
-                font_weight="600",
-            ),
-            read_markdown(
-                article_meta.descr_src,
-                component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_BODY"],
-                font_size=["0.8em", "0.85em", "0.9em"]
-                if is_featured
-                else ["0.7em", "0.75em", "0.8em"],
-            ),
-            rx.button(
-                "Read Article",
-                variant="soft",
-                size="2",
-                color_scheme="purple",
-                margin_top="0.5em",
-            ),
-            spacing="3",
-            align="center",
+        height=image_section_height,
+        width="100%",
+        padding="1em",
+    )
+
+    header_section = rx.vstack(
+        rx.center(badges),
+        rx.text(
+            article_meta.title_str,
+            size="5" if is_featured else "4",
+            color="#522181",
+            text_align="center",
+            line_height="1.3",
+            font_weight="600",
         ),
-        spacing="4",
+        spacing="3",
         align="center",
+        width="100%",
+        min_height="96px" if is_featured else "84px",
+        justify="center",
+    )
+
+    body_section = rx.box(
+        read_markdown(
+            article_meta.descr_src,
+            component_map=styles.ARTICLES_PAGE["MARKDOWN_STYLE_BLOCK_BODY"],
+            font_size=["0.8em", "0.85em", "0.9em"]
+            if is_featured
+            else ["0.7em", "0.75em", "0.8em"],
+        ),
+        width="100%",
+        height="170px" if is_featured else "150px",
+        overflow="hidden",
+    )
+
+    footer_section = rx.box(
+        rx.button(
+            "Read Article",
+            variant="soft",
+            size="2",
+            color_scheme="purple",
+            width="fit-content",
+        ),
+        width="100%",
+        min_height="52px",
+        display="flex",
+        justify_content="center",
+        align_items="center",
+    )
+
+    content = rx.vstack(
+        image_section,
+        header_section,
+        body_section,
+        footer_section,
+        spacing="3",
+        align="center",
+        width="100%",
+        height="100%",
     )
 
     card_props = {
@@ -163,6 +189,9 @@ def create_article_card(
         "transition": "all 0.3s ease",
         "align": "center",
         "cursor": "pointer",
+        # Ensure consistent sizing within grid layouts.
+        "width": "100%",
+        "height": "100%",
     }
 
     if is_featured:

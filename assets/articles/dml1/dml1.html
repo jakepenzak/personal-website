@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="dml1_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="dml1_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="dml1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="dml1_files/libs/bootstrap/bootstrap-b7765afd3d55690ea613244cf51af5f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="dml1_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="dml1_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="dml1_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="dml1_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
@@ -77,11 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<style>
-.quarto-title-block, .quarto-title-banner {
-  display: none !important;
-}
-</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -111,6 +108,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="article_cover.css">
 </head>
 
 <body class="quarto-light">
@@ -154,15 +152,60 @@ window.Quarto = {
 </header>
 
 
-<center>
-<h1>
-Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Applications
-</h1>
-</center>
-<center>
-<strong>Learn how to utilize DML in causal inference tasks</strong>
-</center>
-<div id="00f064ef" class="cell" data-execution_count="1">
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Causal ML • Double/Debiased ML</div>
+      <h1 class="fwl-title">Double Machine Learning, Simplified: Part 1 - Basic Causal Inference Applications</h1>
+      <p class="fwl-subtitle"><strong>Learn how to utilize DML in causal inference tasks.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Partialling Out</span><span class="fwl-chip">Cross-Fitting</span><span class="fwl-chip">Neyman Orthogonality</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">DML estimates causal effects by residualizing y and T with flexible ML models.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Cross-fitting reduces overfitting bias and stabilizes inference.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">You can recover the true ATE even under highly non-linear confounding.</div></div>
+      <div class="fwl-eq">\[\; y-\mathcal{M}_y(X)=\beta\,(T-\mathcal{M}_T(X))+\varepsilon \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="7273f468" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> graphviz</span>
@@ -288,7 +331,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <li><p>If we do take manage to take care of point 1, we still have to specify the correct parametric form of confounding, including interactions and higher-order terms, when utilizing a parametric model (such as in the regression framework). Simply including linear terms in a regression may not sufficiently control for the confounding. This is where DML steps in; it can flexibly partial out the confounding in a highly non-parametric fashion. This is particularly beneficial in saving the data scientist the trouble of directly modeling the functional forms of confounding, and allows more attention to be directed towards identifying and measuring the confounders. Let’s see how this works!</p></li>
 </ol>
 <p>Suppose, as a highly stylized example, we work for an e-commerce company and we are tasked with estimating the ATE of an individuals time spent on the website on their purchase amount, or sales, in the past month. However, further assume we only have observational data to work with, but we have measured all potential confounders (those variables that influence both time spent on the website and sales). Let this causal process be outlined via the following Directed Acyclic Graph (DAG):</p>
-<div id="23a2f81e" class="cell" data-execution_count="2">
+<div id="79c96ece" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a directed graph</span></span>
@@ -321,7 +364,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 </div>
 <p><img src="data/dag1.webp" class="img-fluid"></p>
 <p>Let the data generating process be as follows (<em>note that all values &amp; data are chosen and generated arbitrarily for demonstrative purposes, and thus should not necessarily represent a large degree of real world intuition per se outside of our estimates of the ATE</em>):</p>
-<div id="224c1923" class="cell" data-execution_count="3">
+<div id="2d560dfb" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">100_000</span></span>
@@ -388,12 +431,12 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="06017132" class="cell" data-execution_count="4">
+<div id="fa5f5c08" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
 
@@ -537,7 +580,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+\epsilo
 <li>OLS utilizing DML residualization procedure, including collider variable</li>
 </ol>
 <p>The code of this is as follows:</p>
-<div id="1af42286" class="cell" data-execution_count="5">
+<div id="c64df55f" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - Naive OLS</span></span>
@@ -663,7 +706,7 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 \end{equation}
 \]</span></p>
 <p>Here we observe that the standard error of our estimate is directly influenced by the size of our residuals (<span class="math inline">\(\epsilon\)</span>). What does this tell us then? If our treatment is randomized, we can include covariates in a multiple OLS or DML procedure, not to obtain exogeneity, but to reduce the variation in our outcome. More specifically, we can include variables that are strong predictors of our outcome to reduce the residuals and, consequently, the standard error of our estimate. Let’s take a look at this in action. First, assume the following DAG (note treatment is randomized so there are no confounders):</p>
-<div id="d6ccbdc6" class="cell" data-execution_count="7">
+<div id="541c6469" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a directed graph</span></span>
@@ -692,7 +735,7 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 </div>
 <p><img src="data/dag2.webp" class="img-fluid"></p>
 <p>Furthermore, suppose the following DGP:</p>
-<div id="95137207" class="cell" data-execution_count="8">
+<div id="d92919ac" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Error Term</span></span>
@@ -728,12 +771,12 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 <span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="d01e5951" class="cell" data-execution_count="9">
+<div id="72ebb883" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_rct</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -864,7 +907,7 @@ sales = (collider - 100 - 7*time_on_website)/2</code></pre>
 <li>OLS utilizing DML residualization procedure outlined in eq. (5)</li>
 </ol>
 <p>The code is as follows:</p>
-<div id="9c52a845" class="cell" data-execution_count="10">
+<div id="988b60e2" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - Naive OLS</span></span>

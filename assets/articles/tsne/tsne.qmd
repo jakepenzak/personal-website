@@ -5,20 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
-<center> <h1> t-SNE from Scratch (ft. NumPy): </h1> </center>
-<center> **Acquire a deep understanding of the inner workings of t-SNE via implementation from scratch in python** </center>
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Machine Learning • Manifold Learning",
+    title='t-SNE from Scratch (ft. NumPy)',
+    subtitle="Acquire a deep understanding of the inner workings of t-SNE via implementation from scratch in python.",
+    chips=("KL Divergence", "Perplexity", "Neighbor Embedding"),
+    takeaways=(
+        "t-SNE preserves local neighborhood structure by matching pairwise affinities.",
+        "Perplexity controls effective neighborhood size via σ selection.",
+        "Optimization minimizes KL(P∥Q) using a Student-t kernel in low dimensions.",
+    ),
+    equation_latex=r"C=\sum_i\sum_j p_{ij}\log\frac{p_{ij}}{q_{ij}}",
+)
+```
 
 ```{python}
 #| code-fold: true

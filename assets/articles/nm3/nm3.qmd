@@ -5,20 +5,35 @@ toc: true
 format:
   live-html:
     theme: journal
-    include-in-header:
-      - text: |
-          <style>
-          .quarto-title-block, .quarto-title-banner {
-            display: none !important;
-          }
-          </style
+    css: article_cover.css
 execute:
   cache: true
 highlight-style: github
 ---
 
-<center> <h1> Optimization, Newton's Method, & Profit Maximization: Part 3 - Applied Profit Maximization </h1> </center>
-<center> **Learn how to apply optimization & econometric techniques to solve an applied profit maximization problem** </center>
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+sys.path.insert(0, "..")
+
+from html_helpers import parallax_split_cover
+
+parallax_split_cover(
+    cover_image="cover.webp",
+    kicker="Econometrics • Optimization",
+    title='Optimization, Newton''s Method, & Profit Maximization: Part 3 - Applied Profit Maximization',
+    subtitle="Learn how to apply optimization & econometric techniques to solve an applied profit maximization problem.",
+    chips=("Profit Maximization", "Demand Modeling", "Constrained Opt."),
+    takeaways=(
+        "Translate a business objective into a constrained optimization problem.",
+        "Use an econometric demand model to connect ad spend to revenue.",
+        "Solve budget + minimum-spend constraints with Lagrangians and log barriers.",
+    ),
+    equation_latex=r"\max_{\delta,\tau}\;\pi(\delta,\tau)\ \ \text{s.t.}\ \delta+\tau=B",
+)
+```
 
 ```{python}
 #| code-fold: true
