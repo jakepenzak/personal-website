@@ -9,6 +9,20 @@ BASE_STYLE = {
     "font_family": "Hack",
     "bg": "white",
     "color": text_color,
+    "@keyframes heroPhase": {
+        "0%": {"background_position": "0% 55%"},
+        "50%": {"background_position": "100% 45%"},
+        "100%": {"background_position": "0% 55%"},
+    },
+    "@keyframes heroDrift": {
+        "0%": {"transform": "translate(0px, 0px)"},
+        "50%": {"transform": "translate(8px, -10px)"},
+        "100%": {"transform": "translate(0px, 0px)"},
+    },
+    "@keyframes heroRotate": {
+        "0%": {"transform": "rotate(0deg)"},
+        "100%": {"transform": "rotate(360deg)"},
+    },
     rx.text: {"color": text_color, "font_family": "Hack"},
     rx.menu.content: {"bg": "white"},
     rx.container: {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"]},
@@ -69,6 +83,7 @@ INDEX_PAGE = {
         "transform": "matrix(1, 0, 0, -1, 0, 0);",
         "padding_x": "3em",
         "padding_y": "3em",
+        "display": ["none", "none", "flex", "flex", "flex", "flex"],
     },
     "SKILLS_CONTAINER_STYLE": {
         # "height": "12em",

@@ -10,10 +10,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "anthropic>=0.46.0",
     "graphviz>=0.20.3",
     "jupyter>=1.1.1",
-    "marimo>=0.11.8",
+    "marimo>=0.19.2",
     "matplotlib>=3.10.0",
     "numpy>=2.2.3",
     "pandas>=2.2.3",
@@ -28,6 +27,9 @@ dev = [
     "sympy>=1.13.3",
     "plotly>=6.0.0",
     "kaleido<0.2.1",
+    "quarto-cli>=1.8.26",
+    "jupyter-cache>=1.0.1",
+    "lintquarto>=0.7.0",
 ]
 
 [tool.marimo.runtime]

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Controlling for “X”:</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="fwl_files/libs/clipboard/clipboard.min.js"></script>
+<script src="fwl_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="fwl_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="fwl_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="fwl_files/libs/quarto-html/popper.min.js"></script>
+<script src="fwl_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="fwl_files/libs/quarto-html/anchor.min.js"></script>
+<link href="fwl_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="fwl_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="fwl_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="fwl_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="fwl_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="fwl_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="fwl_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<script type="module" src="fwl_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="fwl_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="article_cover.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#frisch-waugh-lovell-theorem" id="toc-frisch-waugh-lovell-theorem" class="nav-link" data-scroll-target="#frisch-waugh-lovell-theorem">Frisch-Waugh-Lovell Theorem</a></li>
+  <li><a href="#fwl-theorem-application" id="toc-fwl-theorem-application" class="nav-link" data-scroll-target="#fwl-theorem-application">FWL Theorem Application</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Controlling for “X”:</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Econometrics • Regression Geometry</div>
+      <h1 class="fwl-title">Controlling for "X"</h1>
+      <p class="fwl-subtitle"><strong>Understand linear regression mechanics via the Frisch–Waugh–Lovell Theorem.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Partialling Out</span><span class="fwl-chip">Orthogonalization</span><span class="fwl-chip">Interpretation</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">"Control for X" means removing the part of T and y explained by X.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Regressing residuals y* on T* gives the same slope as full OLS.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">You can visualize 'all else equal' with a clean residual plot.</div></div>
+      <div class="fwl-eq">\[\; y^* = \beta\,T^* + \varepsilon \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="7c4f3511" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Imports and Settings</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relevant Imports</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> skewnorm</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> sm</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stargazer.stargazer <span class="im">import</span> Stargazer  <span class="co"># noqa: F401</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Applied econometrics is generally interested in establishing causality. That is, what is the “treatment” effect of <span class="math inline">\(T\)</span> on some outcome <span class="math inline">\(y\)</span>. In a simple bivariate case, we can imagine randomly assigning treatment <span class="math inline">\(T=1\)</span> to some individuals and <span class="math inline">\(T=0\)</span> to others. This can be represented by the following linear regression model:</p>
+<p><span class="math display">\[
+\begin{equation}
+y_i = \beta_0 + \beta_1T_i+\epsilon_i
+\tag{1}
+\end{equation}
+\]</span></p>
+<p>If we assume the treatment is truly randomly assigned, then <span class="math inline">\(T\)</span> is independent to the error term or, in the economists jargon, exogenous. Therefore, we can estimate eq. (1) using ordinary least squares (OLS) and interpret the coefficient estimate on <span class="math inline">\(T\)</span> with a causal interpretation - the average treatment effect (ATE):</p>
+<p><span class="math display">\[
+\begin{equation}
+\text{ATE}=\mathbb{E_n}[y(T=1)-y(T=0)]=\mathbb{E}[(\beta_0+\beta_1)-\beta_0]=\beta_1
+\tag{2}
+\end{equation}
+\]</span></p>
+<p>However, when we are dealing with non-experimental data, it is almost always the case that the treatment of interest is not independent to the error term or, again in the economists jargon, endogenous. For example, suppose we were interested in identifying the treatment effect of time spent reading books as a child on an individuals future educational attainment. Without any random assignment of time spent reading as a child, estimating a naïve linear regression, as in eq. (1), will fail to capture a large set of additional factors that may drive individual time spent reading books and educational attainment (i.e., socioeconomic status, parents education, underlying ability, other hobbies, etc.). Thus, when dealing with non-experimental data, we must rely on controlling for additional covariates and then make an argument that treatment is now “as good as randomly assigned” to establish causality. This is known as the conditional independence assumption (CIA). In our educational example above, we can reframe eq. (1) as:</p>
+<p><span class="math display">\[
+\begin{equation}
+\text{Education}_i=\beta_0+\beta_1\text{Read}_i+\mathbf{X}_i \Phi + \epsilon_i
+\tag{3}
+\end{equation}
+\]</span></p>
+<p>where we now control for a set of observed covariates <span class="math inline">\(X\)</span>. The key estimate of interest on Read takes on a causal interpretation if and only if the CIA holds. That is, time spent reading is exogenous (i.e., no uncontrolled confounders) conditional on <span class="math inline">\(X\)</span>. Equivalently,</p>
+<p><span class="math display">\[
+\begin{equation}
+\text{cov}(\text{Read}_i,\epsilon_i|\mathbf{X}_i)=0
+\tag{4}
+\end{equation}
+\]</span></p>
+<p>Without the CIA, our coefficient estimates are biased and we are limited in what we can say in terms of causality. Realistically, it is often quite difficult to make the argument for the CIA and, unfortunately, this assumption is not directly testable. In fact, what I have discussed above is a fundamental motivator for an entire field of econometrics that is devoted to establishing, developing, and implementing quasi-experimental research designs to establish causality including, but most definitely not limited to, difference-in-differences, synthetic control, and instrumental variable designs. These quasi-experimental designs seek to exploit exogenous (“as good as random”) sources of variation in a treatment of interest <span class="math inline">\(T\)</span> to study the causal effect of <span class="math inline">\(T\)</span> on some outcome(s) <span class="math inline">\(y\)</span>. There are some excellent econometric texts that are accessible to those with little to no background in econometrics, including “The Effect” by Nick Huntington-Klein, “Causal Inference: The Mixtape” by Scott Cunningham, or “Causal Inference for the Brave and True” by Matheus Facure Alves.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Joshua Angrist and Jörn-Steffen Pischke provide a deeper dive in “Mostly Harmless Econometrics” for those interested.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>Despite the fact that establishing the CIA is particularly difficult through controlling for covariates alone, there is a substantial theorem in econometrics that provides some very powerful intuition into what it really means to “control” for additional covariates. Ultimately, this not only provides a deeper understanding to the underlying mechanisms of a linear regression, but also how to conceptualize key relationships of interest (i.e., the effect of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span>).</p>
+<blockquote class="blockquote">
+<p>Note that I have (intentionally) glossed over some additional causal inference/econometric assumptions, such as Positivity/Common Support &amp; SUTVA/Counterfactual Consistency. In general, the CIA/Ignorability assumption is the most common assumption that needs to be defended. However, it is recommended that the interested reader familiarize themselves with the additional assumptuons. In brief, Positivity ensures we have non-treated households that are similar &amp; comparable to treated households to enable counterfactual estimation &amp; SUTVA ensures there is no spillover/network type effects (treatment of one individual impacts another).</p>
+</blockquote>
+</section>
+<section id="frisch-waugh-lovell-theorem" class="level2">
+<h2 class="anchored" data-anchor-id="frisch-waugh-lovell-theorem">Frisch-Waugh-Lovell Theorem</h2>
+<p>In the 19th century, econometricians Ragnar Frisch and Frederick V. Waugh developed, which was later generalized by Michael C. Lovell, a ~super cool~ theorem (the FWL Theorem) that allows for the estimation of any key parameter(s) in a linear regression where one first “partials out” the effects of the additional covariates.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> First, a quick refresher on linear regression will be helpful.</p>
+<p>A linear regression solves for the best linear predictors for an outcome <span class="math inline">\(y\)</span> given a set of variables <span class="math inline">\(X\)</span>, where the fitted values of <span class="math inline">\(y\)</span> are projected onto the space spanned by <span class="math inline">\(X\)</span>. In matrix notation, the linear regression model we are interested in is characterized by:</p>
+<p><span class="math display">\[
+\begin{equation}
+y=\mathbf{X} \beta + \epsilon
+\tag{5}
+\end{equation}
+\]</span></p>
+<p>The objective of a linear regression is to minimize the residual sum of squares (RSS), thus can be solved via the following optimization problem:</p>
+<p><span class="math display">\[
+\begin{equation}
+\min_{\beta}(y-\mathbf{X}\beta)'(y-\mathbf{X}\beta)
+\tag{6}
+\end{equation}
+\]</span></p>
+<p>Taking the derivative and setting equal to zero, the optimal solution to (6) is:</p>
+<p><span class="math display">\[
+\begin{equation}
+\beta^* = (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'y
+\tag{7}
+\end{equation}
+\]</span></p>
+<p>This is the ordinary least squares (OLS) estimator that is the workhorse behind the scenes when we run a linear regression to obtain the parameter estimates. Now with that refresher out of the way, let’s get to what makes the FWL so great.</p>
+<p>Let’s return to our example of estimating the educational returns to reading as a child. Suppose we only want to obtain the key parameter of interest in eq. (3); that is, the effect of days per month spent reading as a child on educational attainment. Recall that in order to make a causal statement about our estimate, we must satisfy the CIA. Thus, we can control for a set of additional covariates X and then estimate (3) directly using the OLS estimator derived in (7). However, the FWL Theorem allows us to obtain the exact same key parameter estimate on Read under the following 3-step procedure:</p>
+<ol type="1">
+<li>Regress Read onto the set of covariates <span class="math inline">\(X\)</span> only and, similarly, regress Education onto the set of covariates <span class="math inline">\(X\)</span> only</li>
+</ol>
+<p><span class="math display">\[
+\begin{equation}
+\text{Read}_i=\psi_0+\mathbf{X}_i\mathbf{\Psi }+\xi_i
+\tag{8}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+\text{Education}_i=\omega_0+\mathbf{X}_i\mathbf{\Omega }+\nu_i
+\tag{9}
+\end{equation}
+\]</span></p>
+<ol start="2" type="1">
+<li>Store the residuals after estimating (8)+(9) denoted <span class="math inline">\(\text{Read}_i^*\)</span> and <span class="math inline">\(\text{Education}_i^*\)</span></li>
+</ol>
+<p><span class="math display">\[
+\begin{equation}
+\text{Read}_i^*=\text{Read}_i - \widehat{\text{Read}_i}
+\tag{10}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+\text{Education}_i^*=\text{Education}_i - \widehat{\text{Education}_i}
+\tag{11}
+\end{equation}
+\]</span></p>
+<ol start="3" type="1">
+<li>Regress <span class="math inline">\(\text{Education}_i^*\)</span> onto <span class="math inline">\(\text{Read}_i^*\)</span></li>
+</ol>
+<p><span class="math display">\[
+\begin{equation}
+\text{Education}_i^*=\beta_0+\beta^*\text{Read}_i^*+\epsilon
+\tag{12}
+\end{equation}
+\]</span></p>
+<p>And that’s it!</p>
+<p>Intuitively, the FWL theorem partials out the variation in Read (the treatment/variable of interest) and Education (the outcome of interest) that is explained by the additional covariates, and then uses the remaining variation to explain the key relationship of interest. This procedure can be generalized for any number of key variables of interest. For a more formal proof of this theorem, refer to <a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. The FWL theorem has been in the spotlight recently as the theoretical underpinning for debiased/orthogonal machine learning where steps 1 and 2 are conducted using machine learning algorithms rather than OLS. There are very cool developments occurring that are bridging the gaps between econometrics and machine learning, and I hope to have future posts with some cool applications with respect to some of these new methods. However, part 2 of Matheus Facure Alves’ “Causal Inference for the Brave and True” is a great place to start.</p>
+<p>Now you may wonder why in the world would you ever go through this process to obtain the exact same key estimate. Well for one, it provides an immense amount of intuition behind the mechanisms in a linear regression. Secondly, it allows you to visualize the remaining variation in your treatment (Read) that is being used to explain the remaining variation in your outcome (Education). Let us look at this in action!</p>
+</section>
+<section id="fwl-theorem-application" class="level2">
+<h2 class="anchored" data-anchor-id="fwl-theorem-application">FWL Theorem Application</h2>
+<p>In this section, we are going to simulate a highly stylized dataset to provide a simplified numerical example of applying the FWL theorem in answering our empirical question of the educational returns to childhood reading. Suppose we hypothesize a set of demographic variables that we determine to be the relevant confounders necessary to satisfy the CIA in eq. (3), and thus allowing us to obtain a causal interpretation for the education returns to childhood reading. Namely, suppose we identify the key confounders to be the average education level of both parents in years (<span class="math inline">\(\text{pareduc}\)</span>), household income as a child in tens of thousands of dollars (<span class="math inline">\(\text{HHinc}\)</span>), and IQ score (<span class="math inline">\(\text{IQ}\)</span>). We will artificially generate our dataset and the following data generating process (DGP) for the confounders as follows:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{pareduc}_i &amp;\sim \mathcal{N}(14, 3) \\
+\text{HHinc}_i &amp;\sim \mathcal{SN}(3,4,5) \\
+\text{IQ}_i &amp;\sim \mathcal{N}(100, 10)
+\end{aligned}
+\]</span></p>
+<p>Furthermore, to estimate eq. (3) we must have measures for the key treatment, average number of days in a month they read as a child (<span class="math inline">\(\text{read}\)</span>), and the main outcome, their total educational attainment in years (<span class="math inline">\(\text{educ}\)</span>). We artificially generate these key variables with gaussian error terms and heteroskedasticity in the education error term as follows:</p>
+<p><span class="math display">\[
+\begin{equation}
+\text{read}_i = -25 + 0.3\times\text{pareduc}_i+2\times\text{HHinc}_i+0.2\times\text{IQ}_i+\epsilon_i^r
+\tag{13}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+\text{educ}_i = -15 + 0.2 \times \text{read}_i + 0.1\times\text{pareduc}_i+1\times\text{HHinc}_i+0.2\times\text{IQ}_i+\frac{\text{read}_i}{15}\epsilon_i^e
+\tag{14}
+\end{equation}
+\]</span></p>
+<p>Because we know the true DGP, the true value for the parameter of interest is 0.2. Let’s take this DGP to Python and simulate the data:</p>
+<blockquote class="blockquote">
+<p>Note that all values in the DGP were, in general, chosen arbitrarily such that the data works nicely for demonstration purposes. However, within the realm of this simulation we can interpret the coefficient on “read” as follows: On average, for each additional day a month that an individual read as child, their educational attainment increased by 0.2 years.</p>
+</blockquote>
+<p>First, let’s generate the data:</p>
+<div id="66f7f6a8" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Covariates</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"pareduc"</span>] <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="dv">14</span>, scale<span class="op">=</span><span class="dv">3</span>, size<span class="op">=</span>n).<span class="bu">round</span>()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"HHinc"</span>] <span class="op">=</span> skewnorm.rvs(<span class="dv">5</span>, loc<span class="op">=</span><span class="dv">3</span>, scale<span class="op">=</span><span class="dv">4</span>, size<span class="op">=</span>n).<span class="bu">round</span>()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"IQ"</span>] <span class="op">=</span> np.random.normal(<span class="dv">100</span>, <span class="dv">10</span>, size<span class="op">=</span>n).<span class="bu">round</span>()</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Childhood Monthly Reading</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"read"</span>] <span class="op">=</span> (</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span><span class="dv">25</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="fl">0.3</span> <span class="op">*</span> df[<span class="st">"pareduc"</span>]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> df[<span class="st">"HHinc"</span>]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="fl">0.2</span> <span class="op">*</span> df[<span class="st">"IQ"</span>]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>n)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>).<span class="bu">round</span>()</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[(df[<span class="st">"read"</span>] <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (df[<span class="st">"read"</span>] <span class="op">&lt;=</span> <span class="dv">30</span>)]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Education Attainment</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"educ"</span>] <span class="op">=</span> (</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span><span class="dv">15</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="fl">0.2</span> <span class="op">*</span> df[<span class="st">"read"</span>]</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> df[<span class="st">"pareduc"</span>]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="dv">1</span> <span class="op">*</span> df[<span class="st">"HHinc"</span>]</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="fl">0.2</span> <span class="op">*</span> df[<span class="st">"IQ"</span>]</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> df[<span class="st">"read"</span>] <span class="op">/</span> <span class="dv">15</span> <span class="op">*</span> np.random.normal(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span><span class="bu">len</span>(df)).<span class="bu">round</span>()</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The data will look a little something like:</p>
+<div id="bb0132f6" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">15</span>), dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    df.HHinc, color<span class="op">=</span><span class="st">"b"</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>, <span class="dv">0</span>], bins<span class="op">=</span><span class="dv">15</span>, stat<span class="op">=</span><span class="st">"proportion"</span>, kde<span class="op">=</span><span class="va">True</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sns.histplot(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    df.IQ, color<span class="op">=</span><span class="st">"m"</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>, <span class="dv">1</span>], bins<span class="op">=</span><span class="dv">20</span>, stat<span class="op">=</span><span class="st">"proportion"</span>, kde<span class="op">=</span><span class="va">True</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    df.pareduc, color<span class="op">=</span><span class="st">"black"</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>, <span class="dv">0</span>], bins<span class="op">=</span><span class="dv">20</span>, stat<span class="op">=</span><span class="st">"proportion"</span>, kde<span class="op">=</span><span class="va">True</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>sns.histplot(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    df.read, color<span class="op">=</span><span class="st">"r"</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>, <span class="dv">1</span>], bins<span class="op">=</span><span class="dv">30</span>, stat<span class="op">=</span><span class="st">"proportion"</span>, kde<span class="op">=</span><span class="va">True</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>sns.histplot(</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    df.educ, color<span class="op">=</span><span class="st">"g"</span>, ax<span class="op">=</span>ax[<span class="dv">2</span>, <span class="dv">0</span>], bins<span class="op">=</span><span class="dv">30</span>, stat<span class="op">=</span><span class="st">"proportion"</span>, kde<span class="op">=</span><span class="va">True</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>sns.regplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">"read"</span>, y<span class="op">=</span><span class="st">"educ"</span>, color<span class="op">=</span><span class="st">"y"</span>, truncate<span class="op">=</span><span class="va">False</span>, ax<span class="op">=</span>ax[<span class="dv">2</span>, <span class="dv">1</span>])</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"data/data_hists.webp"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"webp"</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><img src="data/data_hists.webp" class="img-fluid"></p>
+<p>The graph in the bottom right provides the scatter plot and naïve regression line of educ on read. This relationship, on the surface, shows a very strong positive relationship between days read a month as a child and educational attainment. However, we know that by construction this is not the true relationship between educ and read because of the common confounding covariates. We can quantify this result and the bias more formally via regression analysis. Let’s now go ahead and estimate the naïve regression (i.e., eq. (3) less <span class="math inline">\(X\)</span>), the multiple regression with all relevant covariates (i.e., eq. (3)), and the FWL 3 step process (i.e., eqs. (8)-(12)):</p>
+<div id="31e3de2c" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Regression Analysis</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Naive Regression</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>naive <span class="op">=</span> sm.ols(<span class="st">"educ~read"</span>, data<span class="op">=</span>df).fit(cov_type<span class="op">=</span><span class="st">"HC3"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple Regression</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>multiple <span class="op">=</span> sm.ols(<span class="st">"educ~read+pareduc+HHinc+IQ"</span>, data<span class="op">=</span>df).fit(cov_type<span class="op">=</span><span class="st">"HC3"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># FWL Theorem</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>read <span class="op">=</span> sm.ols(<span class="st">"read~pareduc+HHinc+IQ"</span>, data<span class="op">=</span>df).fit(cov_type<span class="op">=</span><span class="st">"HC3"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"read_star"</span>] <span class="op">=</span> read.resid</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>educ <span class="op">=</span> sm.ols(<span class="st">"educ~pareduc+HHinc+IQ"</span>, data<span class="op">=</span>df).fit(cov_type<span class="op">=</span><span class="st">"HC3"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"educ_star"</span>] <span class="op">=</span> educ.resid</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>FWL <span class="op">=</span> sm.ols(<span class="st">"educ_star ~ read_star"</span>, data<span class="op">=</span>df).fit(cov_type<span class="op">=</span><span class="st">"HC3"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The regression results are:</p>
+<div id="7c1df0d9" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> [<span class="st">"read"</span>, <span class="st">"read_star"</span>, <span class="st">"HHinc"</span>, <span class="st">"pareduc"</span>, <span class="st">"IQ"</span>, <span class="st">"Intercept"</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>columns <span class="op">=</span> [<span class="st">"Naive OLS"</span>, <span class="st">"Multiple OLS"</span>, <span class="st">"FWL"</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>rename <span class="op">=</span> {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"read"</span>: <span class="st">"Read (Days/Month)"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"read_star"</span>: <span class="st">"Read*"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hhincome"</span>: <span class="st">"HH Income"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pareduc"</span>: <span class="st">"Avg. Parents Education (Yrs)"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>regtable <span class="op">=</span> Stargazer([naive, multiple, FWL])</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>regtable.covariate_order(order)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>regtable.custom_columns(columns, [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>])</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>regtable.rename_covariates(rename)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>regtable.show_degrees_of_freedom(<span class="va">False</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>regtable.title(</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Table 1: The Effect of Childhood Reading on Educational Attainment"</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>HTML(<span class="ss">f"&lt;center&gt;</span><span class="sc">{</span>regtable<span class="sc">.</span>render_html()<span class="sc">}</span><span class="ss">&lt;/center&gt;"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<center>Table 1: The Effect of Childhood Reading on Educational Attainment<br><table style="text-align:center"><tbody><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td></tr><tr><td></td><td colspan="1">Naive OLS</td><td colspan="1">Multiple OLS</td><td colspan="1">FWL</td></tr><tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
+
+<tr><td style="text-align:left">Read (Days/Month)</td><td>0.687<sup>***</sup></td><td>0.181<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td>(0.005)</td><td>(0.009)</td><td></td></tr>
+<tr><td style="text-align:left">Read*</td><td></td><td></td><td>0.181<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.009)</td></tr>
+<tr><td style="text-align:left">HHinc</td><td></td><td>1.024<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.019)</td><td></td></tr>
+<tr><td style="text-align:left">Avg. Parents Education (Yrs)</td><td></td><td>0.107<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.006)</td><td></td></tr>
+<tr><td style="text-align:left">IQ</td><td></td><td>0.200<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.002)</td><td></td></tr>
+<tr><td style="text-align:left">Intercept</td><td>6.910<sup>***</sup></td><td>-15.027<sup>***</sup></td><td>0.000<sup></sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.049)</td><td>(0.291)</td><td>(0.017)</td></tr>
+
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align: left">Observations</td><td>9905</td><td>9905</td><td>9905</td></tr><tr><td style="text-align: left">R<sup>2</sup></td><td>0.754</td><td>0.853</td><td>0.043</td></tr><tr><td style="text-align: left">Adjusted R<sup>2</sup></td><td>0.754</td><td>0.853</td><td>0.043</td></tr><tr><td style="text-align: left">Residual Std. Error</td><td>2.205</td><td>1.703</td><td>1.703</td></tr><tr><td style="text-align: left">F Statistic</td><td>21213.170<sup>***</sup></td><td>8795.086<sup>***</sup></td><td>412.574<sup>***</sup></td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align: left">Note:</td><td colspan="3" style="text-align: right"><sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01</td></tr></tbody></table></center>
+</div>
+</div>
+<p>Table 1 above presents the regression output results. Immediately, we can observe that the naïve regression estimate on read is biased upwards due to the confounding variables that are both positively related with educational attainment and childhood reading. When we include the additional covariates in column (2), we get an estimate near the true value of 0.2 as constructed in the DGP. The FWL 3-step process yields the exact same estimate, as expected!</p>
+<blockquote class="blockquote">
+<p>A general rule of thumb for signing bias in a regression is the sign of cov(outcome,X) multiplied by the sign of cov(treatment,X). By construction, we have the cov(educ,X)&gt;0 and cov(read,X)&gt;0 and, hence, positive bias.</p>
+</blockquote>
+<p>So, we have now shown the FWL being used to obtain the same estimate, but the real power in FWL lies in the ability to plot the true relationship. Figure 2 below shows the initial relationship of the naïve regression without factoring in the covariates and then the relationship of the residuals from the FWL process, where the noise is from the stochastic error term in DGP. In this case, the FWL slope is the true relationship! We can see how vastly different the slope estimates are. This is where the true power of the FWL theorem lies! It allows us to visualize the relationship between a treatment and outcome after we partial out the variation that is already explained by the additional covariates.</p>
+<div id="0e2ebd01" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Naive Regression"</span>, fontsize<span class="op">=</span><span class="dv">17</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="st">"FWL Regression"</span>, fontsize<span class="op">=</span><span class="dv">17</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>sns.regplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">"read"</span>, y<span class="op">=</span><span class="st">"educ"</span>, color<span class="op">=</span><span class="st">"y"</span>, truncate<span class="op">=</span><span class="va">False</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>sns.regplot(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df, x<span class="op">=</span><span class="st">"read_star"</span>, y<span class="op">=</span><span class="st">"educ_star"</span>, color<span class="op">=</span><span class="st">"y"</span>, truncate<span class="op">=</span><span class="va">False</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_xlabel(<span class="st">"$read^*$"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_ylabel(<span class="st">"$educ^*$"</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"data/fwl_residual_plot.webp"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"webp"</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><img src="data/fwl_residual_plot.webp" class="img-fluid"></p>
+</section>
+<section id="discussion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<p>We have discussed the Frisch-Waugh-Lovell Theorem in-depth and have provided an intuitive approach to understanding what it means to “control” for covariates in a regression model when one is interested in a treatment parameter. It is a powerful theorem and has provided a strong underpinning for many econometric results that have developed over the years.</p>
+<p>FWL provides a powerful mechanism by which to visualize the relationship between an outcome and treatment after one partials out the effects from additional covariates. In fact, FWL can be used to study the relationship between any two variables and the role covariates play in explaining their underlying relationship. I recommend trying it out on a dataset where you are interested in the relationship between two variables, and the role of additional covariates in confounding that relationship!</p>
+<p>I hope you have gained some new knowledge from this post!</p>
+<p><br></p>
+<div style="text-align: center; font-size: 24px;">
+❖❖❖
+</div>
+<center>
+<p>Access all the code via this <a href="https://github.com/jakepenzak/personal-website/tree/main/assets/articles">GitHub Repo</a>.</p>
+I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
+</center>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>N. Huntington-Klein, <a href="https://medium.com/r/?url=https%3A%2F%2Ftheeffectbook.net%2F">The Effect: An Introduction to Research Design and Causality</a> (2022).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>S. Cunningham, <a href="https://medium.com/r/?url=https%3A%2F%2Fmixtape.scunning.com%2F">Causal Inference: The Mixtape</a> (2021).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>M. F. Alves, <a href="https://medium.com/r/?url=https%3A%2F%2Fmatheusfacure.github.io%2Fpython-causality-handbook%2Flanding-page.html">Causal Inference for the Brave and True</a> (2021).<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>J. Angrist &amp; J.S. Pischke, <a href="https://medium.com/r/?url=https%3A%2F%2Fwww.mostlyharmlesseconometrics.com%2F">Mostly Harmless Econometrics: An Empiricist’s Companion</a> (2009). Princeton University Press.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Frisch, Ragnar, and Waugh. Partial Time Regressions as Compared with Individual Trends (1933). Econometrica: Journal of the Econometric Society, 387–401.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Lovell. Seasonal Adjustment of Economic Time Series and Multiple Regression Analysis (1963). Journal of the American Statistical Association 58 (304): 993–1010.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Lovell. A Simple Proof of the FWL Theorem (2008). Journal of Economic Education. 39 (1): 88–91.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../..";
+window._ojs.paths.runtimeToRoot = "../../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

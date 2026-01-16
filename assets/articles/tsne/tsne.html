@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>t-SNE from Scratch (ft. NumPy)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="tsne_files/libs/clipboard/clipboard.min.js"></script>
+<script src="tsne_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="tsne_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="tsne_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="tsne_files/libs/quarto-html/popper.min.js"></script>
+<script src="tsne_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="tsne_files/libs/quarto-html/anchor.min.js"></script>
+<link href="tsne_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="tsne_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="tsne_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="tsne_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="tsne_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="tsne_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="tsne_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<script type="module" src="tsne_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="tsne_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="article_cover.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#a-brief-introduction-to-t-sne" id="toc-a-brief-introduction-to-t-sne" class="nav-link" data-scroll-target="#a-brief-introduction-to-t-sne">A Brief Introduction to t-SNE</a></li>
+  <li><a href="#implementation-from-scratch" id="toc-implementation-from-scratch" class="nav-link" data-scroll-target="#implementation-from-scratch">Implementation from Scratch</a>
+  <ul class="collapse">
+  <li><a href="#inputs" id="toc-inputs" class="nav-link" data-scroll-target="#inputs">1. Inputs</a></li>
+  <li><a href="#compute-affinitiessimilarities-of-x-in-the-original-space" id="toc-compute-affinitiessimilarities-of-x-in-the-original-space" class="nav-link" data-scroll-target="#compute-affinitiessimilarities-of-x-in-the-original-space">2. Compute Affinities/Similarities of X in the Original Space</a></li>
+  <li><a href="#sample-initial-solution-compute-low-dimensional-affinity-matrix" id="toc-sample-initial-solution-compute-low-dimensional-affinity-matrix" class="nav-link" data-scroll-target="#sample-initial-solution-compute-low-dimensional-affinity-matrix">3. Sample Initial Solution &amp; Compute Low Dimensional Affinity Matrix</a></li>
+  <li><a href="#compute-gradient-of-the-cost-function" id="toc-compute-gradient-of-the-cost-function" class="nav-link" data-scroll-target="#compute-gradient-of-the-cost-function">4. Compute Gradient of the Cost Function</a></li>
+  <li><a href="#iterate-optimize-the-low-dimensional-mapping" id="toc-iterate-optimize-the-low-dimensional-mapping" class="nav-link" data-scroll-target="#iterate-optimize-the-low-dimensional-mapping">5. Iterate &amp; Optimize the Low-Dimensional Mapping</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">t-SNE from Scratch (ft. NumPy)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Machine Learning • Manifold Learning</div>
+      <h1 class="fwl-title">t-SNE from Scratch (ft. NumPy)</h1>
+      <p class="fwl-subtitle"><strong>Acquire a deep understanding of the inner workings of t-SNE via implementation from scratch in python.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">KL Divergence</span><span class="fwl-chip">Perplexity</span><span class="fwl-chip">Neighbor Embedding</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">t-SNE preserves local neighborhood structure by matching pairwise affinities.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Perplexity controls effective neighborhood size via σ selection.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Optimization minimizes KL(P∥Q) using a Student-t kernel in low dimensions.</div></div>
+      <div class="fwl-eq">\[\; C=\sum_i\sum_j p_{ij}\log\frac{p_{ij}}{q_{ij}} \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="0dfca7ba" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Imports and Settings</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> animation</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>np.seterr(divide<span class="op">=</span><span class="st">"ignore"</span>, invalid<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>warnings.simplefilter(<span class="st">"ignore"</span>, <span class="pp">RuntimeWarning</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>I have found that one of the best ways to truly understanding any statistical algorithm or methodology is to manually implement it yourself. On the flip side, coding these algorithms can sometimes be time consuming and a real pain, and when somebody else has already done it, why would I want to spend my time doing it — seems inefficient, no? Both are fair points, and I am not here to make an argument for one over the other.</p>
+<p>This article is designed for readers who are interested in understanding t-SNE via translation of the mathematics in the <a href="https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">original paper</a> — by Laurens van der Maaten &amp; Geoffrey Hinton — into python code implementation.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> I find these sort of exercises to be quite illuminating into the inner workings of statistical algorithms/models and really test your underlying understanding and assumptions regarding these algorithms/models. You are almost guaranteed to walk away with a better understanding then you had before. At the very minimum, successful implementation is always very satisfying!</p>
+<p>This article will be accessible to individuals with any level of exposure of t-SNE. However, note a few things this post definitely is <strong>not</strong>:</p>
+<ol type="1">
+<li><p>A <em>strictly</em> conceptual introduction and exploration of t-SNE, as there are plenty of other great resources out there that do this; nevertheless, I will be doing my best to connect the mathematical equations to their intuitive/conceptual counterparts at each stage of implementation.</p></li>
+<li><p>A <em>comprehensive</em> discussion into the applications &amp; pros/cons of t-SNE, as well as direct comparisons of t-SNE to other dimensionality reduction techniques. I will, however, briefly touch on these topics throughout this article, but will by no means cover this in-depth.</p></li>
+</ol>
+<p>Without further ado, let’s start with a <em>brief</em> introduction into t-SNE.</p>
+</section>
+<section id="a-brief-introduction-to-t-sne" class="level2">
+<h2 class="anchored" data-anchor-id="a-brief-introduction-to-t-sne">A Brief Introduction to t-SNE</h2>
+<p><em>t-distributed stochastic neighbor embedding</em> (t-SNE) is a dimensionality reduction tool that is primarily used in datasets with a large dimensional feature space and enables one to visualize the data down, or project it, into a lower dimensional space (usually 2-D). It is especially useful for visualizing non-linearly separable data wherein linear methods such as <a href="https://en.m.wikipedia.org/wiki/Principal_component_analysis">Principal Component Analysis</a> (PCA) would fail. Generalizing linear frameworks of dimensionality reduction (such as PCA) into non-linear approaches (such as t-SNE) is also known as <a href="https://en.m.wikipedia.org/wiki/Nonlinear_dimensionality_reduction">Manifold Learning</a>. These methods can be extremely useful for visualizing and understanding the underlying structure of a high dimensional, non-linear data set, and can be great for disentangling and grouping together observations that are similar in the high-dimensional space. For more information on t-SNE and other manifold learning techniques, the <a href="https://scikit-learn.org/stable/modules/manifold.html">scikit-learn documentation</a> is a great resource. Additionally, to read about some cool areas t-SNE has seen applications, the <a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding#cite_note-3">Wikipedia page</a> highlights some of these areas with references to the work.</p>
+<p>Let’s start with breaking down the name <em>t-distributed stochastic neighbor embedding</em> into its components. t-SNE is an extension on stochastic neighbor embedding (SNE) presented 6 years earlier in this <a href="https://cs.nyu.edu/~roweis/papers/sne_final.pdf">paper</a> by Geoffrey Hinton &amp; Sam Roweis. So let’s start there. The <em>stochastic</em> part of the name comes from the fact that the objective function is not convex and thus different results can arise from different initializations. The <em>neighbor embedding</em> highlights the nature of the algorithm — optimally mapping the points in the original high-dimensional space into the corresponding low-dimensional space while best preserving the “neighborhood” structure of the points. SNE is comprised of the following (simplified) steps:</p>
+<ol type="1">
+<li><p><em>Obtain the Similarity Matrix between Points in the Original Space</em>: Compute the conditional probabilities for each datapoint <span class="math inline">\(j\)</span> relative to each datapoint <span class="math inline">\(i\)</span>. These conditional probabilities are calculated in the original high-dimensional space using a Gaussian centered at <span class="math inline">\(i\)</span> and take on the following interpretation: the probability that i would pick <span class="math inline">\(j\)</span> as its neighbor in the original space. This creates a matrix that represents similarities between the points.</p></li>
+<li><p><em>Initialization</em>: Choose random starting points in the lower-dimensional space (say, 2-D) for each datapoint in the original space and compute new conditional probabilities similarly as above in this new space.</p></li>
+<li><p><em>Mapping</em>: Iteratively improve upon the points in the lower-dimensional space until the <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leibler divergences</a> between all the conditional probabilities is minimized. Essentially we are minimizing the differences in the probabilities between the similarity matrices of the two spaces so as to ensure the similarities are best preserved in the mapping of the original high-dimensional dataset to the low-dimensional dataset.</p></li>
+</ol>
+<p>t-SNE improves upon SNE in two primary ways:</p>
+<ol type="1">
+<li><p>It minimizes the Kullback-Leibler divergences between the joint probabilities rather than the conditional probabilities. The authors refer to this as “symmetric SNE” b/c their approach ensures that the joint probabilities <span class="math inline">\(p_ij\)</span> = <span class="math inline">\(p_ji\)</span>. <strong>This results in a much better behaved cost function that is easier to optimize.</strong></p></li>
+<li><p>It computes the similarities between points using a <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">student’s t-distribution</a> w/ one degree of freedom (also a <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy Distribution</a>) rather than a Gaussian in the low-dimensional space (step 2 above). Here we can see where the “t” in t-SNE is coming from. <strong>This improvement helps to alleviate the “crowding problem” highlighted by the authors and to further improve the optimization problem.</strong> This “crowding problem” can be envisioned as such: Imagine we have a 10-D space, the amount of space available in 2-D will not be sufficient to accurately capture those moderately dissimilar points compared to the amount of space for nearby points relative to the amount of space available in a 10-D space. More simply, just envision taking a 3-D space and projecting it down to 2-D, the 3-D space will have much more overall space to model the similarities relative to the projection down into 2-D. The Student-t distribution helps alleviate this problem by having heavier tails than the normal distribution. See the <a href="https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">original paper</a> for a much more in-depth treatment of this problem.</p></li>
+</ol>
+<p>If this did not all track immediately, that is okay! I am hoping when we implement this in code, the pieces will all fall in to place. The main takeaway is this: <strong>t-SNE models similarities between datapoints in the high-dimensional space using joint probabilities of “datapoints choosing others as its neighbor”, and then tries to find the best mapping of these points down into the low-dimensional space, while best preserving the original high-dimensional similarities.</strong></p>
+</section>
+<section id="implementation-from-scratch" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-from-scratch">Implementation from Scratch</h2>
+<p>Let’s now move on to understanding t-SNE via implementing the original version of the algorithm as presented in the <a href="https://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">paper</a> by Laurens van der Maaten &amp; Geoffrey Hinton. We will first start with implementing algorithm 1 below step-by-step, which will cover 95% of the main algorithm. There are two additional enhancements the authors note: 1) Early Exaggeration &amp; 2) Adaptive Learning Rates. We will only discuss adding in the early exaggeration as that is most conducive in aiding the interpretation of the actual algorithms inner workings, as the adaptive learning rate is focused on improving the rates of convergence.</p>
+<p><img src="data/algorithm.webp" class="img-fluid"></p>
+<section id="inputs" class="level3">
+<h3 class="anchored" data-anchor-id="inputs">1. Inputs</h3>
+<p>Following the original paper, we will be using the publicly available <a href="https://www.openml.org/search?type=data&amp;status=active&amp;id=554&amp;sort=runs">MNIST dataset</a> from OpenML with images of handwritten digits from 0–9.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> We will also randomly sample 1000 images from the dataset &amp; reduce the dimensionality of the dataset using Principal Component Analysis (PCA) and keep 30 components. These are both to improve computational time of the algorithm, as the code here is not optimized for speed, but rather for interpretability &amp; learning.</p>
+<div id="e03c5834" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch MNIST data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mnist <span class="op">=</span> fetch_openml(<span class="st">"mnist_784"</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mnist.target <span class="op">=</span> mnist.target.astype(np.uint8)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>X_total <span class="op">=</span> pd.DataFrame(mnist[<span class="st">"data"</span>])</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>y_total <span class="op">=</span> pd.DataFrame(mnist[<span class="st">"target"</span>])</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X_reduced <span class="op">=</span> X_total.sample(n<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>y_reduced <span class="op">=</span> y_total.loc[X_reduced.index]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA to keep 30 components</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">30</span>).fit_transform(X_reduced)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>This will be our X dataset with each row being an image and each column being a feature, or principal component in this case (i.e.&nbsp;linear combinations of the original pixels):</p>
+<div id="268f623c" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+<th data-quarto-table-cell-role="th">2</th>
+<th data-quarto-table-cell-role="th">3</th>
+<th data-quarto-table-cell-role="th">4</th>
+<th data-quarto-table-cell-role="th">5</th>
+<th data-quarto-table-cell-role="th">6</th>
+<th data-quarto-table-cell-role="th">7</th>
+<th data-quarto-table-cell-role="th">8</th>
+<th data-quarto-table-cell-role="th">9</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">20</th>
+<th data-quarto-table-cell-role="th">21</th>
+<th data-quarto-table-cell-role="th">22</th>
+<th data-quarto-table-cell-role="th">23</th>
+<th data-quarto-table-cell-role="th">24</th>
+<th data-quarto-table-cell-role="th">25</th>
+<th data-quarto-table-cell-role="th">26</th>
+<th data-quarto-table-cell-role="th">27</th>
+<th data-quarto-table-cell-role="th">28</th>
+<th data-quarto-table-cell-role="th">29</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>-931.915201</td>
+<td>411.259681</td>
+<td>-66.223330</td>
+<td>-22.101824</td>
+<td>-522.071794</td>
+<td>-204.238021</td>
+<td>79.810311</td>
+<td>-151.501689</td>
+<td>-2.645304</td>
+<td>-71.409799</td>
+<td>...</td>
+<td>48.977339</td>
+<td>64.932067</td>
+<td>82.663785</td>
+<td>81.841769</td>
+<td>113.573963</td>
+<td>-289.648157</td>
+<td>-37.536887</td>
+<td>44.385295</td>
+<td>-33.734615</td>
+<td>116.867908</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>-498.965271</td>
+<td>257.802505</td>
+<td>-448.205554</td>
+<td>-385.294813</td>
+<td>349.350506</td>
+<td>-672.517543</td>
+<td>-635.617347</td>
+<td>127.445850</td>
+<td>91.703337</td>
+<td>78.129701</td>
+<td>...</td>
+<td>14.600850</td>
+<td>104.047832</td>
+<td>-61.352867</td>
+<td>79.213565</td>
+<td>40.009029</td>
+<td>-305.744439</td>
+<td>-452.102839</td>
+<td>-0.012526</td>
+<td>129.821085</td>
+<td>-51.821047</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>-653.828524</td>
+<td>180.805708</td>
+<td>-37.946817</td>
+<td>-178.391590</td>
+<td>-753.344540</td>
+<td>87.362490</td>
+<td>-273.592196</td>
+<td>141.444895</td>
+<td>-237.866486</td>
+<td>131.811097</td>
+<td>...</td>
+<td>-48.118871</td>
+<td>-13.359654</td>
+<td>198.588208</td>
+<td>-37.209171</td>
+<td>9.447840</td>
+<td>71.514532</td>
+<td>-25.251364</td>
+<td>14.821461</td>
+<td>-139.170878</td>
+<td>-80.313444</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>27.990477</td>
+<td>392.334507</td>
+<td>477.493165</td>
+<td>40.194836</td>
+<td>505.795588</td>
+<td>136.666229</td>
+<td>58.409040</td>
+<td>-101.268468</td>
+<td>-179.489579</td>
+<td>-194.865054</td>
+<td>...</td>
+<td>-243.163467</td>
+<td>-175.022793</td>
+<td>259.175164</td>
+<td>471.665036</td>
+<td>173.720381</td>
+<td>-21.926315</td>
+<td>40.559378</td>
+<td>121.260797</td>
+<td>-103.262280</td>
+<td>-174.272627</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>108.686834</td>
+<td>-443.761169</td>
+<td>1047.275507</td>
+<td>-269.081714</td>
+<td>698.282492</td>
+<td>268.993661</td>
+<td>2.649905</td>
+<td>227.015596</td>
+<td>590.552236</td>
+<td>64.509176</td>
+<td>...</td>
+<td>34.180812</td>
+<td>-14.272677</td>
+<td>-4.267202</td>
+<td>-380.389612</td>
+<td>233.763787</td>
+<td>-196.247229</td>
+<td>-21.257888</td>
+<td>-144.816963</td>
+<td>-130.726495</td>
+<td>105.042093</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">995</th>
+<td>704.001866</td>
+<td>416.201728</td>
+<td>728.202071</td>
+<td>545.738046</td>
+<td>-13.182785</td>
+<td>168.897764</td>
+<td>-252.975670</td>
+<td>-3.950580</td>
+<td>-212.479052</td>
+<td>-567.985417</td>
+<td>...</td>
+<td>327.495047</td>
+<td>44.757261</td>
+<td>11.850213</td>
+<td>-324.565843</td>
+<td>-103.983645</td>
+<td>-79.764025</td>
+<td>486.828049</td>
+<td>-174.229356</td>
+<td>-399.590480</td>
+<td>-207.753263</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">996</th>
+<td>-435.583186</td>
+<td>-518.925730</td>
+<td>523.326068</td>
+<td>273.215373</td>
+<td>-281.536846</td>
+<td>368.020921</td>
+<td>-30.906676</td>
+<td>-86.819580</td>
+<td>130.227015</td>
+<td>227.218531</td>
+<td>...</td>
+<td>4.785787</td>
+<td>-84.410557</td>
+<td>-304.009573</td>
+<td>13.309568</td>
+<td>-254.705140</td>
+<td>-115.894610</td>
+<td>96.160201</td>
+<td>97.570096</td>
+<td>-40.360102</td>
+<td>196.480744</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">997</th>
+<td>290.048713</td>
+<td>-123.651858</td>
+<td>38.271626</td>
+<td>-788.843811</td>
+<td>-219.241666</td>
+<td>547.644998</td>
+<td>-41.129062</td>
+<td>-400.736268</td>
+<td>-440.175055</td>
+<td>-339.627691</td>
+<td>...</td>
+<td>70.933713</td>
+<td>415.261998</td>
+<td>-277.123724</td>
+<td>68.509559</td>
+<td>79.043054</td>
+<td>205.682516</td>
+<td>191.826804</td>
+<td>209.089092</td>
+<td>-292.390174</td>
+<td>-24.164274</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">998</th>
+<td>-81.494684</td>
+<td>-893.865631</td>
+<td>284.655251</td>
+<td>-193.626306</td>
+<td>208.005578</td>
+<td>108.519770</td>
+<td>-138.118422</td>
+<td>-44.223366</td>
+<td>-223.193259</td>
+<td>345.672341</td>
+<td>...</td>
+<td>297.352410</td>
+<td>89.948871</td>
+<td>-19.759266</td>
+<td>-122.929192</td>
+<td>-1.523811</td>
+<td>103.019254</td>
+<td>-240.920921</td>
+<td>117.842351</td>
+<td>-171.811250</td>
+<td>-268.943841</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">999</th>
+<td>-237.792154</td>
+<td>-449.364853</td>
+<td>993.977356</td>
+<td>-20.240607</td>
+<td>-83.963739</td>
+<td>197.301905</td>
+<td>198.658445</td>
+<td>404.901898</td>
+<td>526.368305</td>
+<td>368.054294</td>
+<td>...</td>
+<td>-76.226814</td>
+<td>-66.050405</td>
+<td>-62.809371</td>
+<td>43.364113</td>
+<td>-449.005920</td>
+<td>-266.624174</td>
+<td>211.255202</td>
+<td>74.683071</td>
+<td>147.336721</td>
+<td>343.400059</td>
+</tr>
+</tbody>
+</table>
+
+<p>1000 rows × 30 columns</p>
+</div>
+</div>
+</div>
+<p>We also will need to specify the cost function parameters — perplexity — and the optimization parameters — iterations, learning rate, &amp; momentum. We will hold off on these for now and address them as they appear at each stage.</p>
+<p>In terms of output, recall that we seek a the low-dimensional mapping of the original dataset X. We will be mapping the original space into a 2 dimensional space throughout this example. Thus, our new output will be the 1000 images now represented in a 2 dimensional space rather than the original 30 dimensional space, with a shape of [1000, 2].</p>
+</section>
+<section id="compute-affinitiessimilarities-of-x-in-the-original-space" class="level3">
+<h3 class="anchored" data-anchor-id="compute-affinitiessimilarities-of-x-in-the-original-space">2. Compute Affinities/Similarities of X in the Original Space</h3>
+<p>Now that we have our inputs, the first step is to compute the pairwise similarities in the original high dimensional space. That is, for each image <span class="math inline">\(i\)</span> we compute the probability that <span class="math inline">\(i\)</span> would pick image <span class="math inline">\(j\)</span> as its neighbor in the original space for each <span class="math inline">\(j\)</span>. These probabilities are calculated via a normal distribution centered around each point and then are normalized to sum up to 1. Mathematically, we have:</p>
+<p><span class="math display">\[
+\begin{equation}
+p_{j|i}=\frac{\exp{(-\|x_i-x_j\|^2/2\sigma_i^2)}}{\sum_{k\ne i}\exp{(-\|x_i-x_j\|^2/2\sigma_i^2)}}
+\tag{1}
+\end{equation}
+\]</span></p>
+<p>Note that, in our case with n = 1000, these computations will result in a 1000 x 1000 matrix of similarity scores. Note we set <span class="math inline">\(p\)</span> = 0 whenever <span class="math inline">\(i\)</span> = <span class="math inline">\(j\)</span> b/c we are modeling pairwise similarities. However, you may notice that we have not mentioned how <span class="math inline">\(\sigma\)</span> is determined. This value is determined for each observation <span class="math inline">\(i\)</span> via a grid search based on the user-specified desired <a href="https://en.wikipedia.org/wiki/Perplexity">perplexity</a> of the distributions. We will talk about this immediately below, but let’s first look at how we would code eq. (1) above:</p>
+<div id="b9fab41f" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_original_pairwise_affinities(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    X: np.ndarray, perplexity: <span class="bu">int</span> <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Function to obtain affinities matrix.</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">    X</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">        The input data array.</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">    perplexity</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">        The perplexity value for the grid search.</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">    ------</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">    np.ndarray</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">        The pairwise affinities matrix.</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(X)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Computing Pairwise Affinities...."</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    p_ij <span class="op">=</span> np.zeros(shape<span class="op">=</span>(n, n))</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Equation 1 numerator</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        diff <span class="op">=</span> X[i] <span class="op">-</span> X</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        σ_i <span class="op">=</span> grid_search(diff, i, perplexity)  <span class="co"># Grid Search for σ_i</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        norm <span class="op">=</span> np.linalg.norm(diff, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        p_ij[i, :] <span class="op">=</span> np.exp(<span class="op">-</span>(norm<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> σ_i<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Set p = 0 when j = i</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        np.fill_diagonal(p_ij, <span class="dv">0</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Equation 1</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        p_ij[i, :] <span class="op">=</span> p_ij[i, :] <span class="op">/</span> np.<span class="bu">sum</span>(p_ij[i, :])</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set 0 values to minimum numpy value (ε approx. = 0)</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    ε <span class="op">=</span> np.nextafter(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    p_ij <span class="op">=</span> np.maximum(p_ij, ε)</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Completed Pairwise Affinities Matrix. </span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p_ij</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Now before we look at the results of this code, let’s discuss how we determine the values of <span class="math inline">\(\sigma\)</span> via the <code>grid_search()</code> function. Given a specified value of perplexity (which in this context can be loosely thought about as the number of nearest neighbors for each point), we do a grid search over a range of values of <span class="math inline">\(\sigma\)</span> such that the following equation is as close to equality as possible for each <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[
+\begin{equation}
+Perp(P_i)=2^{H(P_i)}
+\tag{2}
+\end{equation}
+\]</span></p>
+<p>where <span class="math inline">\(H(P_i)\)</span> is the Shannon entropy of <span class="math inline">\(P\)</span>:</p>
+<p><span class="math display">\[
+\begin{equation}
+H(P_i) = - \sum_jp_{j|i}\log_2p_{j|i}
+\tag{2}
+\end{equation}
+\]</span></p>
+<p>In our case, we will set perplexity = 10 and set the search space to be defined by [0.01 * standard deviation of the norms for the difference between images <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, 5 * standard deviation of the norms for the difference between images <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>] divided into 200 equal steps. Knowing this, we can define our <code>grid_search()</code> function as follows:</p>
+<div id="a341ef96" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> grid_search(diff_i: np.ndarray, i: <span class="bu">int</span>, perplexity: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Helper function to obtain σ's based on user-specified perplexity.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">    -----------</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">    diff_i</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">        Array containing the pairwise differences between data points.</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">    i</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">        Index of the current data point.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">    perplexity</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">        User-specified perplexity value.</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">    float</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">        The value of σ that satisfies the perplexity condition.</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> np.inf  <span class="co"># Set first result to be infinity</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    norm <span class="op">=</span> np.linalg.norm(diff_i, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    std_norm <span class="op">=</span> np.std(</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        norm</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    )  <span class="co"># Use standard deviation of norms to define search space</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> σ_search <span class="kw">in</span> np.linspace(<span class="fl">0.01</span> <span class="op">*</span> std_norm, <span class="dv">5</span> <span class="op">*</span> std_norm, <span class="dv">200</span>):</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Equation 1 Numerator</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> np.exp(<span class="op">-</span>(norm<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> σ_search<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Set p = 0 when i = j</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        p[i] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Equation 1 (ε -&gt; 0)</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        ε <span class="op">=</span> np.nextafter(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        p_new <span class="op">=</span> np.maximum(p <span class="op">/</span> np.<span class="bu">sum</span>(p), ε)</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Shannon Entropy</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        H <span class="op">=</span> <span class="op">-</span>np.<span class="bu">sum</span>(p_new <span class="op">*</span> np.log2(p_new))</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get log(perplexity equation) as close to equality</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.<span class="bu">abs</span>(np.log(perplexity) <span class="op">-</span> H <span class="op">*</span> np.log(<span class="dv">2</span>)) <span class="op">&lt;</span> np.<span class="bu">abs</span>(result):</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> np.log(perplexity) <span class="op">-</span> H <span class="op">*</span> np.log(<span class="dv">2</span>)</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>            σ <span class="op">=</span> σ_search</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> σ</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Given these functions, we can compute the affinity matrix via:</p>
+<div id="21013aad" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>p_ij <span class="op">=</span> get_original_pairwise_affinities(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Computing Pairwise Affinities....
+Completed Pairwise Affinities Matrix. 
+</code></pre>
+</div>
+</div>
+<div id="30e1a59c" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(p_ij)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+<th data-quarto-table-cell-role="th">2</th>
+<th data-quarto-table-cell-role="th">3</th>
+<th data-quarto-table-cell-role="th">4</th>
+<th data-quarto-table-cell-role="th">5</th>
+<th data-quarto-table-cell-role="th">6</th>
+<th data-quarto-table-cell-role="th">7</th>
+<th data-quarto-table-cell-role="th">8</th>
+<th data-quarto-table-cell-role="th">9</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">990</th>
+<th data-quarto-table-cell-role="th">991</th>
+<th data-quarto-table-cell-role="th">992</th>
+<th data-quarto-table-cell-role="th">993</th>
+<th data-quarto-table-cell-role="th">994</th>
+<th data-quarto-table-cell-role="th">995</th>
+<th data-quarto-table-cell-role="th">996</th>
+<th data-quarto-table-cell-role="th">997</th>
+<th data-quarto-table-cell-role="th">998</th>
+<th data-quarto-table-cell-role="th">999</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>4.940656e-324</td>
+<td>3.553563e-25</td>
+<td>4.537423e-09</td>
+<td>6.174442e-25</td>
+<td>4.241161e-39</td>
+<td>1.868486e-13</td>
+<td>5.931357e-12</td>
+<td>1.012538e-48</td>
+<td>2.593082e-20</td>
+<td>3.568851e-31</td>
+<td>...</td>
+<td>2.456403e-30</td>
+<td>6.269366e-36</td>
+<td>4.431148e-35</td>
+<td>2.316721e-28</td>
+<td>2.961418e-22</td>
+<td>1.280241e-41</td>
+<td>5.192504e-23</td>
+<td>3.703750e-31</td>
+<td>6.202265e-31</td>
+<td>3.336875e-33</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>3.885230e-05</td>
+<td>4.940656e-324</td>
+<td>1.142135e-04</td>
+<td>6.781833e-06</td>
+<td>1.321032e-08</td>
+<td>6.115228e-04</td>
+<td>8.990179e-07</td>
+<td>1.069983e-10</td>
+<td>1.537003e-06</td>
+<td>9.266514e-07</td>
+<td>...</td>
+<td>2.454683e-06</td>
+<td>9.609287e-08</td>
+<td>9.919418e-09</td>
+<td>4.872401e-09</td>
+<td>3.240739e-05</td>
+<td>1.456905e-09</td>
+<td>8.230670e-07</td>
+<td>2.699673e-07</td>
+<td>4.660745e-06</td>
+<td>2.299918e-08</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2.184044e-04</td>
+<td>3.651837e-13</td>
+<td>4.940656e-324</td>
+<td>1.762836e-14</td>
+<td>9.519416e-25</td>
+<td>6.545152e-05</td>
+<td>2.958753e-11</td>
+<td>2.839515e-27</td>
+<td>4.390662e-11</td>
+<td>6.153744e-15</td>
+<td>...</td>
+<td>3.428155e-17</td>
+<td>2.040847e-18</td>
+<td>5.982949e-18</td>
+<td>2.829969e-18</td>
+<td>3.519467e-09</td>
+<td>6.995346e-23</td>
+<td>2.919784e-10</td>
+<td>2.290682e-13</td>
+<td>1.080870e-13</td>
+<td>5.873674e-17</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>1.565194e-09</td>
+<td>9.061402e-12</td>
+<td>2.659864e-09</td>
+<td>4.940656e-324</td>
+<td>1.487900e-10</td>
+<td>2.419839e-10</td>
+<td>3.162685e-09</td>
+<td>5.968172e-19</td>
+<td>9.871110e-08</td>
+<td>1.591932e-12</td>
+<td>...</td>
+<td>1.093071e-11</td>
+<td>2.111759e-09</td>
+<td>6.608259e-19</td>
+<td>1.369975e-04</td>
+<td>1.064901e-08</td>
+<td>1.373909e-10</td>
+<td>6.861039e-11</td>
+<td>1.425653e-10</td>
+<td>2.098048e-10</td>
+<td>2.096172e-12</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>2.795045e-09</td>
+<td>5.231274e-11</td>
+<td>1.470112e-09</td>
+<td>5.848820e-06</td>
+<td>4.940656e-324</td>
+<td>1.696103e-10</td>
+<td>4.795533e-07</td>
+<td>1.559432e-13</td>
+<td>1.606426e-08</td>
+<td>2.920207e-11</td>
+<td>...</td>
+<td>2.483382e-08</td>
+<td>1.437875e-10</td>
+<td>4.482341e-13</td>
+<td>1.131022e-04</td>
+<td>6.983303e-03</td>
+<td>8.733646e-10</td>
+<td>9.160671e-06</td>
+<td>2.484039e-09</td>
+<td>3.769483e-05</td>
+<td>1.087933e-04</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">995</th>
+<td>4.304576e-10</td>
+<td>7.012836e-13</td>
+<td>8.647610e-09</td>
+<td>9.318705e-06</td>
+<td>6.919233e-10</td>
+<td>4.351412e-10</td>
+<td>1.073513e-10</td>
+<td>6.971529e-13</td>
+<td>1.656619e-10</td>
+<td>5.879043e-09</td>
+<td>...</td>
+<td>4.372448e-07</td>
+<td>3.663558e-08</td>
+<td>2.204474e-09</td>
+<td>1.585569e-05</td>
+<td>5.331134e-09</td>
+<td>4.940656e-324</td>
+<td>6.300859e-08</td>
+<td>4.980083e-07</td>
+<td>6.978539e-09</td>
+<td>5.869801e-10</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">996</th>
+<td>3.002293e-09</td>
+<td>1.225874e-14</td>
+<td>5.422104e-07</td>
+<td>2.129593e-11</td>
+<td>9.211913e-11</td>
+<td>1.823652e-10</td>
+<td>8.056597e-08</td>
+<td>8.890065e-25</td>
+<td>8.447319e-09</td>
+<td>6.294541e-14</td>
+<td>...</td>
+<td>8.962824e-15</td>
+<td>1.090101e-13</td>
+<td>6.806936e-14</td>
+<td>5.332980e-13</td>
+<td>1.067914e-04</td>
+<td>2.140688e-14</td>
+<td>4.940656e-324</td>
+<td>4.340638e-11</td>
+<td>1.281880e-06</td>
+<td>2.281904e-04</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">997</th>
+<td>2.050591e-07</td>
+<td>5.158642e-09</td>
+<td>2.258650e-05</td>
+<td>1.988845e-06</td>
+<td>2.167747e-09</td>
+<td>9.226990e-08</td>
+<td>7.558719e-09</td>
+<td>1.129690e-11</td>
+<td>3.781045e-06</td>
+<td>2.009996e-07</td>
+<td>...</td>
+<td>3.680358e-09</td>
+<td>2.579330e-08</td>
+<td>1.330346e-09</td>
+<td>5.860590e-07</td>
+<td>1.940207e-06</td>
+<td>1.807296e-07</td>
+<td>2.014530e-06</td>
+<td>4.940656e-324</td>
+<td>2.774594e-05</td>
+<td>2.205589e-09</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">998</th>
+<td>2.798479e-10</td>
+<td>3.928866e-10</td>
+<td>1.943395e-07</td>
+<td>9.892538e-09</td>
+<td>9.252175e-08</td>
+<td>2.825299e-10</td>
+<td>4.490271e-09</td>
+<td>1.254390e-17</td>
+<td>5.414178e-09</td>
+<td>1.456098e-08</td>
+<td>...</td>
+<td>7.369063e-12</td>
+<td>1.111492e-13</td>
+<td>3.058384e-13</td>
+<td>1.796597e-10</td>
+<td>2.207307e-04</td>
+<td>9.734174e-13</td>
+<td>3.392389e-05</td>
+<td>4.061103e-07</td>
+<td>4.940656e-324</td>
+<td>1.326595e-10</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">999</th>
+<td>8.373567e-07</td>
+<td>7.092628e-09</td>
+<td>7.586651e-06</td>
+<td>2.315556e-06</td>
+<td>9.827672e-05</td>
+<td>2.095126e-07</td>
+<td>1.999695e-06</td>
+<td>1.645698e-11</td>
+<td>5.052185e-07</td>
+<td>9.263120e-09</td>
+<td>...</td>
+<td>1.687096e-07</td>
+<td>1.664473e-08</td>
+<td>2.254217e-09</td>
+<td>1.751725e-06</td>
+<td>3.150680e-04</td>
+<td>2.446679e-08</td>
+<td>9.187911e-03</td>
+<td>5.721215e-08</td>
+<td>1.553391e-06</td>
+<td>4.940656e-324</td>
+</tr>
+</tbody>
+</table>
+
+<p>1000 rows × 1000 columns</p>
+</div>
+</div>
+</div>
+<p>Note, the diagonal elements are set to <span class="math inline">\(\epsilon \approx 0\)</span> by construction (whenever <span class="math inline">\(i\)</span> = <span class="math inline">\(j\)</span>). Recall that a key extension of the t-SNE algorithm is to compute the joint probabilities rather than the conditional probabilities. This is computed simply as follow:</p>
+<p><span class="math display">\[
+\begin{equation}
+p_{ij}=\frac{p_{j|i}+p_{i|j}}{2n}
+\tag{3}
+\end{equation}
+\]</span></p>
+<p>Thus, we can define a new function</p>
+<div id="ed3665ef" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_symmetric_p_ij(p_ij: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Function to obtain symmetric affinities matrix utilized in t-SNE.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">    p_ij</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">        The input affinity matrix.</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">    np.ndarray</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">        The symmetric affinities matrix.</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Computing Symmetric p_ij matrix...."</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(p_ij)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    p_ij_symmetric <span class="op">=</span> np.zeros(shape<span class="op">=</span>(n, n))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>            p_ij_symmetric[i, j] <span class="op">=</span> (p_ij[i, j] <span class="op">+</span> p_ij[j, i]) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> n)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set 0 values to minimum numpy value (ε approx. = 0)</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    ε <span class="op">=</span> np.nextafter(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    p_ij_symmetric <span class="op">=</span> np.maximum(p_ij_symmetric, ε)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Completed Symmetric p_ij Matrix. </span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p_ij_symmetric</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Feeding in <code>p_ij</code> from above, we obtain the following symmetric affinities matrix:</p>
+<div id="20ca113f" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p_ij_symmetric <span class="op">=</span> get_symmetric_p_ij(p_ij)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Computing Symmetric p_ij matrix....
+Completed Symmetric p_ij Matrix. 
+</code></pre>
+</div>
+</div>
+<div id="4c854c8c" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(p_ij_symmetric)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+<th data-quarto-table-cell-role="th">2</th>
+<th data-quarto-table-cell-role="th">3</th>
+<th data-quarto-table-cell-role="th">4</th>
+<th data-quarto-table-cell-role="th">5</th>
+<th data-quarto-table-cell-role="th">6</th>
+<th data-quarto-table-cell-role="th">7</th>
+<th data-quarto-table-cell-role="th">8</th>
+<th data-quarto-table-cell-role="th">9</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">990</th>
+<th data-quarto-table-cell-role="th">991</th>
+<th data-quarto-table-cell-role="th">992</th>
+<th data-quarto-table-cell-role="th">993</th>
+<th data-quarto-table-cell-role="th">994</th>
+<th data-quarto-table-cell-role="th">995</th>
+<th data-quarto-table-cell-role="th">996</th>
+<th data-quarto-table-cell-role="th">997</th>
+<th data-quarto-table-cell-role="th">998</th>
+<th data-quarto-table-cell-role="th">999</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>4.940656e-324</td>
+<td>1.942615e-08</td>
+<td>1.092044e-07</td>
+<td>7.825968e-13</td>
+<td>1.397522e-12</td>
+<td>3.202544e-07</td>
+<td>3.319254e-09</td>
+<td>7.232154e-10</td>
+<td>5.912796e-10</td>
+<td>1.923277e-12</td>
+<td>...</td>
+<td>6.540083e-09</td>
+<td>6.621684e-10</td>
+<td>5.148447e-10</td>
+<td>1.438509e-09</td>
+<td>7.669477e-13</td>
+<td>2.152288e-13</td>
+<td>1.501146e-12</td>
+<td>1.025295e-10</td>
+<td>1.399239e-13</td>
+<td>4.186783e-10</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>1.942615e-08</td>
+<td>4.940656e-324</td>
+<td>5.710676e-08</td>
+<td>3.390921e-09</td>
+<td>6.631316e-12</td>
+<td>3.220521e-07</td>
+<td>4.495090e-10</td>
+<td>5.534861e-11</td>
+<td>7.685366e-10</td>
+<td>4.634043e-10</td>
+<td>...</td>
+<td>4.008354e-09</td>
+<td>1.425444e-10</td>
+<td>1.042633e-11</td>
+<td>2.446104e-12</td>
+<td>1.620372e-08</td>
+<td>7.288033e-13</td>
+<td>4.115335e-10</td>
+<td>1.375630e-10</td>
+<td>2.330569e-09</td>
+<td>1.504590e-11</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>1.092044e-07</td>
+<td>5.710676e-08</td>
+<td>4.940656e-324</td>
+<td>1.329941e-12</td>
+<td>7.350562e-13</td>
+<td>3.063667e-06</td>
+<td>1.259928e-12</td>
+<td>2.899428e-09</td>
+<td>1.280507e-09</td>
+<td>5.141157e-10</td>
+<td>...</td>
+<td>1.485147e-08</td>
+<td>7.380561e-09</td>
+<td>4.658381e-09</td>
+<td>4.578475e-10</td>
+<td>3.279662e-10</td>
+<td>4.323805e-12</td>
+<td>2.712512e-10</td>
+<td>1.129325e-08</td>
+<td>9.716982e-11</td>
+<td>3.793326e-09</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>7.825968e-13</td>
+<td>3.390921e-09</td>
+<td>1.329941e-12</td>
+<td>4.940656e-324</td>
+<td>2.924484e-09</td>
+<td>8.389021e-11</td>
+<td>1.590171e-12</td>
+<td>2.463520e-09</td>
+<td>3.553312e-10</td>
+<td>1.952497e-12</td>
+<td>...</td>
+<td>1.006520e-08</td>
+<td>9.480590e-08</td>
+<td>1.084791e-11</td>
+<td>6.106704e-06</td>
+<td>5.613025e-12</td>
+<td>4.659421e-09</td>
+<td>4.495316e-14</td>
+<td>9.944938e-10</td>
+<td>5.051172e-12</td>
+<td>1.157779e-09</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>1.397522e-12</td>
+<td>6.631316e-12</td>
+<td>7.350562e-13</td>
+<td>2.924484e-09</td>
+<td>4.940656e-324</td>
+<td>8.693272e-14</td>
+<td>2.397767e-10</td>
+<td>1.333054e-10</td>
+<td>8.035810e-12</td>
+<td>1.460260e-14</td>
+<td>...</td>
+<td>5.487371e-10</td>
+<td>2.097159e-11</td>
+<td>3.341657e-13</td>
+<td>1.108796e-07</td>
+<td>3.492181e-06</td>
+<td>7.826440e-13</td>
+<td>4.580382e-09</td>
+<td>2.325893e-12</td>
+<td>1.889367e-08</td>
+<td>1.035350e-07</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">995</th>
+<td>2.152288e-13</td>
+<td>7.288033e-13</td>
+<td>4.323805e-12</td>
+<td>4.659421e-09</td>
+<td>7.826440e-13</td>
+<td>2.245980e-13</td>
+<td>5.367567e-14</td>
+<td>3.781865e-10</td>
+<td>8.285628e-14</td>
+<td>2.943525e-12</td>
+<td>...</td>
+<td>3.877889e-09</td>
+<td>9.434798e-10</td>
+<td>9.315206e-11</td>
+<td>1.278966e-08</td>
+<td>2.665567e-12</td>
+<td>4.940656e-324</td>
+<td>3.150431e-11</td>
+<td>3.393689e-10</td>
+<td>3.489756e-12</td>
+<td>1.252688e-11</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">996</th>
+<td>1.501146e-12</td>
+<td>4.115335e-10</td>
+<td>2.712512e-10</td>
+<td>4.495316e-14</td>
+<td>4.580382e-09</td>
+<td>1.494069e-10</td>
+<td>4.118153e-11</td>
+<td>5.884031e-11</td>
+<td>1.693851e-10</td>
+<td>2.555149e-13</td>
+<td>...</td>
+<td>6.597732e-10</td>
+<td>2.604844e-09</td>
+<td>1.085590e-09</td>
+<td>2.406863e-10</td>
+<td>6.444750e-08</td>
+<td>3.150431e-11</td>
+<td>4.940656e-324</td>
+<td>1.007287e-09</td>
+<td>1.760288e-08</td>
+<td>4.708051e-06</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">997</th>
+<td>1.025295e-10</td>
+<td>1.375630e-10</td>
+<td>1.129325e-08</td>
+<td>9.944938e-10</td>
+<td>2.325893e-12</td>
+<td>4.813365e-11</td>
+<td>3.779360e-12</td>
+<td>7.329960e-10</td>
+<td>1.899246e-09</td>
+<td>1.023884e-10</td>
+<td>...</td>
+<td>1.541718e-10</td>
+<td>1.073140e-09</td>
+<td>6.393322e-11</td>
+<td>1.114383e-09</td>
+<td>9.701086e-10</td>
+<td>3.393689e-10</td>
+<td>1.007287e-09</td>
+<td>4.940656e-324</td>
+<td>1.407602e-08</td>
+<td>2.970887e-11</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">998</th>
+<td>1.399239e-13</td>
+<td>2.330569e-09</td>
+<td>9.716982e-11</td>
+<td>5.051172e-12</td>
+<td>1.889367e-08</td>
+<td>5.801515e-12</td>
+<td>2.245399e-12</td>
+<td>3.957500e-10</td>
+<td>5.536396e-12</td>
+<td>1.852097e-10</td>
+<td>...</td>
+<td>6.652160e-10</td>
+<td>1.043128e-10</td>
+<td>1.047833e-10</td>
+<td>2.189754e-10</td>
+<td>1.117092e-07</td>
+<td>3.489756e-12</td>
+<td>1.760288e-08</td>
+<td>1.407602e-08</td>
+<td>4.940656e-324</td>
+<td>7.767619e-10</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">999</th>
+<td>4.186783e-10</td>
+<td>1.504590e-11</td>
+<td>3.793326e-09</td>
+<td>1.157779e-09</td>
+<td>1.035350e-07</td>
+<td>1.049479e-10</td>
+<td>9.998477e-10</td>
+<td>5.366077e-11</td>
+<td>2.526257e-10</td>
+<td>4.631583e-12</td>
+<td>...</td>
+<td>3.960052e-10</td>
+<td>5.317912e-11</td>
+<td>5.649993e-12</td>
+<td>1.083718e-09</td>
+<td>1.575433e-07</td>
+<td>1.252688e-11</td>
+<td>4.708051e-06</td>
+<td>2.970887e-11</td>
+<td>7.767619e-10</td>
+<td>4.940656e-324</td>
+</tr>
+</tbody>
+</table>
+
+<p>1000 rows × 1000 columns</p>
+</div>
+</div>
+</div>
+<p>Now we have completed the first main step in t-SNE! We computed the symmetric affinity matrix in the original high-dimensional space. Before we dive right into the optimization stage, we will discuss the main components of the optimization problem in the next two steps and then combine them into our for loop.</p>
+</section>
+<section id="sample-initial-solution-compute-low-dimensional-affinity-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="sample-initial-solution-compute-low-dimensional-affinity-matrix">3. Sample Initial Solution &amp; Compute Low Dimensional Affinity Matrix</h3>
+<p>Now we want to sample a random initial solution in the lower dimensional space as follows:</p>
+<div id="d1e23777" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> initialization(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    X: np.ndarray, n_dimensions: <span class="bu">int</span> <span class="op">=</span> <span class="dv">2</span>, initialization: <span class="bu">str</span> <span class="op">=</span> <span class="st">"random"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Obtain initial solution for t-SNE either randomly or using PCA.</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">    X</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">        The input data array.</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">    n_dimensions</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">        The number of dimensions for the output solution. Default is 2.</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">    initialization</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">        The initialization method. Can be 'random' or 'PCA'. Default is 'random'.</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">    np.ndarray</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">        The initial solution for t-SNE.</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">    Raises</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">    ValueError</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co">        If the initialization method is neither 'random' nor 'PCA'.</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample Initial Solution</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> initialization <span class="op">==</span> <span class="st">"random"</span> <span class="kw">or</span> initialization <span class="op">!=</span> <span class="st">"PCA"</span>:</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>        y0 <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="dv">0</span>, scale<span class="op">=</span><span class="fl">1e-4</span>, size<span class="op">=</span>(<span class="bu">len</span>(X), n_dimensions))</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> initialization <span class="op">==</span> <span class="st">"PCA"</span>:</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>        X_centered <span class="op">=</span> X <span class="op">-</span> X.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>        _, _, Vt <span class="op">=</span> np.linalg.svd(X_centered)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        y0 <span class="op">=</span> X_centered <span class="op">@</span> Vt.T[:, :n_dimensions]</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Initialization must be 'random' or 'PCA'"</span>)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="4434a41d" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>y0 <span class="op">=</span> initialization(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="8725c646" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>-0.000006</td>
+<td>-0.000083</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>-0.000061</td>
+<td>-0.000056</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>0.000125</td>
+<td>-0.000092</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>-0.000007</td>
+<td>0.000005</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>0.000079</td>
+<td>-0.000019</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">995</th>
+<td>0.000128</td>
+<td>0.000066</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">996</th>
+<td>0.000113</td>
+<td>-0.000063</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">997</th>
+<td>-0.000060</td>
+<td>0.000040</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">998</th>
+<td>0.000073</td>
+<td>-0.000030</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">999</th>
+<td>0.000195</td>
+<td>-0.000062</td>
+</tr>
+</tbody>
+</table>
+
+<p>1000 rows × 2 columns</p>
+</div>
+</div>
+</div>
+<p>Now, we want to compute the affinity matrix in this lower dimensional space. However, recall that we do this utilizing a student’s t-distribution w/ 1 degree of freedom:</p>
+<p><span class="math display">\[
+\begin{equation}
+q_{ij}=\frac{(1+\|y_i-y_j\|^2)^{-1}}{\sum_{k \ne l} (1+\|y_i-y_j\|^2)^{-1}}
+\tag{4}
+\end{equation}
+\]</span></p>
+<p>Again, we set <span class="math inline">\(q=0\)</span> whenever <span class="math inline">\(i = j\)</span>. Note this equation differs from eq. (1) in that the denominator is over all <span class="math inline">\(i\)</span> and thus symmetric by construction. Putting this into code, we obtain:</p>
+<div id="6b7252a8" class="cell" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_low_dimensional_affinities(Y: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Obtain low-dimensional affinities.</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">    -----------</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Y</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">        The low-dimensional representation of the data points.</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">    np.ndarray</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">        The low-dimensional affinities matrix.</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(Y)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    q_ij <span class="op">=</span> np.zeros(shape<span class="op">=</span>(n, n))</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Equation 4 Numerator</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        diff <span class="op">=</span> Y[i] <span class="op">-</span> Y</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        norm <span class="op">=</span> np.linalg.norm(diff, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        q_ij[i, :] <span class="op">=</span> (<span class="dv">1</span> <span class="op">+</span> norm<span class="op">**</span><span class="dv">2</span>) <span class="op">**</span> (<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set p = 0 when j = i</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    np.fill_diagonal(q_ij, <span class="dv">0</span>)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Equation 4</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    q_ij <span class="op">=</span> q_ij <span class="op">/</span> q_ij.<span class="bu">sum</span>()</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set 0 values to minimum numpy value (ε approx. = 0)</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    ε <span class="op">=</span> np.nextafter(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    q_ij <span class="op">=</span> np.maximum(q_ij, ε)</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> q_ij</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Here we are seeking a 1000 x 1000 affinity matrix but now in the lower dimensional space:</p>
+<div id="02926183" class="cell" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>q_ij <span class="op">=</span> get_low_dimensional_affinities(y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="036899fd" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(q_ij)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+<th data-quarto-table-cell-role="th">2</th>
+<th data-quarto-table-cell-role="th">3</th>
+<th data-quarto-table-cell-role="th">4</th>
+<th data-quarto-table-cell-role="th">5</th>
+<th data-quarto-table-cell-role="th">6</th>
+<th data-quarto-table-cell-role="th">7</th>
+<th data-quarto-table-cell-role="th">8</th>
+<th data-quarto-table-cell-role="th">9</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">990</th>
+<th data-quarto-table-cell-role="th">991</th>
+<th data-quarto-table-cell-role="th">992</th>
+<th data-quarto-table-cell-role="th">993</th>
+<th data-quarto-table-cell-role="th">994</th>
+<th data-quarto-table-cell-role="th">995</th>
+<th data-quarto-table-cell-role="th">996</th>
+<th data-quarto-table-cell-role="th">997</th>
+<th data-quarto-table-cell-role="th">998</th>
+<th data-quarto-table-cell-role="th">999</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">995</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">996</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">997</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">998</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+<td>1.001001e-06</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">999</th>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>...</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>0.000001</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>1.001001e-06</td>
+<td>4.940656e-324</td>
+</tr>
+</tbody>
+</table>
+
+<p>1000 rows × 1000 columns</p>
+</div>
+</div>
+</div>
+</section>
+<section id="compute-gradient-of-the-cost-function" class="level3">
+<h3 class="anchored" data-anchor-id="compute-gradient-of-the-cost-function">4. Compute Gradient of the Cost Function</h3>
+<p>Recall, our cost function is the Kullback-Leibler divergence between joint probability distributions in the high dimensional space and low dimensional space:</p>
+<p><span class="math display">\[
+\begin{equation}
+C=\text{KL}(P\|Q)=\sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}}
+\tag{5}
+\end{equation}
+\]</span></p>
+<p>Intuitively, we want to minimize the difference in the affinity matrices <span class="math inline">\(p_{ij}\)</span> and <span class="math inline">\(q_{ij}\)</span> thereby best preserving the “neighborhood” structure of the original space. The optimization problem is solved using gradient descent, but first let’s look at computing the gradient for the cost function above. The authors derive (see appendix A of the paper) the gradient of the cost function as follows:</p>
+<p><span class="math display">\[
+\begin{equation}
+\frac{\partial C}{\partial y_i} = 4 \sum_j(p_{ij}-q_{ij})(1+\|y_i-y_j\|^2)^{-1}(y_i-y_j)
+\tag{6}
+\end{equation}
+\]</span></p>
+<p>In python, we have:</p>
+<div id="71ff4d55" class="cell" data-execution_count="19">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_gradient(p_ij: np.ndarray, q_ij: np.ndarray, Y: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Obtain gradient of cost function at current point Y.</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">    p_ij</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">        The joint probability distribution matrix.</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">    q_ij</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">        The Student's t-distribution matrix.</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Y</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">        The current point in the low-dimensional space.</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">    ------</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">    np.ndarray</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">        The gradient of the cost function at the current point Y.</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(p_ij)</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute gradient</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    gradient <span class="op">=</span> np.zeros(shape<span class="op">=</span>(n, Y.shape[<span class="dv">1</span>]))</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Equation 5</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>        diff <span class="op">=</span> Y[i] <span class="op">-</span> Y</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>        A <span class="op">=</span> np.array([(p_ij[i, :] <span class="op">-</span> q_ij[i, :])])</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>        B <span class="op">=</span> np.array([(<span class="dv">1</span> <span class="op">+</span> np.linalg.norm(diff, axis<span class="op">=</span><span class="dv">1</span>) <span class="op">**</span> <span class="dv">2</span>) <span class="op">**</span> (<span class="op">-</span><span class="dv">1</span>)])</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>        C <span class="op">=</span> diff</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        gradient[i] <span class="op">=</span> <span class="dv">4</span> <span class="op">*</span> np.<span class="bu">sum</span>((A <span class="op">*</span> B).T <span class="op">*</span> C, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gradient</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Feeding in the relevant arguments, we obtain the gradient as follows:</p>
+<div id="f198f81c" class="cell" data-execution_count="20">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>gradient <span class="op">=</span> get_gradient(p_ij_symmetric, q_ij, y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="616e43ec" class="cell" data-execution_count="21">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(gradient)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>-1.286946e-07</td>
+<td>-9.462969e-09</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>1.707158e-09</td>
+<td>-1.425793e-09</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2.251103e-07</td>
+<td>4.674707e-08</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>9.274299e-08</td>
+<td>6.214602e-08</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>-2.121515e-07</td>
+<td>1.341276e-07</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">995</th>
+<td>-2.399576e-07</td>
+<td>-2.276706e-07</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">996</th>
+<td>-1.773476e-07</td>
+<td>1.952968e-07</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">997</th>
+<td>-2.348704e-07</td>
+<td>-2.571400e-08</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">998</th>
+<td>9.532368e-08</td>
+<td>1.930476e-07</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">999</th>
+<td>-2.434140e-07</td>
+<td>1.972993e-08</td>
+</tr>
+</tbody>
+</table>
+
+<p>1000 rows × 2 columns</p>
+</div>
+</div>
+</div>
+<p>Now, we have all the pieces in order to solve the optimization problem!</p>
+</section>
+<section id="iterate-optimize-the-low-dimensional-mapping" class="level3">
+<h3 class="anchored" data-anchor-id="iterate-optimize-the-low-dimensional-mapping">5. Iterate &amp; Optimize the Low-Dimensional Mapping</h3>
+<p>In order to update our low-dimensional mapping, we use <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent with momentum</a> as outlined by the authors:</p>
+<p><span class="math display">\[
+\begin{equation}
+\mathcal{Y}^{(t)}=\mathcal{Y}^{(t-1)}+\eta\frac{\partial C}{\partial \mathcal{Y}} + \alpha(t)(\mathcal{Y}^{(t-1)}-\mathcal{Y}^{(t-2)})
+\tag{7}
+\end{equation}
+\]</span></p>
+<p>where <span class="math inline">\(\eta\)</span> is our <a href="https://en.wikipedia.org/wiki/Learning_rate">learning rate</a> and <span class="math inline">\(\alpha(t)\)</span> is our momentum term as a function of time. The learning rate controls the step size at each iteration and the momentum term allows the optimization algorithm to gain inertia in the smooth direction of the search space, while not being bogged down by the noisy parts of the gradient. We will set <span class="math inline">\(\eta=200\)</span> for our example and will fix <span class="math inline">\(\alpha(t)=0.5\)</span> if <span class="math inline">\(t &lt; 250\)</span> and <span class="math inline">\(\alpha(t)=0.8\)</span> otherwise. We have all the components necessary above to compute to the update rule, thus we can now run our optimization over a set number of iterations <span class="math inline">\(T\)</span> (we will set <span class="math inline">\(T=1000\)</span>).</p>
+<p>Before we set up for iteration scheme, let’s first introduce the enhancement the authors refer to as “early exaggeration”. This term is a constant that scales the original matrix of affinities <span class="math inline">\(p_{ij}\)</span>. What this does is it places more emphasis on modeling the very similar points (high values in <span class="math inline">\(p_{ij}\)</span> from the original space) in the new space early on and thus forming “clusters” of highly similar points. The early exaggeration is placed on at the beginning of the iteration scheme (<span class="math inline">\(T&lt;250\)</span>) and then turned off otherwise. Early exaggeration will be set to 4 in our case. We will see this in action in our visual below following implementation.</p>
+<p>Now, putting all of the pieces together for the algorithm, we have the following:</p>
+<div id="e36242a9" class="cell" data-execution_count="22">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tsne(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    X: np.ndarray,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    perplexity: <span class="bu">int</span> <span class="op">=</span> <span class="dv">10</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    T: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1000</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    η: <span class="bu">int</span> <span class="op">=</span> <span class="dv">200</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    early_exaggeration: <span class="bu">int</span> <span class="op">=</span> <span class="dv">4</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    n_dimensions: <span class="bu">int</span> <span class="op">=</span> <span class="dv">2</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="bu">list</span>[np.ndarray, np.ndarray]:</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">    t-SNE (t-Distributed Stochastic Neighbor Embedding) algorithm implementation.</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co">    X</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">        The input data matrix of shape (n_samples, n_features).</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co">    perplexity</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co">        The perplexity parameter. Default is 10.</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co">    T</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co">        The number of iterations for optimization. Default is 1000.</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co">    η</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co">        The learning rate for updating the low-dimensional embeddings. Default is 200.</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co">    early_exaggeration</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="co">        The factor by which the pairwise affinities are exaggerated during the early iterations of optimization.</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="co">        Default is 4.</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co">    n_dimensions</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="co">        The number of dimensions of the low-dimensional embeddings.</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="co">        Default is 2.</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="co">    list[np.ndarray, np.ndarray]</span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co">        A list containing the final low-dimensional embeddings and the history of embeddings at each iteration.</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(X)</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get original affinities matrix</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    p_ij <span class="op">=</span> get_original_pairwise_affinities(X, perplexity)</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>    p_ij_symmetric <span class="op">=</span> get_symmetric_p_ij(p_ij)</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialization</span></span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> np.zeros(shape<span class="op">=</span>(T, n, n_dimensions))</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>    Y_minus1 <span class="op">=</span> np.zeros(shape<span class="op">=</span>(n, n_dimensions))</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>    Y[<span class="dv">0</span>] <span class="op">=</span> Y_minus1</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>    Y1 <span class="op">=</span> initialization(X, n_dimensions)</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>    Y[<span class="dv">1</span>] <span class="op">=</span> np.array(Y1)</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Optimizing Low Dimensional Embedding...."</span>)</span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Optimization</span></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, T <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Momentum &amp; Early Exaggeration</span></span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> t <span class="op">&lt;</span> <span class="dv">250</span>:</span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>            α <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>            early_exaggeration <span class="op">=</span> early_exaggeration</span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>            α <span class="op">=</span> <span class="fl">0.8</span></span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>            early_exaggeration <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get Low Dimensional Affinities</span></span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a>        q_ij <span class="op">=</span> get_low_dimensional_affinities(Y[t])</span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get Gradient of Cost Function</span></span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a>        gradient <span class="op">=</span> get_gradient(early_exaggeration <span class="op">*</span> p_ij_symmetric, q_ij, Y[t])</span>
+<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Update Rule</span></span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a>        Y[t <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> (</span>
+<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a>            Y[t] <span class="op">-</span> η <span class="op">*</span> gradient <span class="op">+</span> α <span class="op">*</span> (Y[t] <span class="op">-</span> Y[t <span class="op">-</span> <span class="dv">1</span>])</span>
+<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>        )  <span class="co"># Use negative gradient</span></span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute current value of cost function</span></span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> t <span class="op">%</span> <span class="dv">50</span> <span class="op">==</span> <span class="dv">0</span> <span class="kw">or</span> t <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a>            cost <span class="op">=</span> np.<span class="bu">sum</span>(p_ij_symmetric <span class="op">*</span> np.log(p_ij_symmetric <span class="op">/</span> q_ij))</span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Iteration </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss">: Value of Cost Function is </span><span class="sc">{</span>cost<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
+<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Completed Low Dimensional Embedding: Final Value of Cost Function is </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(p_ij_symmetric <span class="op">*</span> np.log(p_ij_symmetric <span class="op">/</span> q_ij))<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a>    solution <span class="op">=</span> Y[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> solution, Y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Now calling the code:</p>
+<div id="ac19de61" class="cell" data-execution_count="23">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>solution, Y <span class="op">=</span> tsne(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Computing Pairwise Affinities....
+Completed Pairwise Affinities Matrix. 
+
+Computing Symmetric p_ij matrix....
+Completed Symmetric p_ij Matrix. 
+
+Optimizing Low Dimensional Embedding....
+Iteration 1: Value of Cost Function is 4.4406978130558805
+Iteration 50: Value of Cost Function is 2.962401546326715
+Iteration 100: Value of Cost Function is 2.700973774872353
+Iteration 150: Value of Cost Function is 2.626831291889962
+Iteration 200: Value of Cost Function is 2.5857498685122136
+Iteration 250: Value of Cost Function is 2.564941209380378
+Iteration 300: Value of Cost Function is 1.5533671265166362
+Iteration 350: Value of Cost Function is 1.3730253404956603
+Iteration 400: Value of Cost Function is 1.2803489722973787
+Iteration 450: Value of Cost Function is 1.2212705755480584
+Iteration 500: Value of Cost Function is 1.1794021107310177
+Iteration 550: Value of Cost Function is 1.147752347037585
+Iteration 600: Value of Cost Function is 1.12276586088434
+Iteration 650: Value of Cost Function is 1.1024151891121186
+Iteration 700: Value of Cost Function is 1.0854616699236224
+Iteration 750: Value of Cost Function is 1.071036433368177
+Iteration 800: Value of Cost Function is 1.058604345842621
+Iteration 850: Value of Cost Function is 1.0477978673444914
+Iteration 900: Value of Cost Function is 1.038290429912608
+Iteration 950: Value of Cost Function is 1.029831423205263
+Completed Low Dimensional Embedding: Final Value of Cost Function is 1.0225388914762061</code></pre>
+</div>
+</div>
+<div id="69bfb55d" class="cell" data-execution_count="24">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(solution)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>34.014055</td>
+<td>1.542836</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>35.155558</td>
+<td>-16.882073</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>13.360120</td>
+<td>-2.866010</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>-8.949272</td>
+<td>-14.304973</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>-16.397379</td>
+<td>23.816197</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">995</th>
+<td>-8.576599</td>
+<td>-26.687632</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">996</th>
+<td>-3.064378</td>
+<td>32.732870</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">997</th>
+<td>-19.259571</td>
+<td>7.352250</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">998</th>
+<td>-9.212013</td>
+<td>19.369818</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">999</th>
+<td>-4.722223</td>
+<td>35.397239</td>
+</tr>
+</tbody>
+</table>
+
+<p>1000 rows × 2 columns</p>
+</div>
+</div>
+</div>
+<p>where <code>solution</code> is the final 2-D mapping and <code>Y</code> is our mapped 2-D values at each step of the iteration. Plotting the evolution of <code>Y</code> where <code>Y[-1]</code> is our final 2-D mapping, we obtain (note how the algorithm behaves with early exaggeration on and off):</p>
+<div id="c1695d0e" class="cell" data-execution_count="25">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"MNIST t-SNE"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>scat <span class="op">=</span> ax.scatter(Y[<span class="dv">1</span>][:, <span class="dv">0</span>], Y[<span class="dv">1</span>][:, <span class="dv">1</span>], c<span class="op">=</span>y_reduced, cmap<span class="op">=</span><span class="st">"tab10"</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>plt.colorbar(scat, ax<span class="op">=</span>ax)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># t-SNE Descent Animation</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> []</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>prelims <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">5</span>))</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>early_range <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">50</span>, <span class="dv">250</span>, <span class="dv">10</span>))</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>mid_range_1 <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">250</span>, <span class="dv">300</span>, <span class="dv">5</span>))</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>mid_range_2 <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">10</span>))</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>end_range <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">400</span>, <span class="dv">1000</span>, <span class="dv">50</span>))</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>visual_range <span class="op">=</span> (</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    prelims</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> early_range</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> mid_range_1</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> mid_range_2</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> end_range</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> [<span class="dv">999</span>, <span class="dv">999</span>, <span class="dv">999</span>, <span class="dv">999</span>, <span class="dv">999</span>, <span class="dv">999</span>, <span class="dv">999</span>]</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> visual_range:</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>    ys.append(Y[i])</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> strike(text):</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> c <span class="kw">in</span> text:</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> result <span class="op">+</span> c <span class="op">+</span> <span class="st">"</span><span class="ch">\u0336</span><span class="st">"</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> animate(iterations):</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    scat.set_offsets(ys[iterations])</span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> iterations <span class="op">&lt;</span> <span class="dv">31</span>:</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>        ax.text(</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.05</span>,</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span>,</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Early Exaggeration"</span>,</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>            horizontalalignment<span class="op">=</span><span class="st">"center"</span>,</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>            verticalalignment<span class="op">=</span><span class="st">"center"</span>,</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>            transform<span class="op">=</span>ax.transAxes,</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>        ax.text(</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.05</span>,</span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span>,</span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>            strike(<span class="st">"                  "</span>),</span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a>            horizontalalignment<span class="op">=</span><span class="st">"center"</span>,</span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>            verticalalignment<span class="op">=</span><span class="st">"center"</span>,</span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a>            transform<span class="op">=</span>ax.transAxes,</span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(</span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a>            <span class="fl">1.25</span> <span class="op">*</span> np.<span class="bu">min</span>(ys[iterations][:, <span class="dv">0</span>]),</span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a>            <span class="fl">1.25</span> <span class="op">*</span> np.<span class="bu">max</span>(ys[iterations][:, <span class="dv">0</span>]),</span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(</span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a>            <span class="fl">1.25</span> <span class="op">*</span> np.<span class="bu">min</span>(ys[iterations][:, <span class="dv">1</span>]),</span>
+<span id="cb26-63"><a href="#cb26-63" aria-hidden="true" tabindex="-1"></a>            <span class="fl">1.25</span> <span class="op">*</span> np.<span class="bu">max</span>(ys[iterations][:, <span class="dv">1</span>]),</span>
+<span id="cb26-64"><a href="#cb26-64" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb26-65"><a href="#cb26-65" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-66"><a href="#cb26-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a>rot_animation <span class="op">=</span> animation.FuncAnimation(</span>
+<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a>    fig, animate, frames<span class="op">=</span><span class="bu">len</span>(ys) <span class="op">-</span> <span class="dv">1</span>, interval<span class="op">=</span><span class="dv">350</span>, blit<span class="op">=</span><span class="va">False</span></span>
+<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a>rot_animation.save(<span class="st">"data/MNIST.gif"</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><img src="data/MNIST.gif" class="img-fluid"></p>
+<p>I recommend playing around with different values of the parameters (i.e., perplexity, learning rate, early exaggeration, etc.) to see how the solution differs (See the original paper and the scikit-learn documentation for guides on using these parameters).</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>And there you have it, we have coded t-SNE from scratch! I hope you have found this exercise to be illuminating into the inner workings of t-SNE and, at the very minimum, satisfying. Note that this implementation is not intended to be optimized for speed, but rather for understanding. Additions to the t-SNE algorithm have been implemented to improve computational speed and performance, such as variants of the <a href="https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf">Barnes-Hut algorithm</a> (tree-based approaches), using PCA as the initialization of the embedding, or using additional gradient descent extensions such as adaptive learning rates. The implementation in scikit-learn makes use of many of these enhancements.</p>
+<p>As always, I hope you have enjoyed reading this as much as I enjoyed writing it.</p>
+<p><br></p>
+<div style="text-align: center; font-size: 24px;">
+❖❖❖
+</div>
+<center>
+<p>Access all the code via this <a href="https://github.com/jakepenzak/personal-website/tree/main/assets/articles">GitHub Repo</a>.</p>
+I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
+</center>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>van der Maaten, L.J.P.; Hinton, G.E. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research 9:2579–2605, 2008.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>LeCun et al.&nbsp;(1999): The MNIST Dataset Of Handwritten Digits (Images) License: CC BY-SA 3.0<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../..";
+window._ojs.paths.runtimeToRoot = "../../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Predictive Parameters in a Logistic Regression: Making Sense of it All</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="logistic_files/libs/clipboard/clipboard.min.js"></script>
+<script src="logistic_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="logistic_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="logistic_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="logistic_files/libs/quarto-html/popper.min.js"></script>
+<script src="logistic_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="logistic_files/libs/quarto-html/anchor.min.js"></script>
+<link href="logistic_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="logistic_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="logistic_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="logistic_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="logistic_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="logistic_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="logistic_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<script type="module" src="logistic_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="logistic_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="article_cover.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#logistic-regression-crash-course" id="toc-logistic-regression-crash-course" class="nav-link" data-scroll-target="#logistic-regression-crash-course">Logistic Regression Crash Course</a></li>
+  <li><a href="#interpreting-logit-parameters-as-marginal-effects" id="toc-interpreting-logit-parameters-as-marginal-effects" class="nav-link" data-scroll-target="#interpreting-logit-parameters-as-marginal-effects">Interpreting Logit Parameters as Marginal Effects</a></li>
+  <li><a href="#log-odds-odds-and-the-odds-ratio" id="toc-log-odds-odds-and-the-odds-ratio" class="nav-link" data-scroll-target="#log-odds-odds-and-the-odds-ratio">Log odds, Odds, and the Odds Ratio</a></li>
+  <li><a href="#optional-nonlinearities-interactions" id="toc-optional-nonlinearities-interactions" class="nav-link" data-scroll-target="#optional-nonlinearities-interactions">OPTIONAL: Nonlinearities &amp; Interactions</a></li>
+  <li><a href="#the-marginal-effects-in-predicting-credit-card-fraud" id="toc-the-marginal-effects-in-predicting-credit-card-fraud" class="nav-link" data-scroll-target="#the-marginal-effects-in-predicting-credit-card-fraud">The Marginal Effects in Predicting Credit Card Fraud</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Predictive Parameters in a Logistic Regression: Making Sense of it All</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+
+<div class="fwl-cover" style="--cover-url: url('cover.webp');">
+  <div class="fwl-grain"></div>
+  <div class="fwl-cover-inner">
+    <div class="fwl-lead">
+      <div class="fwl-kicker">Statistics • Classification</div>
+      <h1 class="fwl-title">Predictive Parameters in a Logistic Regression: Making Sense of it All</h1>
+      <p class="fwl-subtitle"><strong>Acquire a robust understanding of logit model parameters beyond the canonical odds ratio interpretation.</strong></p>
+      <div class="fwl-chiprow"><span class="fwl-chip">Marginal Effects</span><span class="fwl-chip">Odds Ratios</span><span class="fwl-chip">Interpretability</span></div>
+    </div>
+
+    <div class="fwl-panel">
+      <h3 class="anchored">Key Takeaways</h3>
+      <div class="fwl-metric"><div class="num">1</div><div class="txt">Logit coefficients are linear in log-odds, but probability effects depend on X.</div></div><div class="fwl-metric"><div class="num">2</div><div class="txt">Average marginal effects translate coefficients into percentage-point probability changes.</div></div><div class="fwl-metric"><div class="num">3</div><div class="txt">Odds ratios (exp(β)) are convenient, but not always the most intuitive story.</div></div>
+      <div class="fwl-eq">\[\; \frac{\partial p(X)}{\partial x}=\beta\,\frac{e^{-X\beta}}{(1+e^{-X\beta})^2} \;\]</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Lightweight parallax: ties background translate to scroll position.
+(() => {
+  if (window.__fwlCoverParallaxBound) return;
+  window.__fwlCoverParallaxBound = true;
+
+  const el = document.querySelector('.fwl-cover');
+  if (!el) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    const progress = (viewH - rect.top) / (viewH + rect.height);
+    const clamped = Math.max(0, Math.min(1, progress));
+    const offset = (clamped - 0.5) * 36;
+    el.style.setProperty('--parallax', offset.toFixed(2) + 'px');
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<div id="a3715620" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Imports and Settings</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Logistic regressions, also referred to as a logit models, are powerful alternatives to linear regressions that allow one to model a binary outcome (i.e., 0 or 1) and provide notably accurate predictions on the probability of said outcome occurring given an observation. The parameter estimates within logit models can provide insights into how different explanatory variables, or features, contribute to the model predictions. Many readers are likely familiar with interpreting logit model parameters in terms of <strong>odds ratios</strong> (if not don’t worry, I briefly cover this below). Nevertheless, the interpretation of these parameters in terms of <strong>probabilities</strong> is not as straightforward, but a robust understanding of how to interpret these parameters can provide an immense amount of intuition into explaining the model’s underlying predictive behavior.</p>
+<blockquote class="blockquote">
+<p>Making a prediction is extremely powerful, but intuitively explaining the predictive components of a model in real world terms can take your project analysis to the next level.</p>
+</blockquote>
+<p>By the end of this article you will see logistic regression in a new light and gain an understanding of how to explain the model parameters with a staggering amount of intuition. This article assumes a brief underlying knowledge of logit models and thus directs focus more intently on interpreting the model parameters in a comprehensible manner. Nevertheless, we will first briefly discuss the theory behind logit models. We will then give an in-depth discussion into how to interpret the model parameters as marginal effects. Lastly, we will cover a practical example predicting fraudulent credit card transactions utilizing the following <a href="https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download">Kaggle dataset</a>.</p>
+</section>
+<section id="logistic-regression-crash-course" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression-crash-course">Logistic Regression Crash Course</h2>
+<p><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logit Models</a> belong to a more broad family of <a href="https://en.wikipedia.org/wiki/Generalized_linear_model">generalized linear models</a> (GLMs) that, in brief, allow for flexible fitting of linear models when the outcome of interest follows a different underlying distribution than gaussian and relates the linear model to the outcome of interest via a link function. The canonical linear regression is a special case where the link function is the identity function. In the binary outcome case, a linear regression, which is referred to as linear probability model, can provide predictions that are less than 0 or greater than 1 (See Figure 1). This clearly poses issues as probabilities are naturally bounded between 0 and 1. However, GLM’s provide a convenient framework to solve this problem!</p>
+<p>The logit model is a specific case that allows for the modeling of binary outcomes that follow a <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli distribution</a>. The logit model is particularly attractive because the link function used (logit function) is bounded between 0 and 1. And consequently, all model predictions are bounded between 0 and 1, as anticipated in the probability space. Figure 1 below provides a nice visual comparison between the model fits of linear probability model and logistic regression in a bivariate case.</p>
+<div id="406e1f39" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="op">-</span><span class="fl">0.25</span>, <span class="fl">1.25</span>, <span class="fl">0.001</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>((x <span class="op">-</span> <span class="fl">0.5</span>) <span class="op">/</span> <span class="fl">0.1</span>)))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ax.plot(x, y, color<span class="op">=</span><span class="st">"black"</span>, label<span class="op">=</span><span class="st">"Linear Probability Model"</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>ax.plot(x, z, color<span class="op">=</span><span class="st">"#b30000"</span>, label<span class="op">=</span><span class="st">"Logit Model"</span>, zorder<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.grid(True)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Predicted Probability"</span>, size<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"X </span><span class="ch">\n</span><span class="st"> </span><span class="ch">\n</span><span class="st"> Figure 1"</span>, size<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>ax.tick_params(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="st">"both"</span>, which<span class="op">=</span><span class="st">"both"</span>, labelbottom<span class="op">=</span><span class="va">False</span>, bottom<span class="op">=</span><span class="va">False</span>, top<span class="op">=</span><span class="va">False</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Linear Probability vs. Logit Model"</span>, size<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>fig.gca().spines[<span class="st">"top"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>fig.gca().spines[<span class="st">"right"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>fig.gca().spines[<span class="st">"bottom"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>fig.gca().spines[<span class="st">"left"</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>ax.axhspan(<span class="dv">0</span>, <span class="op">-</span><span class="fl">0.25</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>ax.axhspan(<span class="dv">1</span>, <span class="fl">1.25</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"data/lin_prob_vs_logistic_viz.webp"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"webp"</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><img src="data/lin_prob_vs_logistic_viz.webp" class="img-fluid"></p>
+<p>Mathematically, the logit model is characterized by:</p>
+<p><span class="math display">\[
+\begin{equation}
+p(X_i)=\frac{1}{1+e^{-(X_i\beta)}}, \space \space \space y \sim \text{Bernoulli}(p(X_i))
+\tag{1}
+\end{equation}
+\]</span></p>
+<p>Where <span class="math inline">\(X\)</span> denotes the matrix of observed explanatory variables, or features, in the model and <span class="math inline">\(p(X)\)</span> denotes the probability of <span class="math inline">\(y\)</span> taking on a value of 1. Given this model setup with y distributed Bernoulli, the goal of logit model estimation is to maximize the following likelihood function, which is our joint distribution:</p>
+<p><span class="math display">\[
+\begin{equation}
+L=\prod_{i:y_i=1}p(X_i)\prod_{i:y_i=0}1-p(X_i)
+\tag{2}
+\end{equation}
+\]</span></p>
+<p>In simple terms, our optimization problem seeks to choose the parameters (i.e., <span class="math inline">\(β\)</span> ) in (1) that will maximize (2). Note that (2) will be maximized when the estimated probability is close to 1 for individuals with <span class="math inline">\(y\)</span> = 1 and close to 0 for individuals with <span class="math inline">\(y\)</span> = 0. To do so, one can take the log of the likelihood function to obtain the log-likelihood and solve this problem using gradient descent or related algorithms. For more details, the <a href="https://en.wikipedia.org/wiki/Logistic_regression">wiki</a> page on logistic regression provides a nice in-depth treatment to logit model estimation.</p>
+</section>
+<section id="interpreting-logit-parameters-as-marginal-effects" class="level2">
+<h2 class="anchored" data-anchor-id="interpreting-logit-parameters-as-marginal-effects">Interpreting Logit Parameters as Marginal Effects</h2>
+<p>A marginal effect can be thought of as the average (or marginal) effect on the outcome (or target) variable resulting from a change in the explanatory variable (or feature) of interest. This can similarly be conceptualized as follows: At the average (or marginal) observation/individual, what is the effect of changing an explanatory variable on the outcome. In our case with a binary variable, this would be akin to estimating the average effect of changing an explanatory variable on the probability of observing the outcome.</p>
+<blockquote class="blockquote">
+<p><strong>Caution:</strong> Marginal effects must be interpreted only as an association and not as a causal relationship. Causality requires additional identifying assumptions.</p>
+</blockquote>
+<p>By recognizing that the marginal effect is simply a rate of change, one may immediately notice that this boils down to a taking a derivative with respect to the explanatory variable. We will first start with the simple linear regression case to make things easy. Suppose we have the following linear regression:</p>
+<p><span class="math display">\[
+\begin{equation}
+y_i= X_i \mathbf{\beta} + \epsilon_i =\beta_0+\beta_1x_{1i}+\beta_2x_{2i}+ \dots + \beta_kx_{ki}+\epsilon_i
+\tag{3}
+\end{equation}
+\]</span></p>
+<p>In order to find the marginal effect of any variable, we can take the derivative with respect to the <span class="math inline">\(x\)</span> of interest in (3). This derivative for any <span class="math inline">\(x^*\)</span> is simply:</p>
+<p><span class="math display">\[
+\begin{equation}
+\frac{\partial y_i}{\partial x^*}=\beta^*
+\tag{4}
+\end{equation}
+\]</span></p>
+<p>Note, in this case, we have a constant marginal effect, which makes sense because a linear regression is a linear projection of y onto X. The marginal effect can be interpreted as follows:</p>
+<blockquote class="blockquote">
+<p><strong>Interpretation</strong>: On average, a one unit increase in <span class="math inline">\(x^*\)</span> is associated with a <span class="math inline">\(β^*\)</span> change in <span class="math inline">\(y\)</span>.</p>
+</blockquote>
+<p>Now the careful reader may notice that this derivative is not nearly as trivial for logit models (See below for a discussion into log-odds and odds ratios). Consider the logistic model outlined in eq. (1). The derivative with respect to any x* can be solved for using the chain and quotient rules. We can thus find the marginal effect of <span class="math inline">\(x^*\)</span> on the probability of <span class="math inline">\(y\)</span> occurring as follows:</p>
+<p><span class="math display">\[
+\begin{equation}
+\frac{\partial p(X_i)}{\partial x^*}=\beta^* \times \frac{e^{-X_i \mathbf{\beta} }}{(1+e^{-X_i \mathbf{\beta}})^2}
+\tag{5}
+\end{equation}
+\]</span></p>
+<p>Here we can see that the marginal effect is now a function of the values of <span class="math inline">\(X\)</span>. This again makes sense as the logit function is non-linear (See Figure 1). This gives us the power to evaluate the marginal effects at any combination of <span class="math inline">\(X\)</span>. However, if we want to summarize the overall marginal effects we are left with two options:</p>
+<ol type="1">
+<li><p><strong>Compute the average marginal effect</strong> - This entails computing the marginal effect using (5) for every observation and then computing the mean value</p></li>
+<li><p><strong>Compute the marginal effect at the average</strong> - This entails plugging in the mean values of all of the explanatory variables into (5) and computing the marginal effect</p></li>
+</ol>
+<p>There is not an immediately apparent benefit of one over the other and both provide different interpretations under different contexts. However, the average marginal effect provides the cleanest interpretation, and thus will be the one we work with for the remainder of this post.</p>
+<blockquote class="blockquote">
+<p>Note that all calculations can easily be extended to compute the marginal effects not only at the average values of the explanatory variables, but at any combination of values. I will leave this for the interested reader and the code provided in the next section can be readily augmented to do so (i.e., plug in the values of each variable you are interested into (5) to obtain the marginal effect at that observation). This can provide <strong>very powerful</strong> insights into how the predictive parameter marginal effects vary by certain types of individuals/observations!</p>
+</blockquote>
+<p>Nevertheless, the interpretation of the average marginal effect in a logit model is as follows:</p>
+<blockquote class="blockquote">
+<p><strong>Interpretation:</strong> On average, a one unit increase in <span class="math inline">\(x^*\)</span> is associated with a {computed value} percentage point change in the probability of <span class="math inline">\(y\)</span> occurring.</p>
+</blockquote>
+</section>
+<section id="log-odds-odds-and-the-odds-ratio" class="level2">
+<h2 class="anchored" data-anchor-id="log-odds-odds-and-the-odds-ratio">Log odds, Odds, and the Odds Ratio</h2>
+<p>Before we provide a numerical example of this in action, it is important to discuss the relationship between logit models, log odds, odds, and the odds ratios. It is quite common that logistic regression results are interpreted in terms of odds, and this is because, after some algebra, we can rewrite (1) as:</p>
+<p><span class="math display">\[
+\begin{equation}
+\ln \left( \frac{p(X_i)}{1-p(X_i)} \right) = X_i \beta
+\tag{6}
+\end{equation}
+\]</span></p>
+<p>Where the left hand side is in log-odds. Thus, a logistic regression has a constant marginal effect in terms of log odds, where:</p>
+<p><span class="math display">\[
+\begin{equation}
+\frac{\partial \ln \left( \frac{p(X_i)}{1-p(X_i)} \right)}{\partial x^*} = \beta^*
+\tag{7}
+\end{equation}
+\]</span></p>
+<p>However, marginal effects in terms of log-odds is extremely removed from any intuition. Thus, one can solve for the model in terms of odds by taking the exponential of (6):</p>
+<p><span class="math display">\[
+\begin{equation}
+\frac{p(X_i)}{1-p(X_i)} = e^{X_i \beta}
+\tag{8}
+\end{equation}
+\]</span></p>
+<p>It is then commonplace that the logistic regression parameters are interpreted in terms of odds by computing the odds ratios where, using (8) and incrementing <span class="math inline">\(x^*\)</span> by 1, we obtain:</p>
+<p><span class="math display">\[
+\begin{equation}
+\text{Odds Ratio} = \frac{e^{X_i \beta + \beta^*}}{e^{X_i \beta}} = e^{\beta^*}
+\tag{9}
+\end{equation}
+\]</span></p>
+<p>The interpretation is as follows:</p>
+<blockquote class="blockquote">
+<p><strong>Interpretation:</strong> On average, a one unit increase in <span class="math inline">\(x^*\)</span> is associated with multiplying the odds of <span class="math inline">\(y\)</span> occurring by <span class="math inline">\(\beta^*\)</span>.</p>
+</blockquote>
+<p>In my opinion, the interpretation of these are not always as clearcut as a probability interpretation unless one has exposure to and works with log-odds, odds, and odds ratios regularly. Nevertheless, (7–9) can provide insights into the marginal effects of <span class="math inline">\(x^*\)</span> on the log-odds, odds, and odds ratio, respectively.</p>
+</section>
+<section id="optional-nonlinearities-interactions" class="level2">
+<h2 class="anchored" data-anchor-id="optional-nonlinearities-interactions">OPTIONAL: Nonlinearities &amp; Interactions</h2>
+<p>Suppose we had the two following beliefs: <span class="math inline">\(x^*\)</span> has a quadratic relationship with <span class="math inline">\(y\)</span> and we believe the effect to differ by gender. We can augment our logit model to include two additional engineered features as follows:</p>
+<p><span class="math display">\[
+\begin{equation}
+p(X_i)=\frac{1}{1+e^{-(\beta_0+\beta^*x^*_i+\beta^{**}x^{*2}_i+\beta^{***}x_i^*\text{male}_i + \dots + \beta_k x_{ki})}}
+\tag{10}
+\end{equation}
+\]</span></p>
+<p>where we include the squared term of <span class="math inline">\(x^*\)</span> and interact <span class="math inline">\(x^*\)</span> with a dummy variable for if that individual is male or not. Thus, our interpretation of the marginal effect will now be slightly less nuanced.</p>
+<blockquote class="blockquote">
+<p>Note that whenever we include an interaction term we must take care to include each variable un-interacted first in the model (i.e., also include the dummy male alone as well). Otherwise, the interaction term will eat the raw effect of gender on <span class="math inline">\(y\)</span> when in reality the interaction term may be redundant.</p>
+</blockquote>
+<p>Now differentiating (10) with respect to <span class="math inline">\(x^*\)</span> we obtain:</p>
+<p><span class="math display">\[
+\begin{equation}
+\frac{\partial p(X_i)}{\partial x^*}=(\beta^*+2\beta^{**}x_i^*+\beta^{***}\text{male}_i) \times \frac{e^{-X_i\beta}}{(1+e^{-X_i\beta})^2}
+\tag{11}
+\end{equation}
+\]</span></p>
+<p>We can now see that, due to the nonlinearities, the marginal effect will vary further depending on the value of <span class="math inline">\(x^*\)</span> and whether that individual is male or female. This can allow us to then compute average marginal effects for males versus females by computing (11) for each male and female then taking the average for each. We can similarly compute the odds ratio as done in (9) after solving (10) in terms of odds. These examples will be left for the interested reader, and what we have covered so far should be sufficient to compute these.</p>
+</section>
+<section id="the-marginal-effects-in-predicting-credit-card-fraud" class="level2">
+<h2 class="anchored" data-anchor-id="the-marginal-effects-in-predicting-credit-card-fraud">The Marginal Effects in Predicting Credit Card Fraud</h2>
+<p>To demonstrate a concrete example of what we discussed above, we will utilize the following <a href="https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download">Kaggle dataset</a> on credit card transactions with the intent of building a model to predict whether a transaction is fraudulent<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. The dataset has the following variables on each transaction:</p>
+<p>First, let’s import the data and generate summary statistics:</p>
+<div id="4ce98c88" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fraud <span class="op">=</span> pd.read_csv(<span class="st">"data/card_transdata.csv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fraud.describe().<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">distance_from_home</th>
+<th data-quarto-table-cell-role="th">distance_from_last_transaction</th>
+<th data-quarto-table-cell-role="th">ratio_to_median_purchase_price</th>
+<th data-quarto-table-cell-role="th">repeat_retailer</th>
+<th data-quarto-table-cell-role="th">used_chip</th>
+<th data-quarto-table-cell-role="th">used_pin_number</th>
+<th data-quarto-table-cell-role="th">online_order</th>
+<th data-quarto-table-cell-role="th">fraud</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">count</th>
+<td>1000000.00</td>
+<td>1000000.00</td>
+<td>1000000.00</td>
+<td>1000000.00</td>
+<td>1000000.00</td>
+<td>1000000.0</td>
+<td>1000000.00</td>
+<td>1000000.00</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">mean</th>
+<td>26.63</td>
+<td>5.04</td>
+<td>1.82</td>
+<td>0.88</td>
+<td>0.35</td>
+<td>0.1</td>
+<td>0.65</td>
+<td>0.09</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">std</th>
+<td>65.39</td>
+<td>25.84</td>
+<td>2.80</td>
+<td>0.32</td>
+<td>0.48</td>
+<td>0.3</td>
+<td>0.48</td>
+<td>0.28</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">min</th>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.0</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">25%</th>
+<td>3.88</td>
+<td>0.30</td>
+<td>0.48</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>0.0</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">50%</th>
+<td>9.97</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>0.0</td>
+<td>1.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">75%</th>
+<td>25.74</td>
+<td>3.36</td>
+<td>2.10</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.0</td>
+<td>1.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">max</th>
+<td>10632.72</td>
+<td>11851.10</td>
+<td>267.80</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>1.0</td>
+<td>1.00</td>
+<td>1.00</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>We will now build a logistic regression model using scikit-learn. Suppose we have already gone through the proper steps in training and validating the model and have determined the appropriate model. Our final model is as follows:</p>
+<div id="1bf42b0c" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> <span class="bu">list</span>(fraud.iloc[:, <span class="dv">0</span>:<span class="dv">7</span>].columns)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cont_feat <span class="op">=</span> features[:<span class="dv">3</span>]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>bin_feat <span class="op">=</span> features[<span class="dv">3</span>:]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>normalize <span class="op">=</span> ColumnTransformer(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    [(<span class="st">"cont"</span>, StandardScaler(), cont_feat), (<span class="st">"binary"</span>, <span class="st">"passthrough"</span>, bin_feat)]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline([(<span class="st">"normalize"</span>, normalize), (<span class="st">"logit"</span>, LogisticRegression())])</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Pipeline</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pipeline.fit(fraud[features], fraud[<span class="st">"fraud"</span>])</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Final Model</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>final_mod <span class="op">=</span> model._final_estimator</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>We have built our logit model to predict if a credit card transaction is fraudulent. Now let’s pivot into explaining the model parameters to understand the inner workings of the model and the subsequent role each feature plays in driving predictions. We will define a function to compute the marginal effects of the logistic regression both in terms of probabilities and odds:</p>
+<div id="7f821e2b" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> logit_margeff(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    model: LogisticRegression, X_features: pd.DataFrame, kind: <span class="bu">str</span> <span class="op">=</span> <span class="st">"probability"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Calculate the marginal effects of a logistic regression model.</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">    model</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">        The trained logistic regression model.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">    X_features</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">        The input features used for prediction.</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">    kind</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">        The type of marginal effects to calculate. Can be "probability" or "odds".</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">        Default is "probability".</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">    --------</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">    pd.DataFrame</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">        A DataFrame containing the features and their corresponding marginal effects.</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    coef <span class="op">=</span> model.coef_</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    intercept <span class="op">=</span> model.intercept_</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> kind <span class="op">==</span> <span class="st">"probability"</span>:</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        logodds <span class="op">=</span> intercept <span class="op">+</span> X_features <span class="op">@</span> coef.T</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        marg_effects <span class="op">=</span> []</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(coef.size):</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>            marg_eff <span class="op">=</span> np.mean(</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>                coef[<span class="dv">0</span>, i] <span class="op">*</span> np.exp(<span class="op">-</span>logodds) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>logodds)) <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>            ).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>            marg_effects.append(marg_eff)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> kind <span class="op">==</span> <span class="st">"odds"</span>:</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        marg_effects <span class="op">=</span> []</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(coef.size):</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>            marg_eff <span class="op">=</span> (np.exp(coef[<span class="dv">0</span>, i])).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>            marg_effects.append(marg_eff)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"kind must be either 'probability' or 'odds'"</span>)</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    marginal_effects <span class="op">=</span> {}</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    marginal_effects[<span class="st">"features"</span>] <span class="op">=</span> X_features.columns</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    marginal_effects[<span class="ss">f"marginal_effects_</span><span class="sc">{</span>kind<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> marg_effects</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame(marginal_effects)</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<blockquote class="blockquote">
+<p>Note that line 14 is the average marginal effect calculated using (5) and line 21 is the odds ratio calculated using (9).</p>
+</blockquote>
+<p>After we have defined this function all we have to do is feed in the logit model we have built and the matrix of features. Let’s first interpret the output in terms of probabilities:</p>
+<div id="635d2b1d" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>logit_margeff(final_mod, fraud[features], kind<span class="op">=</span><span class="st">"probability"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">features</th>
+<th data-quarto-table-cell-role="th">marginal_effects_probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>distance_from_home</td>
+<td>0.024</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>distance_from_last_transaction</td>
+<td>0.016</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>ratio_to_median_purchase_price</td>
+<td>0.058</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>repeat_retailer</td>
+<td>-0.015</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>used_chip</td>
+<td>-0.025</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>used_pin_number</td>
+<td>-0.323</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>online_order</td>
+<td>0.160</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Recall we have standardized all continuous features and thus a one unit increase corresponds to a one standard deviation increase. We will interpret the estimated average marginal effects for one continuous feature, distance_from_home, and one binary feature, used_pin_number.</p>
+<blockquote class="blockquote">
+<p><strong>Interpretation (distance_from_home):</strong> On average, a one standard deviation (65.391) increase in the distance the transaction occurred from the cardholders home address is associated with a 2.4 percentage point increase in the probability that the transaction is fraudulent.</p>
+<p><strong>Interpretation (used_pin_number):</strong> On average, a credit card transaction that included the use of a pin number is associated with a 32.3 percentage point decrease in the probability that the transaction is fraudulent.</p>
+</blockquote>
+<p>Now, in terms of odds:</p>
+<div id="b4af1f5e" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>logit_margeff(final_mod, fraud[features], kind<span class="op">=</span><span class="st">"odds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">features</th>
+<th data-quarto-table-cell-role="th">marginal_effects_odds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>distance_from_home</td>
+<td>2.698</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>distance_from_last_transaction</td>
+<td>1.919</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>ratio_to_median_purchase_price</td>
+<td>11.125</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>repeat_retailer</td>
+<td>0.539</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>used_chip</td>
+<td>0.353</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>used_pin_number</td>
+<td>0.000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>online_order</td>
+<td>759.744</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>I hope this post has helped you learn how to extract <strong>meaningful insights</strong> from logit model parameters. It is clear that marginal effect interpretations in terms of probabilities provide an immense amount of intuition and explainability of the predictive mechanics under a logit model framework. Generally speaking, these parameters explain how the model makes predictions as well as explain associations between the target and features. However, under additional identifying assumptions, we can make more powerful statements towards interpreting model parameters as a causal relationship between certain features and targets. I hope this post has increased your knowledge and appreciation for logistic regressions!</p>
+<p><br></p>
+<div style="text-align: center; font-size: 24px;">
+❖❖❖
+</div>
+<center>
+<p>Access all the code via this <a href="https://github.com/jakepenzak/personal-website/tree/main/assets/articles">GitHub Repo</a>.</p>
+I appreciate you reading my post! My posts primarily explore real-world and theoretical applications of econometric and statistical/machine learning techniques, but also whatever I am currently interested in or learning 😁. At the end of the day, I write to learn! I hope to make complex topics slightly more accessible to all.
+</center>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Dataset available on Kaggle: <a href="https://www.kaggle.com/datasets/dhanushnarayananr/credit-card-fraud?resource=download">Credit Card Fraud</a> (License: CC0: Public Domain)<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../..";
+window._ojs.paths.runtimeToRoot = "../../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

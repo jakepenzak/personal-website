@@ -1,32 +1,64 @@
-# Repo for my [Personal Website](http://jacob-pieniazek.com) :rocket:
+# Personal Website
 
-This website was created via [reflex](https://reflex.dev/), a python framework for web apps and websites, and is self-hosted.
+Live site: http://jacob-pieniazek.com
+
+A self-hosted personal website built with [Reflex](https://reflex.dev/) (Python).
+
+---
 
 ## Tech Stack
 
-- [**Reflex**](https://reflex.dev/) - Python web framework
-- [**Docker**](https://www.docker.com/) - Containerization framework
-- [**Ubuntu Server**](https://ubuntu.com/) - Server for hosting
-- [**Cloudflare**](https://www.cloudflare.com/) - Reverse proxy & protection
-- [**Nginx Proxy Manager**](https://nginxproxymanager.com/) - Internal reverse proxy
-- [**Astral UV**](https://docs.astral.sh/uv/) - Project dependency management
+- **App:** [Reflex](https://reflex.dev/) (Python 3.11)
+- **Dependencies:** [uv](https://docs.astral.sh/uv/)
+- **Containerization:** [Docker](https://www.docker.com/)
+- **Hosting:** Ubuntu Server
+- **Edge / Security:** Cloudflare
+- **Reverse proxy:** Nginx Proxy Manager
 
-## Dev
+---
 
-1. Create environment via `uv sync --all-extras --all-groups`
-2. Initialize Reflex with `reflex init`
-3. Run the development server using `reflex run`
+## Local Development
 
-## Deployment
+### Prerequisites
 
-1. Build docker container w/ `main.Dockerfile`
-2. Leverage in Docker compose stack per needs
+- Python `>=3.11`
+- [`uv`](https://docs.astral.sh/uv/)
+- (Optional) Docker
 
-## Deployment (in deployment_backup)
+### Setup
 
-Previously utilized when hosting w/ Digital Ocean Droplet.
+```bash
+uv sync --all-extras --all-groups
+reflex init
+```
 
-Used Caddy for webserver and docker compose for frontend and backend.
+### Run
 
-1. Build production service `DOMAIN={domain} docker compose build`
-2. Run production service `DOMAIN={domain} docker compose up`
+```bash
+reflex run
+```
+
+---
+
+## Docker Deployment
+
+This repo includes a production Dockerfile: `main.Dockerfile`.
+
+```bash
+docker build -f main.Dockerfile -t personal-website .
+```
+
+The container starts the app with:
+
+```bash
+reflex db migrate && reflex run --env prod
+```
+
+---
+
+## CI
+
+GitHub Actions runs Reflex export and a Docker build on PRs:
+
+- `/.github/workflows/integration-tests.yml`
+- `/.github/workflows/end-to-end-tests.yml`
