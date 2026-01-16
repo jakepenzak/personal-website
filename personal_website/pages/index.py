@@ -212,6 +212,9 @@ def intro() -> rx.Component:
             align_items="center",
         ),
         rx.vstack(
+            rx.spacer(),
+            rx.spacer(),
+            rx.spacer(),
             rx.image(
                 src=asset_data.INDEX_PHOTO,
                 height="flex",
@@ -223,6 +226,7 @@ def intro() -> rx.Component:
                 border="1px solid #555",
             ),
             read_markdown(asset_data.INDEX_SPOTIFY, padding_bottom="1em"),
+            rx.spacer(),
             avatar,
             rx.box(rx.vstack(welcome, body, align="center")),
             padding_x="3em",

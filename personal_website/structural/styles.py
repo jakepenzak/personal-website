@@ -83,6 +83,7 @@ INDEX_PAGE = {
         "transform": "matrix(1, 0, 0, -1, 0, 0);",
         "padding_x": "3em",
         "padding_y": "3em",
+        "display": ["none", "none", "flex", "flex", "flex", "flex"],
     },
     "SKILLS_CONTAINER_STYLE": {
         # "height": "12em",
