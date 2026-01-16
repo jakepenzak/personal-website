@@ -17,15 +17,69 @@ def index() -> rx.Component:
         rx.Component: The UI for the home page.
     """
 
-    return rx.vstack(
+    hero_mobile_background = rx.box(
+        rx.box(
+            position="absolute",
+            inset="0",
+            opacity="0.34",
+            background=(
+                "radial-gradient(circle at 50% 18%, rgba(82,33,129,0.22) 0%, rgba(82,33,129,0) 58%),"
+                "repeating-linear-gradient(0deg, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 22px),"
+                "repeating-linear-gradient(90deg, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 22px)"
+            ),
+            background_size="220% 220%",
+            animation="heroPhase 22s ease-in-out infinite",
+            filter="blur(0.9px)",
+            pointer_events="none",
+        ),
+        rx.box(
+            position="absolute",
+            inset="-40px",
+            opacity="0.32",
+            background=(
+                "conic-gradient(from 0deg at 50% 40%, rgba(82,33,129,0.24) 0deg, rgba(82,33,129,0) 18deg, rgba(82,33,129,0.12) 36deg, rgba(82,33,129,0) 54deg, rgba(82,33,129,0.24) 72deg, rgba(82,33,129,0) 90deg, rgba(82,33,129,0.12) 108deg, rgba(82,33,129,0) 126deg, rgba(82,33,129,0.24) 144deg, rgba(82,33,129,0) 162deg, rgba(82,33,129,0.12) 180deg, rgba(82,33,129,0) 198deg, rgba(82,33,129,0.24) 216deg, rgba(82,33,129,0) 234deg, rgba(82,33,129,0.12) 252deg, rgba(82,33,129,0) 270deg, rgba(82,33,129,0.24) 288deg, rgba(82,33,129,0) 306deg, rgba(82,33,129,0.12) 324deg, rgba(82,33,129,0) 342deg, rgba(82,33,129,0.24) 360deg),"
+                "repeating-radial-gradient(circle at 50% 40%, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 18px)"
+            ),
+            filter="blur(1.0px)",
+            pointer_events="none",
+            transform_origin="50% 40%",
+            animation="heroRotate 30s linear infinite",
+        ),
+        rx.vstack(
+            header(),
+            intro(),
+            align="center",
+            position="relative",
+            z_index="1",
+        ),
+        position="relative",
+        width="calc(100% + 4em)",
+        margin_x="-2em",
+        overflow="hidden",
+        border_radius="0px",
+        padding_top="2.5em",
+        padding_bottom="0.5em",
+        padding_x="2em",
+        display=["block", "block", "none", "none", "none", "none"],
+    )
+
+    hero_desktop = rx.vstack(
         header(),
         intro(),
+        align="center",
+        display=["none", "none", "flex", "flex", "flex", "flex"],
+        padding_top="2.5em",
+        padding_bottom="0.5em",
+    )
+
+    return rx.vstack(
+        hero_mobile_background,
+        hero_desktop,
         skillsets_section(),
         min_height="80vh",
         overflow_x="hidden",
         max_width="100%",
         align="center",
-        padding_top="2.5em",
         padding_bottom="3.5em",
         padding_x="2em",
     )
@@ -59,52 +113,26 @@ def header() -> rx.Component:
             align="center",
         ),
         rx.box(
-            rx.box(
-                position="absolute",
-                inset="-40px",
-                bg="linear-gradient(115deg, rgba(82,33,129,0.28), rgba(37,99,235,0.22), rgba(249,115,22,0.18), rgba(22,163,74,0.18), rgba(82,33,129,0.28))",
-                background_size="220% 220%",
-                animation="indexMobileGlow 10s ease-in-out infinite",
-                filter="blur(22px)",
-                opacity="0.85",
-                z_index="0",
-                border_radius="999px",
-                pointer_events="none",
-            ),
-            rx.box(
-                position="absolute",
-                inset="-26px",
-                bg_image="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 220'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23522181' stop-opacity='0.30'/%3E%3Cstop offset='45%25' stop-color='%232563eb' stop-opacity='0.24'/%3E%3Cstop offset='70%25' stop-color='%23f97316' stop-opacity='0.18'/%3E%3Cstop offset='100%25' stop-color='%2316a34a' stop-opacity='0.16'/%3E%3C/linearGradient%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='0.65'/%3E%3C/filter%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-linecap='round' filter='url(%23b)'%3E%3Cpolyline points='58,170 140,112 210,150 290,92 372,136 440,84 540,126' stroke-width='2.2'/%3E%3Cpolyline points='40,110 120,68 200,104 280,52 360,100 450,58 560,84' stroke-width='1.9'/%3E%3Cpolyline points='68,58 160,92 230,56 310,90 390,54 470,94 540,70' stroke-width='1.6'/%3E%3C/g%3E%3Cg fill='none' stroke='%23522181' stroke-opacity='0.18'%3E%3Cpolygon points='58,170 140,112 40,110'/%3E%3Cpolygon points='140,112 210,150 200,104'/%3E%3Cpolygon points='210,150 290,92 280,52'/%3E%3Cpolygon points='290,92 372,136 360,100'/%3E%3Cpolygon points='372,136 440,84 450,58'/%3E%3Cpolygon points='440,84 540,126 560,84'/%3E%3Cpolygon points='40,110 120,68 68,58'/%3E%3Cpolygon points='120,68 200,104 160,92'/%3E%3Cpolygon points='200,104 280,52 230,56'/%3E%3Cpolygon points='280,52 360,100 310,90'/%3E%3Cpolygon points='360,100 450,58 390,54'/%3E%3Cpolygon points='450,58 560,84 540,70'/%3E%3C/g%3E%3C/svg%3E\")",
-                background_repeat="no-repeat",
-                background_position="50% 50%",
-                background_size="135% 135%",
-                animation="indexMobileGeo 9s ease-in-out infinite",
-                opacity="0.95",
-                z_index="0",
-                border_radius="999px",
-                pointer_events="none",
-                mix_blend_mode="normal",
-            ),
-            rx.heading(
-                "Jacob \n Pieniazek",
-                size="9",
-                font_family="HackBold",
-                color=["#522181"],
-                align="center",
-                position="relative",
-                z_index="1",
-                display=["flex", "flex", "none", "none", "none", "none"],
+            rx.center(
+                rx.heading(
+                    "Jacob \n Pieniazek",
+                    size="9",
+                    font_family="HackBold",
+                    color=["#522181"],
+                    align="center",
+                    text_shadow="0 1px 0 rgba(255,255,255,0.55)",
+                ),
+                width="100%",
+                padding_y="0.75em",
             ),
             position="relative",
-            overflow="visible",
-            padding_y="1.25em",
-            padding_x="1em",
+            width="100%",
+            padding_top="0.5em",
             display=["flex", "flex", "none", "none", "none", "none"],
-            align="center",
         ),
         justify="between",
-        padding_top="2em",
-        padding_bottom="6em",
+        padding_top="0em",
+        padding_bottom="3em",
         align="center",
         width="100%",
         height="100%",
