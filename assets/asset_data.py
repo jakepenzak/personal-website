@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import Final, NamedTuple
 
 ## COMMON
 # Website Footer Image
@@ -43,12 +43,8 @@ SKILLS_DATA = [
         "rating": 70,
     },
     {
-        "subject": "Deep Learning/AI",
-        "rating": 65,
-    },
-    {
-        "subject": "Web Development",
-        "rating": 46,
+        "subject": "Artificial Intelligence",
+        "rating": 72,
     },
     {
         "subject": "DevOps + MLOps",
@@ -69,247 +65,92 @@ SKILLS_DATA = [
 ]
 
 
-class LogoMeta(NamedTuple):
-    asset_path: str
-    link: str
+# Capability-first index page blocks (used by the refactored skills section).
+CORE_STRENGTHS: Final[list[str]] = [
+    "Causal Inference, Causal ML, & Econometrics",
+    "Statistical Learning, ML, & AI",
+    "MLOps / DevOps & Delivery / Package Development",
+    "Data Platforms & Analytics Engineering",
+]
 
-
-TECH_INTRO_TXT = """Similarly, below is a selection of some of the tech
-                stack & tools that I use or have used in my personal & professional work."""
-
-TECH_LOGOS_META_DICT = {
-    "Azure": LogoMeta(
-        asset_path="/index/skills/tech_logos/azure.webp",
-        link="https://azure.microsoft.com/en-us",
-    ),
-    "DataBricks": LogoMeta(
-        asset_path="https://user-images.githubusercontent.com/25181517/197845567-86a09ca9-d96f-42c4-9ab1-8bce95ab000d.png",
-        link="https://databricks.com/",
-    ),
-    "Digital Ocean": LogoMeta(
-        asset_path="/index/skills/tech_logos/digitalocean.webp",
-        link="https://www.digitalocean.com/",
-    ),
-    "CloudFlare": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/cloudflare/cloudflare-original-wordmark.svg",
-        link="https://www.cloudflare.com/",
-    ),
-    "NGINX": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/nginx/nginx-original.svg",
-        link="https://nginx.org/",
-    ),
-    "GitHub": LogoMeta(
-        asset_path="/index/skills/tech_logos/github.webp",
-        link="https://www.github.com/",
-    ),
-    "Git": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/git/git-original-wordmark.svg",
-        link="https://git-scm.com/",
-    ),
-    "Docker": LogoMeta(
-        asset_path="/index/skills/tech_logos/docker.webp",
-        link="https://www.docker.com/",
-    ),
-    "Conda": LogoMeta(
-        asset_path="/index/skills/tech_logos/conda.webp",
-        link="https://docs.conda.io/en/latest/",
-    ),
-    "Astral UV": LogoMeta(
-        asset_path="https://docs.astral.sh/uv/assets/logo-letter.svg",
-        link="https://docs.astral.sh/uv/",
-    ),
-    "Cuda": LogoMeta(
-        asset_path="/index/skills/tech_logos/cuda.webp",
-        link="https://developer.nvidia.com/cuda-zone",
-    ),
-    "Jupyter": LogoMeta(
-        asset_path="/index/skills/tech_logos/jupyter.webp", link="https://jupyter.org/"
-    ),
-    "Marimo": LogoMeta(
-        asset_path="https://raw.githubusercontent.com/marimo-team/marimo/main/docs/_static/marimo-logotype-thick.svg",
-        link="https://marimo.io/",
-    ),
-    "Quarto": LogoMeta(
-        asset_path="https://github.com/quarto-dev/quarto-web/raw/main/quarto-icon.svg",
-        link="https://quarto.org/",
-    ),
-    "Mardown": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/markdown/markdown-original.svg",
-        link="https://www.markdownguide.org/",
-    ),
-    "Spark": LogoMeta(
-        asset_path="/index/skills/tech_logos/spark.webp",
-        link="https://spark.apache.org/",
-    ),
-    "duckDB": LogoMeta(
-        asset_path="/index/skills/tech_logos/duckdb.webp", link="https://duckdb.org/"
-    ),
-    "Delta Lake": LogoMeta(
-        asset_path="/index/skills/tech_logos/delta.webp",
-        link="https://delta.io/",
-    ),
-    "Neovim": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/neovim/neovim-original.svg",
-        link="https://neovim.io/",
-    ),
-    "VS Code": LogoMeta(
-        asset_path="/index/skills/tech_logos/vscode.webp",
-        link="https://code.visualstudio.com/",
-    ),
-    "Python": LogoMeta(
-        asset_path="/index/skills/tech_logos/python.webp",
-        link="https://www.python.org/",
-    ),
-    "R": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/r/r-original.svg",
-        link="https://www.r-project.org/",
-    ),
-    "Bash": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/bash/bash-original.svg",
-        link="https://www.gnu.org/software/bash/",
-    ),
-    "Stata": LogoMeta(
-        asset_path="/index/skills/tech_logos/stata.webp", link="https://www.stata.com/"
-    ),
-    "Linux": LogoMeta(
-        asset_path="/index/skills/tech_logos/linux.webp", link="https://www.linux.org/"
-    ),
-    "Apple": LogoMeta(
-        asset_path="https://github.com/devicons/devicon/raw/master/icons/apple/apple-original.svg",
-        link="",
-    ),
-    "PowerBI": LogoMeta(
-        asset_path="/index/skills/tech_logos/powerbi.webp",
-        link="https://powerbi.microsoft.com/en-us/",
-    ),
-    "Obsidian": LogoMeta(
-        asset_path="/index/skills/tech_logos/obsidian.webp", link="https://obsidian.md/"
-    ),
+FOCUS_AREA_STYLE: Final[dict[str, dict[str, str]]] = {
+    "Causal Inference, Causal ML, & Econometrics": {
+        "color_scheme": "purple",
+        "variant": "soft",
+    },
+    "Statistical Learning, ML, & AI": {"color_scheme": "blue", "variant": "soft"},
+    "MLOps / DevOps & Delivery / Package Development": {
+        "color_scheme": "orange",
+        "variant": "soft",
+    },
+    "Data Platforms & Analytics Engineering": {
+        "color_scheme": "green",
+        "variant": "soft",
+    },
 }
 
-LIBRARY_INTRO_TXT = """Below is a non-exhaustive selection of some of the python libraries/frameworks/ecosystems
-                I use or have used in my personal & professional work."""
+PROFILE_FOCUS_AREAS: Final[list[dict[str, object]]] = [
+    {
+        "title": "Causal Inference, Causal ML, & Econometrics",
+        "tagline": "I mostly work on program evaluation and heterogeneous effects  getting to who benefits, and by how much? (CATE), not just a single average.",
+        "highlights": [
+            "CATE / uplift modeling and treatment targeting",
+            "Identification + robustness checks (sensitivity, diagnostics)",
+            "Turning research-y work into reusable pipelines",
+        ],
+        "tools": ["DoubleML", "EconML", "DoWhy", "CausalML", "Statsmodels", "PyMC"],
+    },
+    {
+        "title": "Statistical Learning, ML, & AI",
+        "tagline": "I build predictive models and practical AI workflows, with a strong emphasis on evaluation, maintainability, and making outputs usable for real decisions.",
+        "highlights": [
+            "Model selection, calibration, and monitoring-ready metrics",
+            "Interpretable ML and stakeholder-friendly explanations",
+            "Agentic workflows + LLM tooling where it genuinely helps",
+        ],
+        "tools": [
+            "scikit-learn",
+            "XGBoost",
+            "LightGBM",
+            "FLAML",
+            "MLFlow",
+            "Optuna",
+            "PyTorch",
+            "Hugging Face",
+            "LangChain",
+            "LiteLLM",
+            "OpenCode",
+        ],
+    },
+    {
+        "title": "MLOps / DevOps & Delivery / Package Development",
+        "tagline": "I like shipping things that other people can actually run: packages, services, and reproducible environments that dont crumble a week later.",
+        "highlights": [
+            "Packaging + dependency management (reproducible builds)",
+            "Containerization and CI-friendly workflows",
+            "Docs, tooling, and small developer experience improvements",
+        ],
+        "tools": ["Git", "GitHub Actions", "Docker", "Linux", "uv", "ruff", "pytest"],
+    },
+    {
+        "title": "Data Platforms & Analytics Engineering",
+        "tagline": "I build data foundations that are reliable, fast, and pleasant to use  so analysis and models dont start from chaos every time.",
+        "highlights": [
+            "Lakehouse patterns + distributed compute",
+            "Query performance, reproducible datasets, and data quality checks",
+            "Azure + Databricks for production workflows",
+        ],
+        "tools": [
+            "Databricks",
+            "Azure",
+            "Spark",
+            "Delta Lake",
+            "DuckDB",
+            "Kedro",
+        ],
+    },
+]
 
-LIBRARY_LOGOS_META_DICT = {
-    "EconML": LogoMeta(
-        asset_path="/index/skills/library_logos/econml.webp",
-        link="https://www.microsoft.com/en-us/research/project/econml/",
-    ),
-    "DoubleML": LogoMeta(
-        asset_path="/index/skills/library_logos/doubleml.webp",
-        link="https://docs.doubleml.org/stable/index.html",
-    ),
-    "DoWhy": LogoMeta(
-        asset_path="/index/skills/library_logos/dowhy.webp",
-        link="https://www.pywhy.org/dowhy/v0.11.1/",
-    ),
-    "CausalML": LogoMeta(
-        asset_path="/index/skills/library_logos/causalml.webp",
-        link="https://causalml.readthedocs.io/en/latest/",
-    ),
-    "SciKit-Learn": LogoMeta(
-        asset_path="/index/skills/library_logos/sklearn.webp",
-        link="https://scikit-learn.org/stable/",
-    ),
-    "XGBoost": LogoMeta(
-        asset_path="/index/skills/library_logos/xgboost.webp",
-        link="https://xgboost.readthedocs.io/en/latest/",
-    ),
-    "LightGBM": LogoMeta(
-        asset_path="/index/skills/library_logos/lightgbm.webp",
-        link="https://lightgbm.readthedocs.io/en/latest/",
-    ),
-    "PyTorch": LogoMeta(
-        asset_path="/index/skills/library_logos/pytorch.webp",
-        link="https://pytorch.org/",
-    ),
-    "Hugging Face": LogoMeta(
-        asset_path="https://huggingface.co/datasets/huggingface/brand-assets/resolve/main/hf-logo.svg",
-        link="https://huggingface.co/",
-    ),
-    "InterpretML": LogoMeta(
-        asset_path="/index/skills/library_logos/interpretml.webp",
-        link="https://interpret.ml/",
-    ),
-    "SHAP": LogoMeta(
-        asset_path="/index/skills/library_logos/shap.webp",
-        link="https://shap.readthedocs.io/en/latest/",
-    ),
-    "StatsModels": LogoMeta(
-        asset_path="/index/skills/library_logos/statsmodels.webp",
-        link="https://www.statsmodels.org/stable/index.html",
-    ),
-    "Nixtla": LogoMeta(
-        asset_path="/index/skills/library_logos/nixtla.webp",
-        link="https://nixtlaverse.nixtla.io/",
-    ),
-    "PyMC": LogoMeta(
-        asset_path="/index/skills/library_logos/pymc.webp", link="https://docs.pymc.io/"
-    ),
-    "Scipy": LogoMeta(
-        asset_path="/index/skills/library_logos/scipy.webp",
-        link="https://www.scipy.org/",
-    ),
-    "Pyomo": LogoMeta(
-        asset_path="/index/skills/library_logos/pyomo.webp",
-        link="http://www.pyomo.org/",
-    ),
-    "Pandas": LogoMeta(
-        asset_path="/index/skills/library_logos/pandas.webp",
-        link="https://pandas.pydata.org/",
-    ),
-    "Ibis": LogoMeta(
-        asset_path="/index/skills/library_logos/ibis.webp",
-        link="https://ibis-project.org/",
-    ),
-    "Polars": LogoMeta(
-        asset_path="https://raw.githubusercontent.com/pola-rs/polars-static/master/banner/polars_github_banner.svg",
-        link="https://pola.rs/",
-    ),
-    "Numpy": LogoMeta(
-        asset_path="/index/skills/library_logos/numpy.webp", link="https://numpy.org/"
-    ),
-    "Jax": LogoMeta(
-        asset_path="https://docs.jax.dev/en/latest/_static/jax_logo_250px.png",
-        link="https://docs.jax.dev/en/latest/",
-    ),
-    "Cupy": LogoMeta(
-        asset_path="/index/skills/library_logos/cupy.webp", link="https://cupy.dev/"
-    ),
-    "Rapids": LogoMeta(
-        asset_path="/index/skills/library_logos/rapids.webp", link="https://rapids.ai/"
-    ),
-    "Ray": LogoMeta(
-        asset_path="https://cdn.brandfetch.io/idxF9UqF37/theme/dark/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B",
-        link="https://docs.ray.io/en/latest/",
-    ),
-    "Flaml": LogoMeta(
-        asset_path="https://github.com/microsoft/FLAML/raw/main/website/static/img/flaml.svg",
-        link="https://microsoft.github.io/FLAML/docs/Getting-Started",
-    ),
-    "NBDev": LogoMeta(
-        asset_path="/index/skills/library_logos/nbdev.webp",
-        link="https://nbdev.fast.ai/",
-    ),
-    "Kedro": LogoMeta(
-        asset_path="/index/skills/library_logos/kedro.webp",
-        link="https://kedro.readthedocs.io/en/stable/",
-    ),
-    "Reflex": LogoMeta(
-        asset_path="/index/skills/library_logos/reflex.webp", link="https://reflex.dev/"
-    ),
-    "Matplotlib": LogoMeta(
-        asset_path="/index/skills/library_logos/matplotlib.webp",
-        link="https://matplotlib.org/",
-    ),
-    "Seaborn": LogoMeta(
-        asset_path="/index/skills/library_logos/seaborn.webp",
-        link="https://seaborn.pydata.org/",
-    ),
-    "Plotly": LogoMeta(
-        asset_path="/index/skills/library_logos/plotly.webp", link="https://plotly.com/"
-    ),
-}
 
 ## Article Page
 ARTICLES_INTRO = "assets/articles/intro.md"
