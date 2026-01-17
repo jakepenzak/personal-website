@@ -273,5 +273,5 @@ CAPSTONE_TITLE = "assets/research/capstone.md"
 THESIS_LINK = "/research/thesis.pdf"
 
 ## Resume Page
-RESUME_IMAGE = "/resume/resume.webp"
-RESUME_LINK = "/resume/resume.pdf"
+RESUME_IMAGE = "/resume/resume.v0.webp"
+RESUME_LINK = "/resume/resume.v0.pdf"
