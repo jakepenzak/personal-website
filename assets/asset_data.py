@@ -125,7 +125,7 @@ PROFILE_FOCUS_AREAS: Final[list[dict[str, object]]] = [
     },
     {
         "title": "MLOps / DevOps & Delivery / Package Development",
-        "tagline": "I like shipping things that other people can actually run: packages, services, and reproducible environments that dont crumble a week later.",
+        "tagline": "I like shipping things that other people can actually run: packages, services, and reproducible environments that don't crumble a week later.",
         "highlights": [
             "Packaging + dependency management (reproducible builds)",
             "Containerization and CI-friendly workflows",
@@ -135,7 +135,7 @@ PROFILE_FOCUS_AREAS: Final[list[dict[str, object]]] = [
     },
     {
         "title": "Data Platforms & Analytics Engineering",
-        "tagline": "I build data foundations that are reliable, fast, and pleasant to use, so analysis and models dont start from chaos every time.",
+        "tagline": "I build data foundations that are reliable, fast, and pleasant to use, so analysis and models don't start from chaos every time.",
         "highlights": [
             "Lakehouse patterns + distributed compute",
             "Query performance, reproducible datasets, and data quality checks",
