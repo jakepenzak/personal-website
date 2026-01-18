@@ -349,6 +349,18 @@ def skillsets_section() -> rx.Component:
             ),
             rx.badge(
                 rx.hstack(
+                    rx.icon(tag="database", size=16),
+                    rx.text("SQL"),
+                    spacing="2",
+                    align="center",
+                ),
+                radius="full",
+                variant="soft",
+                color_scheme="red",
+                size="2",
+            ),
+            rx.badge(
+                rx.hstack(
                     rx.icon(tag="cpu", size=16),
                     rx.text("Rust"),
                     spacing="2",
@@ -380,7 +392,7 @@ def skillsets_section() -> rx.Component:
                 ),
                 radius="full",
                 variant="soft",
-                color_scheme="gray",
+                color_scheme="green",
                 size="2",
             ),
             rx.badge(
