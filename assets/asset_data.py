@@ -267,9 +267,7 @@ ARTICLES_META_DICT = {
 }
 
 ## Research Page
-THESIS_TITLE = "assets/research/thesis.md"
-CAPSTONE_TITLE = "assets/research/capstone.md"
-
+BROWN_BAG_PATH = "/research/causal-ml-brown-bag.pdf"
 THESIS_LINK = "/research/thesis.pdf"
 
 ## Resume Page
