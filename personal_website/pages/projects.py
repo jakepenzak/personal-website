@@ -344,7 +344,7 @@ def research_and_presentations() -> rx.Component:
     research_items = rx.vstack(
         rx.spacer(),
         research_card(
-            title="Causal Machine Learning in Practice: Estimating Average and Heterogenous Effects for Personalized Treatment.",
+            title="Causal Machine Learning in Practice: Estimating Average and Heterogeneous Effects for Personalized Treatment.",
             year="2026",
             type_="Seminar Talk",
             link=asset_data.BROWN_BAG_PATH,
