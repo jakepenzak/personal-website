@@ -234,22 +234,28 @@ def research_card(
                 abstract,
                 rx.text(abstract, size="2", color="gray"),
             ),
-            rx.hstack(
-                rx.cond(
-                    link,
-                    rx.link(
-                        rx.button("View PDF", variant="ghost", size="2"),
-                        href=link,
-                        is_external=True,
+            rx.cond(
+                link or repo,
+                rx.hstack(
+                    rx.cond(
+                        link,
+                        rx.link(
+                            rx.button("View PDF", variant="ghost", size="2"),
+                            href=link,
+                            is_external=True,
+                        ),
                     ),
-                ),
-                rx.spacer(),
-                rx.cond(
-                    repo,
-                    rx.link(
-                        rx.button("GitHub", variant="ghost", size="2"),
-                        href=repo,
-                        is_external=True,
+                    rx.cond(
+                        link and repo,
+                        rx.spacer(),
+                    ),
+                    rx.cond(
+                        repo,
+                        rx.link(
+                            rx.button("GitHub", variant="ghost", size="2"),
+                            href=repo,
+                            is_external=True,
+                        ),
                     ),
                 ),
             ),
