@@ -1,6 +1,6 @@
 <center>
 
-I am a Senior Data Scientist at a retail data science company based in Cincinnati, OH, a persistent learner,
+I am a Lead Data Scientist at 84.51° in Cincinnati, OH, a persistent learner,
 and, most importantly, a devoted friend, son, brother, and boyfriend.
 
 <br>

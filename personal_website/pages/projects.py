@@ -205,6 +205,7 @@ def research_card(
     year: str,
     type_: str,
     link: str = "",
+    repo: str = "",
     abstract: str = "",
 ) -> rx.Component:
     """Create a research publication card."""
@@ -234,15 +235,30 @@ def research_card(
                 rx.text(abstract, size="2", color="gray"),
             ),
             rx.cond(
-                link,
-                rx.link(
-                    rx.button("View PDF", variant="ghost", size="2"),
-                    href=link,
-                    is_external=True,
+                link or repo,
+                rx.hstack(
+                    rx.cond(
+                        link,
+                        rx.link(
+                            rx.button("View PDF", variant="ghost", size="2"),
+                            href=link,
+                            is_external=True,
+                        ),
+                    ),
+                    rx.cond(
+                        link and repo,
+                        rx.spacer(),
+                    ),
+                    rx.cond(
+                        repo,
+                        rx.link(
+                            rx.button("GitHub", variant="ghost", size="2"),
+                            href=repo,
+                            is_external=True,
+                        ),
+                    ),
                 ),
             ),
-            spacing="3",
-            align="stretch",
         ),
         padding="1.5em",
         border="1px solid #e2e8f0",
@@ -333,6 +349,14 @@ def research_and_presentations() -> rx.Component:
     # Research cards
     research_items = rx.vstack(
         rx.spacer(),
+        research_card(
+            title="Causal Machine Learning in Practice: Estimating Average and Heterogeneous Effects for Personalized Treatment.",
+            year="2026",
+            type_="Seminar Talk",
+            link=asset_data.BROWN_BAG_PATH,
+            repo="https://github.com/jakepenzak/causal-ml-brown-bag",
+            abstract='A "brown-bag" talk that builds from classical econometrics intuition (Frisch-Waugh-Lovell, potential outcomes) through modern semi-parametric methods (Double/Debiased ML, meta-learners) and CATE estimation techniques, and landing on practical marketing applications like audience selection and coupon targeting. The goal is to make these methods feel like a natural extension of what an econometrics-trained student already knows.',
+        ),
         research_card(
             title="High, But Not Happy? The Impact of Cannabis Consumption on Mental Health",
             year="2022",
