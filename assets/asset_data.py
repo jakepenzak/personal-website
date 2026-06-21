@@ -273,3 +273,6 @@ THESIS_LINK = "/research/thesis.pdf"
 ## Resume Page
 RESUME_IMAGE = "/resume/resume.v0.webp"
 RESUME_LINK = "/resume/resume.v0.pdf"
+
+## Projects
+LLM_PULSE_LOGO = "/projects/llm-pulse.svg"
