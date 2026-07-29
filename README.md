@@ -1,6 +1,6 @@
 # Personal Website
 
-Live site: http://jacob-pieniazek.com
+Live site: https://jacob-pieniazek.com
 
 A self-hosted personal website built with [Reflex](https://reflex.dev/) (Python).
 
@@ -58,7 +58,10 @@ reflex db migrate && reflex run --env prod
 
 ## CI
 
-GitHub Actions runs Reflex export and a Docker build on PRs:
+This submodule has its own GitHub Actions workflow for pull requests:
 
-- `/.github/workflows/integration-tests.yml`
-- `/.github/workflows/end-to-end-tests.yml`
+- [End-to-end tests](.github/workflows/end-to-end-tests.yml)
+
+The workflow uses Python 3.11 and `uv`, initializes and exports the Reflex
+application, then builds `main.Dockerfile`. The parent `personal-infra`
+repository has a separate root workflow for repository validation.
