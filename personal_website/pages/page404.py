@@ -6,7 +6,7 @@ from personal_website.structural import template
 
 
 # Create a 404 page with the navbar, 404 content, spacer, and footer.
-@template(route="/404", title="404 - Not Found")
+@template(route="/404", title="404 - Not Found", register=False)
 def index404() -> rx.Component:
     """
     Renders the 404 page with the navbar, 404 content, spacer, and footer.

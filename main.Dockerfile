@@ -34,7 +34,9 @@ RUN reflex init
 STOPSIGNAL SIGKILL
 
 EXPOSE 3000
-EXPOSE 8000
+
+# Reflex 0.9 serves the frontend and event backend together in production.
+ENV API_URL="https://jacob-pieniazek.com"
 
 # Always apply migrations before starting the backend.
 CMD reflex db migrate && reflex run --env prod

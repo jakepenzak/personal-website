@@ -5,6 +5,7 @@ import reflex as rx
 from assets import asset_data
 from personal_website.components.spline import spline_component_index_page
 from personal_website.components.utilities.markdown import read_markdown
+from personal_website.components.website_bar import website_bar
 from personal_website.structural import styles, template
 
 
@@ -82,6 +83,7 @@ def index() -> rx.Component:
         hero_desktop,
         weekly_pick_section(),
         skillsets_section(),
+        website_bar(),
         min_height="80vh",
         overflow_x="hidden",
         max_width="100%",
@@ -599,9 +601,7 @@ def focus_area_card(area: dict) -> rx.Component:
                 text_align="left",
                 padding_bottom="0.25em",
             ),
-            rx.text(
-                area["tagline"], color=styles.theme_value("#2B2A33", "#C4CEDB")
-            ),
+            rx.text(area["tagline"], color=styles.theme_value("#2B2A33", "#C4CEDB")),
             highlights,
             rx.text(
                 "Representative tools:",

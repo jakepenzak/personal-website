@@ -24,6 +24,7 @@ def template(
     meta: str | None = None,
     script_tags: list[rx.Component] | None = None,
     on_load: rx.event.EventHandler | list[rx.event.EventHandler] | None = None,
+    register: bool = True,
 ) -> Callable[[Callable[[], rx.Component]], rx.Component]:
     """The template for each page of the app.
 
@@ -35,6 +36,7 @@ def template(
         meta: Additionnal meta to add to the page.
         on_load: The event handler(s) called when the page load.
         script_tags: Scripts to attach to the page.
+        register: Whether to register the page with the ``@rx.page`` decorator.
 
     Returns:
         The template with the page content.
@@ -52,15 +54,6 @@ def template(
         # Get the meta tags for the page.
         all_meta = [*default_meta, *(meta or [])]
 
-        @rx.page(
-            route=route,
-            title=title,
-            image=image,
-            description=description,
-            meta=all_meta,
-            script_tags=script_tags,
-            on_load=on_load,
-        )
         def templated_page():
             from personal_website.components.footer import footer
             from personal_website.components.navbar import navbar
@@ -76,6 +69,17 @@ def template(
                 color=styles.theme_text_color,
                 transition="background-color 180ms ease, color 180ms ease",
             )
+
+        if register:
+            templated_page = rx.page(
+                route=route,
+                title=title,
+                image=image,
+                description=description,
+                meta=all_meta,
+                script_tags=script_tags,
+                on_load=on_load,
+            )(templated_page)
 
         return templated_page
 
