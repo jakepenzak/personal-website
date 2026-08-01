@@ -3,7 +3,8 @@
 import reflex as rx
 
 from assets import asset_data
-from personal_website.structural import template
+from personal_website.components.website_bar import website_bar
+from personal_website.structural import styles, template
 
 
 # Create the resume page
@@ -16,10 +17,15 @@ def resume() -> rx.Component:
     """
     return rx.vstack(
         heading(),
-        rx.divider(width="25%", border_top="1px solid rgba(0, 0, 0, 0.25)"),
+        rx.divider(
+            width="25%",
+            border_top=styles.theme_value(
+                "1px solid rgba(0, 0, 0, 0.25)", "1px solid rgba(226, 232, 240, 0.28)"
+            ),
+        ),
         body(),
         rx.spacer(),
-        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        website_bar(),
         align="center",
         min_height="80vh",
     )

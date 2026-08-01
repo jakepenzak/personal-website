@@ -64,8 +64,18 @@ def template(
         def templated_page():
             from personal_website.components.footer import footer
             from personal_website.components.navbar import navbar
+            from personal_website.structural import styles
 
-            return rx.box(navbar(), page_content(), footer())
+            return rx.box(
+                navbar(),
+                page_content(),
+                footer(),
+                class_name="site-shell",
+                min_height="100vh",
+                bg=styles.theme_value("white", "#0B111B"),
+                color=styles.theme_text_color,
+                transition="background-color 180ms ease, color 180ms ease",
+            )
 
         return templated_page
 

@@ -4,6 +4,7 @@ import reflex as rx
 
 from assets import asset_data
 from personal_website.components.utilities.markdown import read_markdown
+from personal_website.components.website_bar import website_bar
 from personal_website.structural import styles, template
 
 
@@ -17,11 +18,16 @@ def articles() -> rx.Component:
     """
     return rx.vstack(
         header(),
-        rx.divider(width="25%", border_top="1px solid rgba(0, 0, 0, 0.25)"),
+        rx.divider(
+            width="25%",
+            border_top=styles.theme_value(
+                "1px solid rgba(0, 0, 0, 0.25)", "1px solid rgba(226, 232, 240, 0.28)"
+            ),
+        ),
         rx.spacer(),
         body(),
         rx.spacer(),
-        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        website_bar(),
         align="center",
         min_height="80vh",
     )
@@ -126,7 +132,7 @@ def create_article_card(
         rx.text(
             article_meta.title_str,
             size="5" if is_featured else "4",
-            color="#522181",
+            color=styles.theme_value("#522181", "#CFBCFF"),
             text_align="center",
             line_height="1.3",
             font_weight="600",
@@ -179,12 +185,12 @@ def create_article_card(
 
     card_props = {
         "padding": "1.5em",
-        "border": "1px solid #e2e8f0",
+        "border": styles.theme_value("1px solid #e2e8f0", "1px solid #2E3A4D"),
         "border_radius": "lg",
         "_hover": {
             "transform": "translateY(-4px)",
             "box_shadow": "xl" if is_featured else "lg",
-            "border_color": "#522181",
+            "border_color": styles.theme_value("#522181", "#CFBCFF"),
         },
         "transition": "all 0.3s ease",
         "align": "center",
@@ -223,7 +229,7 @@ def featured_articles() -> rx.Component:
     description = rx.text(
         "Highlighted pieces covering advanced topics in machine learning, optimization, and statistical methods.",
         text_align="center",
-        color="gray.600",
+        color=styles.theme_value("gray.600", "gray.400"),
         max_width="600px",
         padding_bottom="1em",
     )
@@ -265,7 +271,7 @@ def all_articles() -> rx.Component:
     description = rx.text(
         "Complete collection of technical articles and tutorials covering various topics in data science and econometrics.",
         text_align="center",
-        color="gray.600",
+        color=styles.theme_value("gray.600", "gray.400"),
         max_width="600px",
         padding_bottom="1em",
     )
@@ -285,7 +291,11 @@ def all_articles() -> rx.Component:
 
         category_header = rx.hstack(
             rx.badge(category, **config, size="3"),
-            rx.text(f"({len(articles)} articles)", size="2", color="gray.500"),
+            rx.text(
+                f"({len(articles)} articles)",
+                size="2",
+                color=styles.theme_value("gray.500", "gray.400"),
+            ),
             spacing="2",
             align="center",
             justify="center",

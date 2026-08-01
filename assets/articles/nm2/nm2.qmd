@@ -2,13 +2,8 @@
 title: 'Optimization, Newton''s Method, & Profit Maximization: Part 2 - Constrained Optimization Theory'
 jupyter: python3
 toc: true
-format:
-  live-html:
-    theme: journal
-    css: article_cover.css
 execute:
   cache: true
-highlight-style: github
 ---
 
 ```{python}

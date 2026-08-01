@@ -3,6 +3,14 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 search_dir="$script_dir"
+force=false
+
+if [[ "${1:-}" == "--force" ]]; then
+    force=true
+elif [[ $# -gt 0 ]]; then
+    echo "Usage: $0 [--force]" >&2
+    exit 2
+fi
 
 find "$search_dir" -type f -name "*.qmd" -print0 |
 while IFS= read -r -d '' file; do
@@ -21,7 +29,7 @@ while IFS= read -r -d '' file; do
 
     # If HTML already exists, prompt the user. When the while-loop input comes from a pipe,
     # normal stdin is the pipe; read from /dev/tty to ensure the prompt reads from the terminal.
-    if [ -f "$output_file_html" ]; then
+    if [ -f "$output_file_html" ] && [[ "$force" == false ]]; then
         echo "HTML file already exists: $output_file_html"
         if [ -r /dev/tty ]; then
             # read a single char answer from the terminal
@@ -40,11 +48,10 @@ while IFS= read -r -d '' file; do
         fi
     fi
 
-    # Render the QMD to HTML inside the output directory so supporting files are colocated.
+    # Render from the project root so every article inherits _quarto.yml.
     echo "  Rendering QMD to HTML"
-    cd "$output_dir"
-    rm -f "$base_name.html"
-    quarto render "$base_name.qmd"
+    rm -f "$output_file_html"
+    quarto render "$file"
 
     echo "Converted $file -> $output_file_html"
     echo "---"

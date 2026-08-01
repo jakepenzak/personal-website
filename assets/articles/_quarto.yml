@@ -1,0 +1,12 @@
+project:
+  type: default
+
+format:
+  live-html:
+    theme:
+      light: journal
+      dark: [journal, article_dark.scss]
+    respect-user-color-scheme: true
+    css: [article_cover.css, article_shared.css]
+
+highlight-style: github

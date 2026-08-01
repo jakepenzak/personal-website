@@ -1,9 +1,6 @@
 from typing import Final, NamedTuple
 
 ## COMMON
-# Website Footer Image
-WEBSITE_FOOTER_IMAGE = "/shared/website_bar.webp"
-
 # Logo Paths
 FOOTER_LOGO = "/shared/icon-inverted.webp"
 LINKEDIN_LOGO = "/shared/social_icons/linkedin.webp"

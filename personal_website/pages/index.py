@@ -22,10 +22,13 @@ def index() -> rx.Component:
             position="absolute",
             inset="0",
             opacity="0.34",
-            background=(
+            background=styles.theme_value(
                 "radial-gradient(circle at 50% 18%, rgba(82,33,129,0.22) 0%, rgba(82,33,129,0) 58%),"
                 "repeating-linear-gradient(0deg, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 22px),"
-                "repeating-linear-gradient(90deg, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 22px)"
+                "repeating-linear-gradient(90deg, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 22px)",
+                "radial-gradient(circle at 50% 18%, rgba(168,124,255,0.24) 0%, rgba(168,124,255,0) 58%),"
+                "repeating-linear-gradient(0deg, rgba(168,124,255,0.11) 0px, rgba(168,124,255,0.11) 1px, rgba(11,17,27,0) 1px, rgba(11,17,27,0) 22px),"
+                "repeating-linear-gradient(90deg, rgba(168,124,255,0.11) 0px, rgba(168,124,255,0.11) 1px, rgba(11,17,27,0) 1px, rgba(11,17,27,0) 22px)",
             ),
             background_size="220% 220%",
             animation="heroPhase 22s ease-in-out infinite",
@@ -36,9 +39,11 @@ def index() -> rx.Component:
             position="absolute",
             inset="-40px",
             opacity="0.32",
-            background=(
+            background=styles.theme_value(
                 "conic-gradient(from 0deg at 50% 40%, rgba(82,33,129,0.24) 0deg, rgba(82,33,129,0) 18deg, rgba(82,33,129,0.12) 36deg, rgba(82,33,129,0) 54deg, rgba(82,33,129,0.24) 72deg, rgba(82,33,129,0) 90deg, rgba(82,33,129,0.12) 108deg, rgba(82,33,129,0) 126deg, rgba(82,33,129,0.24) 144deg, rgba(82,33,129,0) 162deg, rgba(82,33,129,0.12) 180deg, rgba(82,33,129,0) 198deg, rgba(82,33,129,0.24) 216deg, rgba(82,33,129,0) 234deg, rgba(82,33,129,0.12) 252deg, rgba(82,33,129,0) 270deg, rgba(82,33,129,0.24) 288deg, rgba(82,33,129,0) 306deg, rgba(82,33,129,0.12) 324deg, rgba(82,33,129,0) 342deg, rgba(82,33,129,0.24) 360deg),"
-                "repeating-radial-gradient(circle at 50% 40%, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 18px)"
+                "repeating-radial-gradient(circle at 50% 40%, rgba(82,33,129,0.12) 0px, rgba(82,33,129,0.12) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 18px)",
+                "conic-gradient(from 0deg at 50% 40%, rgba(168,124,255,0.28) 0deg, rgba(168,124,255,0) 18deg, rgba(168,124,255,0.14) 36deg, rgba(168,124,255,0) 54deg, rgba(168,124,255,0.28) 72deg, rgba(168,124,255,0) 90deg, rgba(168,124,255,0.14) 108deg, rgba(168,124,255,0) 126deg, rgba(168,124,255,0.28) 144deg, rgba(168,124,255,0) 162deg, rgba(168,124,255,0.14) 180deg, rgba(168,124,255,0) 198deg, rgba(168,124,255,0.28) 216deg, rgba(168,124,255,0) 234deg, rgba(168,124,255,0.14) 252deg, rgba(168,124,255,0) 270deg, rgba(168,124,255,0.28) 288deg, rgba(168,124,255,0) 306deg, rgba(168,124,255,0.14) 324deg, rgba(168,124,255,0) 342deg, rgba(168,124,255,0.28) 360deg),"
+                "repeating-radial-gradient(circle at 50% 40%, rgba(168,124,255,0.11) 0px, rgba(168,124,255,0.11) 1px, rgba(11,17,27,0) 1px, rgba(11,17,27,0) 18px)",
             ),
             filter="blur(1.0px)",
             pointer_events="none",
@@ -75,6 +80,7 @@ def index() -> rx.Component:
     return rx.vstack(
         hero_mobile_background,
         hero_desktop,
+        weekly_pick_section(),
         skillsets_section(),
         min_height="80vh",
         overflow_x="hidden",
@@ -101,7 +107,7 @@ def header() -> rx.Component:
                     "Jacob \n Pieniazek",
                     size="9",
                     font_family="HackBold",
-                    color=["#522181"],
+                    color=[styles.theme_value("#522181", "#CFBCFF")],
                     align="center",
                     display=["none", "none", "flex", "flex", "flex", "flex"],
                 ),
@@ -118,9 +124,11 @@ def header() -> rx.Component:
                     "Jacob \n Pieniazek",
                     size="9",
                     font_family="HackBold",
-                    color=["#522181"],
+                    color=[styles.theme_value("#522181", "#CFBCFF")],
                     align="center",
-                    text_shadow="0 1px 0 rgba(255,255,255,0.55)",
+                    text_shadow=styles.theme_value(
+                        "0 1px 0 rgba(255,255,255,0.55)", "none"
+                    ),
                 ),
                 width="100%",
                 padding_y="0.75em",
@@ -238,6 +246,87 @@ def intro() -> rx.Component:
     return intro
 
 
+def weekly_pick_section() -> rx.Component:
+    """Feature the current song pick without sending visitors away from the site."""
+    return rx.box(
+        rx.vstack(
+            rx.hstack(
+                rx.hstack(
+                    rx.center(
+                        rx.icon(tag="music", size=22),
+                        width="2.75em",
+                        height="2.75em",
+                        border_radius="full",
+                        bg=styles.theme_value("#F0EAFE", "#2A2240"),
+                        color=styles.theme_value("#522181", "#D5C3FF"),
+                    ),
+                    rx.heading(
+                        "Weekly song pick",
+                        font_size=["1.25em", "1.4em", "1.6em"],
+                        line_height="1.2",
+                        height="auto",
+                        padding_bottom="0",
+                        text_align="left",
+                    ),
+                    spacing="3",
+                    align="center",
+                    width="auto",
+                ),
+                rx.link(
+                    "Browse picks",
+                    href="https://weekly-picks.jacob-pieniazek.com/",
+                    is_external=True,
+                    size="2",
+                    color=styles.theme_value("#522181", "#D5C3FF"),
+                    text_decoration="underline",
+                    text_decoration_color=styles.theme_value("#B99CE0", "#786298"),
+                ),
+                justify="between",
+                align="center",
+                width="100%",
+                wrap="wrap",
+                spacing="3",
+            ),
+            rx.text(
+                "A fresh track from my weekly rotation, updated each Monday.",
+                size="2",
+                color=styles.theme_value("#4C4858", "#B8C2D1"),
+                width="100%",
+            ),
+            rx.box(
+                rx.el.iframe(
+                    src="https://weekly-picks.jacob-pieniazek.com/embed",
+                    title="Jacob's weekly song pick",
+                    loading="lazy",
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture",
+                    width="100%",
+                    height=["460px", "420px", "380px", "360px"],
+                    border="0",
+                    display="block",
+                ),
+                width="100%",
+                overflow="hidden",
+                border_radius="12px",
+                border=styles.theme_value("1px solid #E2D8F4", "1px solid #39455A"),
+                bg=styles.theme_value("#FFFFFF", "#101722"),
+            ),
+            spacing="4",
+            align="start",
+        ),
+        width="100%",
+        max_width="880px",
+        margin_top=["0.75em", "1em", "1.5em", "2em"],
+        margin_bottom=["1em", "1.5em", "2em"],
+        padding=["1.25em", "1.5em", "1.75em", "2em"],
+        border_radius="18px",
+        border=styles.theme_value("1px solid #E6DFF2", "1px solid #2E3A4D"),
+        bg=styles.theme_value("rgba(255,255,255,0.82)", "rgba(18,26,39,0.88)"),
+        box_shadow=styles.theme_value(
+            "0 18px 45px rgba(82,33,129,0.10)", "0 20px 50px rgba(0,0,0,0.28)"
+        ),
+    )
+
+
 ## Skillsets Section
 
 
@@ -257,7 +346,7 @@ def skillsets_section() -> rx.Component:
 
     intro = rx.text(
         "A quick focus map, plus my core strengths & what I tend to build day-to-day.",
-        color="#2B2A33",
+        color=styles.theme_value("#2B2A33", "#C4CEDB"),
         padding_bottom="0.75em",
     )
 
@@ -265,8 +354,8 @@ def skillsets_section() -> rx.Component:
         rx.recharts.radar_chart(
             rx.recharts.radar(
                 data_key="rating",
-                stroke="#522181",
-                fill="#522181",
+                stroke=styles.theme_value("#522181", "#CFBCFF"),
+                fill=styles.theme_value("#522181", "#CFBCFF"),
                 fill_opacity=0.35,
             ),
             rx.recharts.polar_grid(),
@@ -288,11 +377,11 @@ def skillsets_section() -> rx.Component:
                     rx.box(
                         width=f"{row['rating']}%",
                         height="8px",
-                        bg="#522181",
+                        bg=styles.theme_value("#522181", "#CFBCFF"),
                         border_radius="999px",
                     ),
                     width="40%",
-                    bg="#E9D5FF",
+                    bg=styles.theme_value("#E9D5FF", "#29233A"),
                     border_radius="999px",
                     overflow="hidden",
                 ),
@@ -316,7 +405,11 @@ def skillsets_section() -> rx.Component:
     )
 
     core_strengths = rx.vstack(
-        rx.text("Core strengths", font_family="HackBold", color="#522181"),
+        rx.text(
+            "Core strengths",
+            font_family="HackBold",
+            color=styles.theme_value("#522181", "#CFBCFF"),
+        ),
         *[
             rx.badge(
                 s,
@@ -333,7 +426,11 @@ def skillsets_section() -> rx.Component:
     )
 
     languages = rx.vstack(
-        rx.text("Languages I work in", font_family="HackBold", color="#522181"),
+        rx.text(
+            "Languages I work in",
+            font_family="HackBold",
+            color=styles.theme_value("#522181", "#CFBCFF"),
+        ),
         rx.hstack(
             rx.badge(
                 rx.hstack(
@@ -452,16 +549,16 @@ def _focus_area_badge_props(title: str) -> dict:
     return {"color_scheme": "purple", "variant": "soft"}
 
 
-def _focus_area_border_color(title: str) -> str:
+def _focus_area_border_color(title: str):
     if title == "Causal Inference, Causal ML, & Econometrics":
-        return "#522181"
+        return styles.theme_value("#522181", "#CFBCFF")
     if title == "Statistical Learning, ML, & AI":
-        return "#2563eb"
+        return styles.theme_value("#2563eb", "#93C5FD")
     if title == "MLOps / DevOps & Delivery / Package Development":
-        return "#f97316"
+        return styles.theme_value("#f97316", "#FDBA74")
     if title == "Data Platforms & Analytics Engineering":
-        return "#16a34a"
-    return "#522181"
+        return styles.theme_value("#16a34a", "#86EFAC")
+    return styles.theme_value("#522181", "#CFBCFF")
 
 
 def focus_area_card(area: dict) -> rx.Component:
@@ -502,21 +599,23 @@ def focus_area_card(area: dict) -> rx.Component:
                 text_align="left",
                 padding_bottom="0.25em",
             ),
-            rx.text(area["tagline"], color="#2B2A33"),
+            rx.text(
+                area["tagline"], color=styles.theme_value("#2B2A33", "#C4CEDB")
+            ),
             highlights,
             rx.text(
                 "Representative tools:",
                 font_family="HackBold",
-                color="#522181",
+                color=styles.theme_value("#522181", "#CFBCFF"),
                 padding_top="0.75em",
             ),
             tools,
             align="start",
         ),
         padding="1.5em",
-        border="1px solid #e2e8f0",
+        border=styles.theme_value("1px solid #e2e8f0", "1px solid #2E3A4D"),
         border_radius="lg",
-        bg="rgba(255,255,255,0.75)",
+        bg=styles.theme_value("rgba(255,255,255,0.75)", "rgba(18,26,39,0.88)"),
         box_shadow="sm",
         transition="all 0.3s ease",
         _hover={

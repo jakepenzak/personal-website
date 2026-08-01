@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Double Machine Learning, Simplified: Part 2 - Targeting &amp; the CATE</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -61,15 +64,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="dml2_files/libs/clipboard/clipboard.min.js"></script>
 <script src="dml2_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="dml2_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="dml2_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="dml2_files/libs/quarto-html/popper.min.js"></script>
 <script src="dml2_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="dml2_files/libs/quarto-html/anchor.min.js"></script>
 <link href="dml2_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="dml2_files/libs/quarto-html/quarto-syntax-highlighting-597958c53c93a607afca12fd375c57ed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="dml2_files/libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="dml2_files/libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="dml2_files/libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="dml2_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="dml2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="dml2_files/libs/bootstrap/bootstrap-bf1bacb4489e6febdc6f607118696f74.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="dml2_files/libs/bootstrap/bootstrap-0efbf7a7f38a7a892027c9eaf9b55216.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="dml2_files/libs/bootstrap/bootstrap-dark-d50a0dfc717760483f995dc742c40bc9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="dml2_files/libs/bootstrap/bootstrap-0efbf7a7f38a7a892027c9eaf9b55216.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="dml2_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="dml2_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script type="module" src="dml2_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
@@ -79,7 +85,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -108,10 +114,182 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="article_cover.css">
+<link rel="stylesheet" href="../article_cover.css">
+<link rel="stylesheet" href="../article_shared.css">
 </head>
 
-<body class="quarto-light">
+<body class="quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -127,6 +305,7 @@ window.Quarto = {
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -200,7 +379,7 @@ window.Quarto = {
 })();
 </script>
 
-<div id="5f50c05b" class="cell" data-execution_count="3">
+<div id="8b4bb777" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Imports and Settings</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -264,7 +443,7 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p>This article is the <strong>2nd</strong> in a 2 part series on simplifying and democratizing Double Machine Learning. In the <a href="/articles/dml1" target="_blank" rel="noopener noreferrer">1st part</a>, we covered the fundamentals of Double Machine Learning, along with two basic causal inference applications. Now, in pt.&nbsp;2, we will extend this knowledge to turn our causal inference problem into a prediction task, wherein we predict individual level treatment effects to aid in decision making and data-driven targeting</p>
 </blockquote>
-<p>Double Machine Learning, as we learned in <a href="./articles/dml1">part 1</a> of this series, is a highly flexible partially-linear causal inference method for estimating the average treatment effect (ATE) of a treatment. Specifically, it can be utilized to model highly non-linear confounding relationships in observational data (especially when our set of controls/confounders is of extremely high dimensionality) and/or to reduce the variation in our key outcome in experimental settings. Estimating the ATE is particularly useful in understanding the average impact of a specific treatment, which can be extremely useful for future decision making. However, extrapolating this treatment effect assumes a degree homogeneity in the effect; that is, regardless of the population we roll treatment out to, we anticipate the effect to be similar to the ATE. What if we are limited in the number of individuals who we can target for future rollout and thus want to understand among which subpopulations the treatment was most effective to drive highly effective rollout?</p>
+<p>Double Machine Learning, as we learned in <a href="../articles/dml1">part 1</a> of this series, is a highly flexible partially-linear causal inference method for estimating the average treatment effect (ATE) of a treatment. Specifically, it can be utilized to model highly non-linear confounding relationships in observational data (especially when our set of controls/confounders is of extremely high dimensionality) and/or to reduce the variation in our key outcome in experimental settings. Estimating the ATE is particularly useful in understanding the average impact of a specific treatment, which can be extremely useful for future decision making. However, extrapolating this treatment effect assumes a degree homogeneity in the effect; that is, regardless of the population we roll treatment out to, we anticipate the effect to be similar to the ATE. What if we are limited in the number of individuals who we can target for future rollout and thus want to understand among which subpopulations the treatment was most effective to drive highly effective rollout?</p>
 <p>This issue described above concerns estimating treatment effect heterogeneity. That is, how does our treatment effect impact different subsets of the population? Luckily for us, DML provides a powerful framework to do exactly this. Specifically, we can make use of DML to estimate the Conditional Average Treatment Effect (CATE). First, let’s revisit our definition of the ATE, in binary and continuous cases, respectively:</p>
 <p><span class="math display">\[
 \begin{equation}
@@ -316,7 +495,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 \]</span></p>
 <p>where <span class="math inline">\(\mathbf{\Omega}\)</span> is the vector of coefficients for the interaction terms. Now our CATE function, call it <span class="math inline">\(\tau\)</span>, takes the form <span class="math inline">\(\tau(\mathbf{X}) = \beta_1 + \mathbf{X}\mathbf{\Omega}\)</span>, where we can predict each individuals CATE given <span class="math inline">\(\mathbf{X}\)</span>. If <span class="math inline">\(T\)</span> is continuous, this CATE function is for a 1 unit increase in T. Note that <span class="math inline">\(\tau(\mathbf{X}) = \beta_1\)</span> in eq. (3) where <span class="math inline">\(\tau(\mathbf{X})\)</span> is assumed a constant. Let’s take a look at this in action!</p>
 <p>First, let’s use the same casual DAG from part 1, where we will be looking at the effect of an individuals time spent on the website on their purchase amount, or sales, in the past month (assuming we observe all confounders).:</p>
-<div id="13136dd5" class="cell" data-execution_count="4">
+<div id="a7bbbc5d" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a directed graph</span></span>
@@ -350,7 +529,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 </div>
 <p><img src="data/dag1.webp" class="img-fluid"></p>
 <p>Let’s then simulate this DGP using a similar process as utilized in part 1 (note that all values &amp; data are chosen and generated arbitrarily for demonstrative purposes). Observe that we now include interaction terms in the sales DGP to model the CATE, or treatment effect heterogeneity (note that the DGP in part 1 had no treatment effect heterogeneity by construction)</p>
-<div id="c04f0195" class="cell" data-execution_count="5">
+<div id="a69e39b9" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample Size</span></span>
@@ -425,7 +604,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="501efc97" class="cell" data-execution_count="6">
+<div id="52797393" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -554,7 +733,7 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 </div>
 </div>
 <p>Now, to estimate our CATE function, as outlined in eq. (4), we can run:</p>
-<div id="ecb9a0f6" class="cell" data-execution_count="7">
+<div id="aee8f859" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DML Procedure for Estimating the CATE</span></span>
@@ -588,8 +767,8 @@ y-\mathcal{M}_y(\mathbf{X})=\beta_0+\beta_1(T-\mathcal{M}_T(\mathbf{X}))+(T-\mat
 Dep. Variable:     residualized_sales   R-squared:                       0.742
 Model:                            OLS   Adj. R-squared:                  0.742
 Method:                 Least Squares   F-statistic:                 7.207e+04
-Date:                Fri, 16 Jan 2026   Prob (F-statistic):               0.00
-Time:                        14:53:50   Log-Likelihood:            -5.4142e+05
+Date:                Fri, 31 Jul 2026   Prob (F-statistic):               0.00
+Time:                        21:49:49   Log-Likelihood:            -5.4142e+05
 No. Observations:              100000   AIC:                         1.083e+06
 Df Residuals:                   99995   BIC:                         1.083e+06
 Df Model:                           4                                         
@@ -614,7 +793,7 @@ Notes:
 </div>
 </div>
 <p>Here we can see that linear DML closely modeled the true DGP for the CATE (see coefficients on interaction terms in sales DGP). Let’s evaluate the performance of our CATE function by comparing the linear DML predictions to the true CATE for a 1 hour increase in time on the spent on the website:</p>
-<div id="ea992585" class="cell" data-execution_count="8">
+<div id="51f1ce4f" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict CATE of 1 hour increase</span></span>
@@ -633,13 +812,13 @@ Notes:
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"R-Squared: </span><span class="sc">{</span>r2_score(true_cates, linear_dml_cates)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Mean Squared Error: 1.5107484209942401
-Mean Absolute Error: 0.9878858217850499
-R-Squared: 0.9825949051151978</code></pre>
+<pre><code>Mean Squared Error: 1.5107484209942315
+Mean Absolute Error: 0.987885821785047
+R-Squared: 0.9825949051151979</code></pre>
 </div>
 </div>
 <p>Plotting the distributions of the predicted CATE and true CATE, we obtain:</p>
-<div id="a0ad7d0c" class="cell" data-execution_count="9">
+<div id="f779a07b" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>hist_effect(true_cates, linear_dml_cates, save_path<span class="op">=</span><span class="st">"data/linear_dml_hist.webp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -647,7 +826,7 @@ R-Squared: 0.9825949051151978</code></pre>
 </div>
 <p><img src="data/linear_dml_hist.webp" class="img-fluid"></p>
 <p>Additionally, plotting the predicted values versus the true values we obtain:</p>
-<div id="cd9b4176" class="cell" data-execution_count="10">
+<div id="d0b820fc" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot_effect(true_cates, linear_dml_cates, save_path<span class="op">=</span><span class="st">"data/linear_dml_line.webp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -655,7 +834,7 @@ R-Squared: 0.9825949051151978</code></pre>
 </div>
 <p><img src="data/linear_dml_line.webp" class="img-fluid"></p>
 <p>Overall, we have pretty impressive performance! However, the primary limitation in this approach is that we must manually specify the functional form of the CATE function, thus if we are only including linear interaction terms we may not capture the true CATE function. In our example, we simulated the DGP to only have these linear interaction terms and thus the performance is strong by construction, but let’s see what happens when we tweak the DGP for the CATE to be arbitrarily non-linear:</p>
-<div id="046d13bb" class="cell" data-execution_count="11">
+<div id="0adc82de" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome (y = f(T,X,Z) + ε2)</span></span>
@@ -724,7 +903,7 @@ R-Squared: 0.9825949051151978</code></pre>
 </details>
 </div>
 <p>Fitting our models:</p>
-<div id="46d5988b" class="cell" data-execution_count="12">
+<div id="7db26034" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DML Procedure</span></span>
@@ -760,8 +939,8 @@ R-Squared: 0.9825949051151978</code></pre>
 Dep. Variable:     residualized_sales   R-squared:                       0.496
 Model:                            OLS   Adj. R-squared:                  0.496
 Method:                 Least Squares   F-statistic:                 2.457e+04
-Date:                Fri, 16 Jan 2026   Prob (F-statistic):               0.00
-Time:                        14:53:58   Log-Likelihood:            -5.8008e+05
+Date:                Fri, 31 Jul 2026   Prob (F-statistic):               0.00
+Time:                        21:50:00   Log-Likelihood:            -5.8008e+05
 No. Observations:              100000   AIC:                         1.160e+06
 Df Residuals:                   99995   BIC:                         1.160e+06
 Df Model:                           4                                         
@@ -786,7 +965,7 @@ Notes:
 </div>
 </div>
 <p>And then evaluating performance:</p>
-<div id="474e8784" class="cell" data-execution_count="13">
+<div id="e211cf2a" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict CATE of 1 hour increase</span></span>
@@ -811,11 +990,11 @@ Notes:
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mean Squared Error: 53.704983242765145
-Mean Absolute Error: 4.314548896807403
+Mean Absolute Error: 4.3145488968074055
 R-Squared: 0.6287019468647995</code></pre>
 </div>
 </div>
-<div id="46d3f859" class="cell" data-execution_count="14">
+<div id="8f360549" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>hist_effect(</span>
@@ -826,7 +1005,7 @@ R-Squared: 0.6287019468647995</code></pre>
 </details>
 </div>
 <p><img src="data/linear_dml_nonlinear_hist.webp" class="img-fluid"></p>
-<div id="6eab2591" class="cell" data-execution_count="15">
+<div id="be9b6831" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plot_effect(</span>
@@ -867,7 +1046,7 @@ y-\mathcal{M}_y(\mathbf{X})&amp;=\tau(\mathbf{X})(T-\mathcal{M}_T(\mathbf{X}))+\
 <p><em>Take a moment and soak in the elegance of this result… We can directly learn the CATE function &amp; predict an individuals CATE given our residualized outcome, <span class="math inline">\(y\)</span>, and treatment, <span class="math inline">\(T\)</span>!</em></p>
 <p>Let’s take a look at this in action now. We will reuse the DGP for the non-linear CATE function that was utilized in the example where linear DML performs poorly above. To construct of Non-Parametric DML model, we can run:</p>
 <p>Then define the causal loss function as such (note this is just the MSE!):</p>
-<div id="4959ed6f" class="cell" data-execution_count="16">
+<div id="bd3b0c9d" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define Target &amp; Weights</span></span>
@@ -887,7 +1066,7 @@ y-\mathcal{M}_y(\mathbf{X})&amp;=\tau(\mathbf{X})(T-\mathcal{M}_T(\mathbf{X}))+\
 </details>
 </div>
 <p>And to make predictions + evaluate performance:</p>
-<div id="140957f6" class="cell" data-execution_count="17">
+<div id="b929c425" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict CATE of 1 hour increase</span></span>
@@ -909,7 +1088,7 @@ Mean Absolute Error: 1.6626763928716335
 R-Squared: 0.9621116491439838</code></pre>
 </div>
 </div>
-<div id="b67eb93d" class="cell" data-execution_count="18">
+<div id="b823a960" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>hist_effect(</span>
@@ -920,7 +1099,7 @@ R-Squared: 0.9621116491439838</code></pre>
 </details>
 </div>
 <p><img src="data/nonparam_dml_nonlinear_hist.webp" class="img-fluid"></p>
-<div id="29d8badf" class="cell" data-execution_count="19">
+<div id="085ec70b" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plot_effect(</span>
@@ -969,13 +1148,26 @@ eyJjb250ZW50cyI6W119
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
 window._ojs.paths.runtimeToDoc = "../../..";
-window._ojs.paths.runtimeToRoot = "../../..";
-window._ojs.paths.docToRoot = "";
+window._ojs.paths.runtimeToRoot = "../../../..";
+window._ojs.paths.docToRoot = "..";
 window._ojs.selfContained = false;
 window._ojs.runtime.interpretFromScriptTags();
 </script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {

@@ -1,0 +1,7 @@
+.quarto-color-scheme-toggle {
+  display: none !important;
+}
+
+body {
+  transition: background-color 180ms ease, color 180ms ease;
+}

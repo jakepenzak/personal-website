@@ -2,13 +2,8 @@
 title: 'Predictive Parameters in a Logistic Regression: Making Sense of it All'
 jupyter: python3
 toc: true
-format:
-  live-html:
-    theme: journal
-    css: article_cover.css
 execute:
   cache: true
-highlight-style: github
 ---
 
 ```{python}

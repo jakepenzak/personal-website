@@ -2,8 +2,15 @@
 
 import reflex as rx
 
+
+def theme_value(light: str, dark: str):
+    """Return a value that follows Reflex's persisted color-mode setting."""
+    return rx.color_mode_cond(light, dark)
+
+
 # COMMON STYLES
 text_color = "black"
+theme_text_color = theme_value("black", "#E6EDF6")
 
 BASE_STYLE = {
     "font_family": "Hack",
@@ -23,14 +30,13 @@ BASE_STYLE = {
         "0%": {"transform": "rotate(0deg)"},
         "100%": {"transform": "rotate(360deg)"},
     },
-    rx.text: {"color": text_color, "font_family": "Hack"},
-    rx.menu.content: {"bg": "white"},
+    rx.text: {"font_family": "Hack"},
     rx.container: {"max_width": "1440px", "padding_x": ["1em", "2em", "3em"]},
     rx.heading: {
         "font_size": rx.breakpoints(initial="2em", md="3em"),
         "font_family": "HackBold",
         "text_align": "center",
-        "color": "#522181",
+        "color": theme_value("#522181", "#CFBCFF"),
         "padding_bottom": "0.5em",
         "height": "100%",
     },
@@ -40,16 +46,16 @@ BASE_STYLE = {
 # NAVIGATION BAR
 NAVBAR = {
     "NAVBAR_STYLE": {
-        "bg": "rgba(255,255,255, 0.9)",
+        "bg": theme_value("rgba(255,255,255, 0.9)", "rgba(11,17,27, 0.9)"),
         "backdrop_filter": "blur(10px)",
         "padding_x": "1.5em",
         "padding_y": "1em",
-        "border_bottom": "2px solid #F4F3F6",
+        "border_bottom": theme_value("2px solid #F4F3F6", "1px solid #273246"),
         "width": "100%",
         "min_height": "10vh",
     },
     "NAVBAR_BUTTON_STYLE": {
-        "color": text_color,
+        "color": theme_text_color,
         "size": "4",
         "padding_x": "0.75em",
     },
@@ -59,7 +65,7 @@ NAVBAR = {
 FOOTER = {
     "FOOTER_STYLE": {
         "box_shadow": "medium-lg",
-        "border_top": "0.1em solid #F4F3F6",
+        "border_top": theme_value("0.1em solid #F4F3F6", "0.1em solid #273246"),
         "vertical_align": "bottom",
         "padding_top": "1em",
         "padding_bottom": "1em",
@@ -78,7 +84,10 @@ INDEX_PAGE = {
     "INTRO_CONTAINER_STYLE": {
         # "height": "12em",
         "width": "100%",
-        "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",  #
+        "background": theme_value(
+            "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",
+            "radial-gradient(55.39% 67.5% at 50% 100%, rgba(123, 84, 183, 0.18) 0%, rgba(11, 17, 27, 0) 100%);",
+        ),
         "opacity": "0.4;",
         "transform": "matrix(1, 0, 0, -1, 0, 0);",
         "padding_x": "3em",
@@ -88,7 +97,10 @@ INDEX_PAGE = {
     "SKILLS_CONTAINER_STYLE": {
         # "height": "12em",
         "width": "100%",
-        "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",
+        "background": theme_value(
+            "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",
+            "radial-gradient(55.39% 67.5% at 50% 100%, rgba(123, 84, 183, 0.18) 0%, rgba(11, 17, 27, 0) 100%);",
+        ),
         "opacity": "0.4;",
         "padding_x": "3em",
         "padding_y": "3em",
@@ -99,9 +111,9 @@ INDEX_PAGE = {
             **props,
             text_decoration="underline",
             _hover={
-                "color": "#522181",
+                "color": theme_value("#522181", "#CFBCFF"),
                 "text_decoration": "underline",
-                "text_decoration_color": "#522181",
+                "text_decoration_color": theme_value("#522181", "#CFBCFF"),
             },
         ),
     },
@@ -110,24 +122,34 @@ INDEX_PAGE = {
 # ARTICLES PAGE
 ARTICLES_PAGE = {
     "MARKDOWN_STYLE_INTRO": {
-        "code": lambda text: rx.code(text, color="#1F1944", bg="#EAE4FD"),
+        "code": lambda text: rx.code(
+            text,
+            color=theme_value("#1F1944", "#E6EDF6"),
+            bg=theme_value("#EAE4FD", "#252039"),
+        ),
         "a": lambda text, **props: rx.link(
             text,
             **props,
-            color="#03030B",
+            color=theme_value("#03030B", "#E6EDF6"),
             text_decoration="underline",
             # text_decoration_color="#522181",
             _hover={
-                "color": "#522181",
+                "color": theme_value("#522181", "#CFBCFF"),
                 "text_decoration": "underline",
-                "text_decoration_color": "#522181",
+                "text_decoration_color": theme_value("#522181", "#CFBCFF"),
             },
         ),
     },
     "MARKDOWN_STYLE_BLOCK_HEADER": {
-        "p": lambda text: rx.text(text, color="#522181", font_family="HackBold")
+        "p": lambda text: rx.text(
+            text,
+            color=theme_value("#522181", "#CFBCFF"),
+            font_family="HackBold",
+        )
     },
-    "MARKDOWN_STYLE_BLOCK_BODY": {"p": lambda text: rx.text(text, color="black")},
+    "MARKDOWN_STYLE_BLOCK_BODY": {
+        "p": lambda text: rx.text(text, color=theme_text_color)
+    },
 }
 
 # RESEARCH PAGE
@@ -139,7 +161,10 @@ RESEARCH_PAGE = {
     },
     "BODY_CONTAINER_STYLE": {
         "width": "100%",
-        "background": "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",  #
+        "background": theme_value(
+            "radial-gradient(55.39% 67.5% at 50% 100%, rgba(188, 136, 255, 0.16) 0%, rgba(223, 216, 250, 0) 100%);",
+            "radial-gradient(55.39% 67.5% at 50% 100%, rgba(123, 84, 183, 0.18) 0%, rgba(11, 17, 27, 0) 100%);",
+        ),
         "opacity": "0.4;",
         "transform": "matrix(1, 0, 0, -1, 0, 0);",
         "padding_x": "2em",

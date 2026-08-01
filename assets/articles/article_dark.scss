@@ -1,0 +1,35 @@
+/*-- scss:defaults --*/
+$body-bg: #0b111b;
+$body-color: #e6edf6;
+$link-color: #cfbcff;
+$code-bg: #151e2c;
+$code-color: #e6edf6;
+$border-color: #2e3a4d;
+$table-border-color: #39455a;
+$input-bg: #121a27;
+$input-color: #e6edf6;
+$input-border-color: #39455a;
+
+/*-- scss:rules --*/
+.quarto-dark div.sourceCode,
+.quarto-dark pre.sourceCode,
+.quarto-dark .cell-output pre {
+  background-color: #101722 !important;
+  border: 1px solid #2e3a4d !important;
+  box-shadow: none !important;
+}
+
+.quarto-dark pre > code.sourceCode {
+  background: transparent !important;
+  color: #e6edf6;
+}
+
+.quarto-dark code:not(.sourceCode) {
+  background-color: #182233 !important;
+  color: #eef2f8 !important;
+}
+
+.quarto-dark blockquote {
+  color: #b8c2d1;
+  border-left-color: #786298;
+}

@@ -3,7 +3,8 @@
 import reflex as rx
 
 from assets import asset_data
-from personal_website.structural import template
+from personal_website.components.website_bar import website_bar
+from personal_website.structural import styles, template
 
 
 # Create the projects page
@@ -17,11 +18,16 @@ def projects() -> rx.Component:
     """
     return rx.vstack(
         header(),
-        rx.divider(width="25%", border_top="1px solid rgba(0, 0, 0, 0.25)"),
+        rx.divider(
+            width="25%",
+            border_top=styles.theme_value(
+                "1px solid rgba(0, 0, 0, 0.25)", "1px solid rgba(226, 232, 240, 0.28)"
+            ),
+        ),
         rx.spacer(),
         body(),
         rx.spacer(),
-        rx.center(rx.image(src=asset_data.WEBSITE_FOOTER_IMAGE, width="100%")),
+        website_bar(),
         align="center",
         min_height="80vh",
     )
@@ -172,7 +178,7 @@ def project_card(
                 rx.text(
                     title,
                     size="6",
-                    color="#522181",
+                    color=styles.theme_value("#522181", "#CFBCFF"),
                     text_align="center",
                 ),
                 status_badges,
@@ -192,7 +198,7 @@ def project_card(
         padding="1.5em",
         max_width="350px",
         min_height="450px",
-        border="1px solid #e2e8f0",
+        border=styles.theme_value("1px solid #e2e8f0", "1px solid #2E3A4D"),
         border_radius="lg",
         _hover={"transform": "translateY(-4px)", "box_shadow": "lg"},
         transition="all 0.3s ease",
@@ -226,13 +232,17 @@ def research_card(
             rx.text(
                 title,
                 size="4",
-                color="#522181",
+                color=styles.theme_value("#522181", "#CFBCFF"),
                 text_align="left",
                 width="100%",
             ),
             rx.cond(
                 abstract,
-                rx.text(abstract, size="2", color="gray"),
+                rx.text(
+                    abstract,
+                    size="2",
+                    color=styles.theme_value("gray", "#AEB8C6"),
+                ),
             ),
             rx.cond(
                 link or repo,
@@ -261,7 +271,7 @@ def research_card(
             ),
         ),
         padding="1.5em",
-        border="1px solid #e2e8f0",
+        border=styles.theme_value("1px solid #e2e8f0", "1px solid #2E3A4D"),
         border_radius="lg",
         width="100%",
         max_width="800px",
@@ -280,7 +290,7 @@ def open_source_and_personal_projects() -> rx.Component:
     description = rx.text(
         "Various projects, including open-source libraries and miscellaneuos personal projects.",
         text_align="center",
-        color="gray.600",
+        color=styles.theme_value("gray.600", "gray.400"),
         max_width="600px",
         padding_bottom="1em",
     )
@@ -349,7 +359,7 @@ def research_and_presentations() -> rx.Component:
     description = rx.text(
         "Formal research papers and presentations in academic and industry settings.",
         text_align="center",
-        color="gray.600",
+        color=styles.theme_value("gray.600", "gray.400"),
         max_width="600px",
         padding_bottom="1em",
     )

@@ -2,13 +2,8 @@
 title: 'Double Machine Learning, Simplified: Part 2 - Targeting & the CATE'
 jupyter: python3
 toc: true
-format:
-  live-html:
-    theme: journal
-    css: article_cover.css
 execute:
   cache: true
-highlight-style: github
 ---
 
 ```{python}
