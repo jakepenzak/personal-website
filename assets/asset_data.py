@@ -268,5 +268,5 @@ BROWN_BAG_PATH = "/research/causal-ml-brown-bag.pdf"
 THESIS_LINK = "/research/thesis.pdf"
 
 ## Resume Page
-RESUME_IMAGE = "/resume/resume.v0.webp"
-RESUME_LINK = "/resume/resume.v0.pdf"
+RESUME_IMAGE = "/resume/resume.v1.webp"
+RESUME_LINK = "/resume/resume.v1.pdf"
