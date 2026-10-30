@@ -5,7 +5,7 @@ description = "Repository for my personal website build using Reflex."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "reflex[db]==0.9.7",
+    "reflex[db]==0.10.1",
 ]
 
 [dependency-groups]
@@ -30,6 +30,7 @@ dev = [
     "quarto-cli>=1.8.26",
     "jupyter-cache>=1.0.1",
     "lintquarto>=0.7.0",
+    "tree-sitter>=0.25.2,<0.26",
 ]
 
 [tool.marimo.runtime]
